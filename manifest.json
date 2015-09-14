@@ -1,0 +1,22 @@
+{
+  "name": "一键切换",
+  "short_name": "一键切换",
+  "version": "2.0.4",
+  "description": "网站间的快速切换，保留搜索内容继续搜索",
+  "icons": { "128": "icon128.png" },
+  "background":{
+   	  "page":"background.html"
+   },
+  "permissions": [
+    "tabs","activeTab","*://*/*","chrome://favicon/"
+  ],
+  "options_page": "options.html",
+   "manifest_version": 2,
+   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "content_scripts":[
+  ],
+  "page_action": {
+      "default_name": "百度一下",
+      "default_icon": "icon/baidu.png"
+  }
+}
