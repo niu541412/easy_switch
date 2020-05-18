@@ -70,8 +70,8 @@ function init(){
 	initUserSites();
 }
 function initUserSites(){
-	var bkg = chrome.extension.getBackgroundPage();
-	bkg.console.log("hello: ");
+	//var bkg = chrome.extension.getBackgroundPage();
+	//bkg.console.log("hello: ");
 	$('#usersites').html('');
 	var html='';
 	var userSites=Sites.getUserSites();
