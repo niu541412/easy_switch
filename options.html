@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>一键切换－选项</title>
+<style type="text/css">
+#save{
+padding:3px 20px;
+border-width:0;
+border-radius:16px;
+color:white;
+cursor:hand;
+position:relative;
+cursor:pointer;
+}
+#save:active{
+left:1px;
+top:1px;
+padding:2px 21px 4px 19px;
+}
+#save{
+display:block;
+margin:10px auto;
+width:100px;
+box-shadow:0 8px 4px rgba(0,0,192,0.5);
+background-image:-webkit-gradient(linear,0% 0%,0% 90%,from(rgba(0,0,80,0.5)),to(rgba(0,0,256,0.9)));
+background-image:-moz-linear-gradient(top,rgba(0,0,80,0.5),rgba(0,0,256,0.9));
+}
+#container{
+margin:40px auto 20px auto;
+width:800px;
+padding:20px 30px 30px 30px;
+border:1px solid #EEEEEE;
+border-radius:8px;
+}
+#left,#right{
+	vertical-align:top;
+	display:inline-block;
+	width:50%;
+}
+.way{
+	display:block;
+	width:245px;
+	height:32px;
+	line-height:32px;
+}
+.way img{
+	vertical-align:middle;
+}
+#container h2{
+margin:0 auto;
+width:50px;
+}
+#addsite{
+line-height:32px;
+}
+#addsite .tip{
+width:60px;
+display:inline-block;
+}
+#addsite input{
+	height:24px;
+	width:320px;
+}
+.usersite{
+	height:32px;
+	line-height:32px;
+}
+.usersite .icon{
+	vertical-align:middle;
+}
+.usersite:hover{
+	background-color: rgb(228, 236, 247);
+}
+
+.usersite .delete{
+	display:none;
+	margin-left:5px;
+	vertical-align:middle;
+}
+.usersite:hover .delete{
+	display:inline-block;
+}
+
+</style>
+</head>
+<body>
+<div id="container">
+<h2>选项</h2>
+<hr/>
+
+	<div id="left">
+	<h3 style="margin-top:30px;">快捷键：</h3>
+<input id="useshortcut" type="checkbox">启用快捷键</input>
+<br/><br/>
+<input id="ctrl" type="checkbox">Ctrl</input>+<input id="alt" type="checkbox">Alt</input>+<input id="shift" type="checkbox">Shift</input>
++<select id="key" name="key">
+<option value="a">A</option>
+<option value="b">B</option>
+<option value="c">C</option>
+<option value="d">D</option>
+<option value="e">E</option>
+<option value="f">F</option>
+<option value="g">G</option>
+<option value="h">H</option>
+<option value="i">I</option>
+<option value="j">J</option>
+<option value="k">K</option>
+<option value="l">L</option>
+<option value="m">M</option>
+<option value="n">N</option>
+<option value="o">O</option>
+<option value="p">P</option>
+<option value="q">Q</option>
+<option value="r">R</option>
+<option value="s" selected="selected">S</option>
+<option value="t">T</option>
+<option value="u">U</option>
+<option value="v">V</option>
+<option value="w">W</option>
+<option value="x">X</option>
+<option value="y">Y</option>
+<option value="z">Z</option>
+</select>
+<!--  
+<h3 style="margin-top:30px;">选择谷歌：</h3>
+<br/><br/>
+<input id=".com" type="radio" name="google">谷歌全球</input>
+<input id=".com.hk" type="radio" name="google">谷歌香港</input>
+<input id="part_baidubing" type="radio" name="part">百度&lt=&gt必应</input>
+<input id="part_baidugoogle" type="radio" name="part">百度&lt=&gt谷歌</input>
+<input id="part_binggoogle" type="radio" name="part">必应&lt=&gt谷歌</input>
+
+-->
+<h3 style="margin-top:30px;">切换设置：</h3>
+<div id="ways"></div>
+	</div><div id="right">
+	<h3 style="margin-top:30px;">自定义网站：</h3>
+	已添加网站：<br/>
+	<div id="usersites"></div>
+	<h3 style="margin-top:10px;">添加网站：</h3>
+	<div id="addsite">
+		<span class="tip">名称：</span><input id="site_name" type="text" placeholder="如：百度"></input><br/>
+		<span class="tip">网站主页：</span><input id="site_home" type="text" placeholder="如：http://www.baidu.com/"></input><br/>
+		<span class="tip">搜索地址：</span><input id="site_searchurl" type="text" placeholder="关键字用%s代替，如：http://www.baidu.com/s?wd=%s"></input><br/>
+		<!--  <input type="file" id="custom_icon_input" style="margin:0; width:0; height: 0; opacity: 0;">
+		<div style="height:1px;"></div>
+		<button id="custom_select_icon" style="vertical-align: top;">选择图标</button><div id="custom_preview" class="icon_preview"></div><br/>
+		-->
+		<button id="site_add">完成添加</button> <span class="add-tip"></span>
+	</div>
+	</div>
+	
+</div>
+<button id="save">保存</button>
+
+<script src="jquery.min.js"></script>
+<script src="options.js"></script>
+</body>
+</html>
