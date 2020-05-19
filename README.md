@@ -6,7 +6,7 @@
 
 ## 下载地址
  [Firefox Addon](https://addons.mozilla.org/zh-CN/firefox/addon/%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E6%90%9C%E7%B4%A2/)
- [Chrome 提交几次都未通过审核]（https://chrome.google.com/webstore）
+ [Chrome 提交几次都未通过审核](https://chrome.google.com/webstore）
  
 后续打算有空更新一下代码。去掉jQuery。增加同步。
 
