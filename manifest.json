@@ -18,7 +18,7 @@
       "default_icon": "icon128.png",
       "default_title": "一键切换"
    },
-   "permissions": [ "tabs", "activeTab", "storage" , "*://*/*", "chrome://favicon/"],
+   "permissions": [ "tabs", "activeTab", "storage" , "*://*/*", "chrome://favicon/" ],
    "short_name": "一键切换",
    "version": "2.0.8"
 }
