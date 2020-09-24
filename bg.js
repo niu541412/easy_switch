@@ -131,7 +131,7 @@ var Google = new SearchSite({
 	name : '谷歌',
 	icon : 'icon/google.png',
 	home : 'https://www.google.com/',
-	searchUrl : 'https://www.google.com/webhp?hl=zh-CN#newwindow=1&hl=zh-CN&q=%s',
+	searchUrl : 'https://www.google.com/search?newwindow=1&hl=zh-CN&q=%s',
 	matches:['//[\\w]*\\.google\\.'],
 	exclude : [ 'chrome\\.google\\.com' ],
 	types : [ {
