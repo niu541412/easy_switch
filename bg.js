@@ -151,9 +151,9 @@ var Youku = new SearchSite({
 var Douyin = new SearchSite({
   name: '抖音视频',
   icon: 'icon/douyin.png',
-  home: 'http://www.douyin.com/',
-  searchUrl: 'http://www.soku.com/v?keyword=%s',
-  matches: ['www\\.soku\\.com']
+  home: 'https://www.douyin.com/',
+  searchUrl: 'https://www.douyin.com/search/%s',
+  matches: ['www\\.douyin\\.com']
 });
 var BaiduVideo = new SearchSite({
   name: '百度视频',
