@@ -20,5 +20,5 @@
   },
   "permissions": ["tabs", "activeTab", "storage", "*://*/*", "chrome://favicon/"],
   "short_name": "一键切换",
-  "version": "2.0.9"
+  "version": "2.1.0"
 }
