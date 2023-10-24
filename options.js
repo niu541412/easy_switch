@@ -87,14 +87,14 @@ function initUserSites() {
   $('#usersites').html('');
   var html = '';
   var userSites = Sites.getUserSites();
-  userSites.forEach(function(userSite) {
+  userSites.forEach(function (userSite) {
     var one = $('<div class="usersite"><img class="icon" src="' + userSite.getIcon() + '"/>' + userSite.getName() + '</div>');
     var del = $('<img data-site="' + userSite.getName() + '" class="delete" src="delete.png"></img>');
     one.append(del);
     $('#usersites').append(one);
   });
   //$('#usersites').delegate('.delete','click',function(){
-  $('#usersites').on('click', '.delete', function() {
+  $('#usersites').on('click', '.delete', function () {
 
     var siteName = $(this).attr('data-site');
     var r = confirm('删除自定义网站:' + siteName);
@@ -135,9 +135,9 @@ function addUserSite() {
       method: "HEAD",
       async: false,
       url: "https://www.google.com"
-    }).done(function() {
+    }).done(function () {
       g_connection = true;
-    }).fail(function() {
+    }).fail(function () {
       g_connection = false;
     })
     favicon_url = (g_connection && ('https://www.google.com/s2/favicons?domain_url=' + home) || ('https://www.google.cn/s2/favicons?domain_url=' + home));

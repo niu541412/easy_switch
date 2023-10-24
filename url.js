@@ -1,4 +1,4 @@
-var parseUrl = function(url) {
+var parseUrl = function (url) {
   var a = document.createElement('a');
   a.href = url;
   return {
@@ -9,7 +9,7 @@ var parseUrl = function(url) {
     path: a.pathname.replace(/^([^\/])/, '/$1'),
     segments: a.pathname.replace(/^\//, '').split('/'),
     query: a.search,
-    params: (function() {
+    params: (function () {
       var ret = {},
         seg = a.search.replace(/^\?/, '').split('&'),
         len = seg.length,
@@ -28,11 +28,11 @@ var parseUrl = function(url) {
   };
 };
 // http://www.baidu.com/ -> www.baidu.com
-var getHost = function(url) {
+var getHost = function (url) {
   return url.match(/\/\/([\w\.]*)/)[1];
 };
 // http://www.baidu.com/ -> baidu
-var getSiteId = function(url) {
+var getSiteId = function (url) {
   var m = url.match(/(\w*)\.(com|cn)(\W|$)/);
   return m && m[1];
 };

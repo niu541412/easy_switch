@@ -1,24 +1,29 @@
 {
-  "background": {
-    "page": "background.html"
-  },
-  "content_scripts": [],
-  "content_security_policy": "script-src 'self' ; object-src 'self'",
-  "description": "网站间的快速切换，保留搜索内容继续搜索。移植自Chrome同名扩展，原扩展已下架，并添加同步，以及更多默认搜索网站。",
-  "icons": {
-    "128": "icon128.png"
-  },
-  "manifest_version": 2,
-  "name": "一键切换",
-  "options_ui": {
-    "page": "options.html",
-    "open_in_tab": true
-  },
-  "page_action": {
-    "default_icon": "icon128.png",
-    "default_title": "一键切换"
-  },
-  "permissions": ["tabs", "activeTab", "storage", "*://*/*", "chrome://favicon/"],
-  "short_name": "一键切换",
-  "version": "2.1.0"
+   "background": {
+      "page": "background.html"
+   },
+   "content_scripts": [],
+   "content_security_policy": "script-src 'self' ; object-src 'self'",
+   "description": "网站间的快速切换，保留搜索内容继续搜索。移植自Chrome同名扩展，原扩展已下架，并添加同步，以及更多默认搜索网站。",
+   "icons": {
+      "128": "icon128.png"
+   },
+   "manifest_version": 2,
+   "name": "一键切换",
+   "options_ui": {
+      "open_in_tab": true,
+      "page": "options.html"
+   },
+   "page_action": {
+      "default_icon": "icon128.png",
+      "default_title": "一键切换"
+   },
+   "permissions": [
+      "tabs",
+      "activeTab",
+      "*://*/*",
+      "chrome://favicon/"
+   ],
+   "short_name": "一键切换",
+   "version": "2.1.1"
 }

@@ -1,11 +1,11 @@
-(function() {
+(function () {
   var OOP = {};
   window.OOP = OOP;
-  var isNumber = function(obj) {
+  var isNumber = function (obj) {
     return !!(obj === 0 || (obj && obj.toExponential && obj.toFixed));
   };
   var breaker = {};
-  var each = function(obj, iterator, context) {
+  var each = function (obj, iterator, context) {
     if (obj == null)
       return;
     if (Array.prototype.nativeForEach &&
@@ -25,8 +25,8 @@
       }
     }
   };
-  var extend = function(obj) {
-    each(Array.prototype.slice.call(arguments, 1), function(source) {
+  var extend = function (obj) {
+    each(Array.prototype.slice.call(arguments, 1), function (source) {
       for (var prop in source)
         obj[prop] = source[prop];
     });
@@ -36,11 +36,11 @@
   /**
    * 供继承使用
    */
-  var ctor = function() {};
+  var ctor = function () { };
   /**
    * OOP继承
    */
-  OOP.Class = function(parent, protoProps, staticProps) {
+  OOP.Class = function (parent, protoProps, staticProps) {
     var child;
     // The constructor function for the new subclass is either defined by
     // you
@@ -49,7 +49,7 @@
     if (protoProps && protoProps.hasOwnProperty('constructor')) {
       child = protoProps.constructor;
     } else {
-      child = function() {
+      child = function () {
         return parent.apply(this, arguments);
       };
     }
@@ -78,10 +78,10 @@
 
 window.Class = OOP.Class;
 window.Extend = OOP.Extend;
-window.ObjectClass = function() {};
+window.ObjectClass = function () { };
 window.ObjectClass.prototype = {
-  constructor: function() {},
-  equals: function(that) {
+  constructor: function () { },
+  equals: function (that) {
     return this === that;
   }
 };

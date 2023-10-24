@@ -9,11 +9,11 @@ function TimeLimitTask(callback) {
   this.finished = false;
   this.realCallback = callback;
   var self = this;
-  window.setTimeout(function() {
+  window.setTimeout(function () {
     self.callback();
   }, 200);
 }
-TimeLimitTask.prototype.callback = function(selection) {
+TimeLimitTask.prototype.callback = function (selection) {
   if (this.finished)
     return;
   this.realCallback.apply(window, arguments);
@@ -54,12 +54,12 @@ function getKeywordFromUrl(url, q) {
     m = url.match(/[\/\-?&#!_](?:\w+-?\w+)[=_\/\-]([^&\/?=]*)/);
   } else if (q) {
     m = url.match(new RegExp('\\W(?:' + q + '\\W)([^&\\/?=]*)'));
-  }!m && (m = url.match(/[\/\-?&#!_](?:q|p|keyword|keywords|word|wd|kw|key|query|wiki)[=_\/\-]([^&\/?=]*)/));
+  } !m && (m = url.match(/[\/\-?&#!_](?:q|p|keyword|keywords|word|wd|kw|key|query|wiki)[=_\/\-]([^&\/?=]*)/));
   !m && (m = url.match(/[\/\-?&#!_](?:search\/)([^&\/?=]*)/));
   if (m) {
     try {
       return decodeURIComponent(m[1]);
-    } catch (err) {};
+    } catch (err) { };
   }
   return '';
 }
@@ -70,8 +70,8 @@ function getKeyword(callback, q) {
   chrome.tabs.query({
     currentWindow: true,
     active: true
-  }, function(tab) {
-    getInput(function(keyword) {
+  }, function (tab) {
+    getInput(function (keyword) {
       //bkg.console.log("url : "+tab[0].url);
       if (q == 'wiki') {
         callback(getKeywordFromUrl(tab[0].url, q));
@@ -85,7 +85,7 @@ function getKeyword(callback, q) {
   });
 }
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action == "getinput") {
     window._inputTask && window._inputTask.callback(request.value);
     window._inputTask = null;

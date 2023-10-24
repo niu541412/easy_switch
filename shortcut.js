@@ -1,4 +1,4 @@
-(function() {
+(function () {
   if (window.__shortcut__) {
     return;
   }
