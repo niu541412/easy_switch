@@ -10,7 +10,7 @@
  [Chrome 商店](https://chrome.google.com/webstore/detail/pchjdhcdlgghofamcpncdlhdonbeaplk)
 
  [Edge商店](https://microsoftedge.microsoft.com/addons/detail/jijkhdficgnnikdijnkienfnmfbolmpb)
- 由于本人不是用Edge，所以不保证Edge版本可以正常工作，仅保持和另外两个版本代码一致。
+ 由于本人不用Edge，所以不保证Edge版本可以正常工作，仅保持和另外两个版本代码一致。
 
 后续打算
 1. 提升到manifest v3
