@@ -170,10 +170,10 @@ function addUserSite() {
       }
     } catch (e) {
       g_connection = false;
-    } 
-    favicon_url = (g_connection && ('https://www.google.com/s2/favicons?domain_url=' + home) || ('https://www.google.cn/s2/favicons?domain_url=' + home));
+    }
+    favicon_url = (g_connection && ('https://www.google.com/s2/favicons?sz=32&domain_url=' + home) || ('https://www.google.cn/s2/favicons?sz=32&domain_url=' + home));
   } else {
-    favicon_url = 'chrome://favicon/' + home
+    favicon_url = 'chrome://favicon/size/32@1x/' + home
   }
   //alert(favicon_url);*/
   var ps = {
@@ -247,3 +247,22 @@ function initWays() {
   byId('ways').innerHTML = html
 }
 document.addEventListener("DOMContentLoaded", init, false);
+//获取canvas元素
+var cvs = document.getElementById("cvs");
+//创建image对象
+var imgObj = new Image();
+imgObj.src = "icon/bing.png";
+//待图片加载完后，将其显示在canvas上
+cvs.style["border-radius"]="7.5px";
+imgObj.onload = function () {
+  var ctx = cvs.getContext('2d');
+  ctx.fillStyle = "black";
+  ctx.globalAlpha = 0.9;
+  // ctx.fillRect(4, 18, 28, 14);
+  ctx.fillRect(0, 16, 32, 16);
+  ctx.globalAlpha = 1;
+  // ctx.fillRect(0, 18, 4, 18);
+  // ctx.fillRect(32, 18, 4, 18);
+  // ctx.fillRect(0, 32, 36, 4);
+  ctx.drawImage(this, 2, 2, 28, 30);
+}

@@ -7,10 +7,10 @@
 移植自Chrome同名扩展，原扩展已下架，未联系上原作者。
 
 ## 下载地址
- [Firefox Addon](https://addons.mozilla.org/zh-CN/firefox/addon/%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E6%90%9C%E7%B4%A2/)
  [Chrome 商店](https://chrome.google.com/webstore/detail/pchjdhcdlgghofamcpncdlhdonbeaplk)
- [Edge商店](https://microsoftedge.microsoft.com/addons/detail/jijkhdficgnnikdijnkienfnmfbolmpb)
- 由于本人不用Edge，所以不保证Edge版本可以正常工作，仅保持和另外两个版本代码一致。
+ ，[Firefox Addon](https://addons.mozilla.org/zh-CN/firefox/addon/%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E6%90%9C%E7%B4%A2/)
+ ，[Edge商店](https://microsoftedge.microsoft.com/addons/detail/jijkhdficgnnikdijnkienfnmfbolmpb)
+> 由于本人不用Edge，所以不保证Edge版本可以正常工作，仅保持和另外两个版本代码一致。
 
 后续打算
 1. 提升到manifest v3
