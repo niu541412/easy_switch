@@ -38,8 +38,8 @@
 			border-radius: 8px;
 		}
 
-		#left,
-		#right {
+		#block1,
+		#block2 {
 			vertical-align: top;
 			display: inline-block;
 			width: 50%;
@@ -105,13 +105,14 @@
 		<h2>选项</h2>
 		<hr />
 
-		<div id="left">
+		<div id="block1">
 			<h3 style="margin-top:30px;">快捷键：</h3>
 			<input id="useshortcut" type="checkbox">启用快捷键</input>
 			<br /><br />
-			<input id="ctrl" type="checkbox">Ctrl</input>+<input id="alt" type="checkbox">Alt</input>+<input id="shift"
-				type="checkbox">Shift</input>
-			+<select id="key" name="key">
+			<input id="ctrl" type="checkbox">Ctrl</input>+
+			<input id="alt" type="checkbox">Alt</input>+
+			<input id="shift" type="checkbox">Shift</input>+
+			<select id="key" name="key">
 				<option value="a">A</option>
 				<option value="b">B</option>
 				<option value="c">C</option>
@@ -139,20 +140,21 @@
 				<option value="y">Y</option>
 				<option value="z">Z</option>
 			</select>
-			<!--
-<h3 style="margin-top:30px;">选择谷歌：</h3>
-<br/><br/>
-<input id=".com" type="radio" name="google">谷歌全球</input>
-<input id=".com.hk" type="radio" name="google">谷歌香港</input>
-<input id="part_baidubing" type="radio" name="part">百度&lt=&gt必应</input>
-<input id="part_baidugoogle" type="radio" name="part">百度&lt=&gt谷歌</input>
-<input id="part_binggoogle" type="radio" name="part">必应&lt=&gt谷歌</input>
-
--->
+			<h3 style="margin-top:30px;">新标签页打开：</h3>
+			<input id="newtab" type="checkbox">是</input>
+			<!-- <h3 style="margin-top:30px;">选择谷歌：</h3>
+			<br /><br />
+			<input id=".com" type="radio" name="google">谷歌全球</input>
+			<input id=".com.hk" type="radio" name="google">谷歌香港</input>
+			<input id="part_baidubing" type="radio" name="part">百度&lt=&gt必应</input>
+			<input id="part_baidugoogle" type="radio" name="part">百度&lt=&gt谷歌</input>
+			<input id="part_binggoogle" type="radio" name="part">必应&lt=&gt谷歌</input> -->
 			<h3 style="margin-top:30px;">切换设置：</h3>
 			<div id="ways"></div>
 		</div>
-		<div id="right">
+
+
+		<div id="block2">
 			<h3 style="margin-top:30px;">自定义网站：</h3>
 			已添加网站：<br />
 			<div id="usersites"></div>
@@ -163,10 +165,10 @@
 					placeholder="如：http://www.baidu.com/"></input><br />
 				<span class="tip">搜索地址：</span><input id="site_searchurl" type="text"
 					placeholder="关键字用%s代替，如：http://www.baidu.com/s?wd=%s"></input><br />
-				<!--  <input type="file" id="custom_icon_input" style="margin:0; width:0; height: 0; opacity: 0;">
-		<div style="height:1px;"></div>
-		<button id="custom_select_icon" style="vertical-align: top;">选择图标</button><div id="custom_preview" class="icon_preview"></div><br/>
-		-->
+				<!-- <input type="file" id="custom_icon_input" style="margin:0; width:0; height: 0; opacity: 0;">
+				<div style="height:1px;"></div>
+				<button id="custom_select_icon" style="vertical-align: top;">选择图标</button>
+				<div id="custom_preview" class="icon_preview"></div><br /> -->
 				<button id="site_add">完成添加</button> <span class="add-tip"></span>
 			</div>
 		</div>
@@ -174,7 +176,6 @@
 	</div>
 	<button id="save">保存</button>
 
-	<script src="jquery.min.js"></script>
 	<script src="options.js"></script>
 </body>
 
