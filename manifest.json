@@ -3,7 +3,7 @@
       "page": "background.html"
    },
    "content_scripts": [],
-   "content_security_policy": "script-src 'self' ; object-src 'self'",
+   "content_security_policy": "script-src 'self' ; object-src 'self'; img-src chrome://favicon;",
    "description": "网站间的快速切换，保留搜索内容继续搜索。移植自Chrome同名扩展，原扩展已下架，并添加同步，以及更多默认搜索网站。",
    "icons": {
       "128": "icon128.png"
@@ -25,5 +25,5 @@
       "chrome://favicon/"
    ],
    "short_name": "一键切换",
-   "version": "2.1.1"
+   "version": "2.3.0"
 }

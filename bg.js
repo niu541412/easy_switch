@@ -491,12 +491,20 @@ var OneClick = Class(ObjectClass, {
     }
     var from = way.getFrom();
     getKeyword(function (keyword) {
-      chrome.tabs.update(tab.id, {
-        url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
-      });
+      if (localStorage.getItem('newtab') == '1') {
+        // open in new tab.
+        chrome.tabs.create({
+          openerTabId: tab.id,
+          url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
+        });
+      } else {
+        chrome.tabs.update(tab.id, {
+          url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
+        });
+      }
     }, from.getQ());
   },
-  // 开始工作
+  // begin work
   start: function () {
     var the = this;
     chrome.tabs.onUpdated.addListener(function (tabId, change) {
