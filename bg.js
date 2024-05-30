@@ -443,12 +443,38 @@ var OneClick = Class(ObjectClass, {
   setShortcut: function (s) {
     localStorage.setItem(('shortcut'), s);
   },
-  // move to an action proxy if necessary;
+  setIogo: function (tab, path) {
+    console.log("setting logo...");
+    var cvs = document.createElement('canvas');
+    var img = document.createElement('img');
+    img.onload = function () {
+      var ctx = cvs.getContext('2d');
+      ctx.globalAlpha = 0.7;
+      var upPath = new Path2D();
+      upPath.roundRect(0, 0, 32, 16, [7.5, 7.5, 0, 0]);
+      ctx.fillStyle = "#fff";
+      ctx.fill(upPath, "evenodd");
+
+      var downPath = new Path2D();
+      downPath.roundRect(0, 16, 32, 16, [0, 0, 7.5, 7.5]);
+      ctx.fillStyle = "#000";
+      ctx.fill(downPath, "evenodd");
+
+      ctx.globalAlpha = 1;
+      ctx.drawImage(img, 2, 2, 28, 28);
+      chrome.pageAction.setIcon({
+        imageData: ctx.getImageData(0, 0, 32, 32),
+        tabId: tab.id
+      });
+    };
+    img.src = path;
+  },
   swichSupport: function (tab, site) {
-    chrome.pageAction.setIcon({
-      tabId: tab.id,
-      path: site.getIcon()
-    });
+    // chrome.pageAction.setIcon({
+    //   tabId: tab.id,
+    //   path: site.getIcon()
+    // });
+    this.setIogo(tab, site.getIcon());
     chrome.pageAction.setTitle({
       tabId: tab.id,
       title: site.getTip()
