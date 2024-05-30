@@ -4,7 +4,7 @@
 </p>
 
 一个浏览器扩展。网站间的快速切换，保留搜索内容继续搜索。
-移植自Chrome同名扩展，原扩展已下架，未联系上原作者。
+移植自Chrome同名扩展，原扩展已下架([备份地址](https://www.crx4chrome.com/extensions/fknieppmhfgnjilnkdeoegocjkijpbfh/))，未联系上原作者。
 由于原作者常年未维护，也无法联系。若有侵权，请联系我删除。
 
 ## 下载地址
