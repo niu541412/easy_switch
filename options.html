@@ -41,12 +41,20 @@
 		#right {
 			vertical-align: top;
 			display: inline-block;
-			width: 80%;
+			/* width: 50%; */
+		}
+
+		#left {
+			width: 55%;
+		}
+
+		#right {
+			width: 40%;
 		}
 
 		.way {
 			display: block;
-			width: 245px;
+			width: 445px;
 			height: 32px;
 			line-height: 32px;
 		}
@@ -65,13 +73,18 @@
 		}
 
 		#addsite .tip {
-			width: 60px;
+			width: 80px;
 			display: inline-block;
 		}
 
 		#addsite input {
 			height: 24px;
-			width: 320px;
+			width: 250px;
+		}
+
+		#site_add {
+			position: relative;
+			left: 25%;
 		}
 
 		.usersite {
@@ -148,11 +161,6 @@
 			<input id="part_baidubing" type="radio" name="part">百度&lt=&gt必应</input>
 			<input id="part_baidugoogle" type="radio" name="part">百度&lt=&gt谷歌</input>
 			<input id="part_binggoogle" type="radio" name="part">必应&lt=&gt谷歌</input> -->
-			<h3 style="margin-top:30px;">切换设置：</h3>
-			<div id="ways"></div>
-		</div>
-
-		<div id="right">
 			<h3 style="margin-top:30px;">自定义网站：</h3>
 			已添加网站：<br />
 			<div id="usersites"></div>
@@ -169,6 +177,12 @@
 					<div id="custom_preview" class="icon_preview"></div><br /> -->
 				<button id="site_add">完成添加</button> <span class="add-tip"></span>
 			</div>
+		</div>
+
+		<div id="right">
+			<h3 style="margin-top:30px;">切换设置：</h3>
+			<div id="ways"></div>
+
 		</div>
 
 	</div>
