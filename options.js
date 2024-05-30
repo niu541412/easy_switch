@@ -190,6 +190,27 @@ function getHost(url) {
   return url.match(/\/\/([\w\.]*)/)[1];
 }
 
+function getFixlengthName(name, namelen) {
+  // namelen: the length if all character are half-width.
+  name += "　".repeat(namelen);
+  var strlen = namelen;
+  var pat = /[\u3000\u2E80-\u2FDF\u3040-\u318F\u31A0-\u31BF\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FFF\uA960-\uA97F\uAC00-\uD7FF]/g
+  // regex from https://www.clanfei.com/2018/04/1760.html , \u3000为全角空格
+  do {
+    var name = name.substring(0, strlen);
+    var cjk_char = name.match(pat);
+    var cjk_count = cjk_char ? cjk_char.length : 0;
+    if (strlen + cjk_count > namelen)
+      strlen--;
+    else if (strlen + cjk_count == namelen)
+      return name;
+    else {
+      name += ' ';
+      return name;
+    }
+  } while (true);
+}
+
 function getToSiteHtml(allSites, from, to) {
   var name = from.getName() + '_to';
   var html = document.createElement('select');
@@ -241,18 +262,10 @@ var Sites = BG.Sites.getInstance();
 function initWays() {
   var allSites = Sites.getAllSites();
   var way;
-  var namelen;
   const waysElement = byId('ways');
   for (var i = 0; i < allSites.length; i++) {
     way = Ways.findWayBySite(allSites[i]);
-    if (/.*[\u4e00-\u9fa5]+.*/.test(allSites[i].getName())) {
-      //alert( "含有中文" );
-      namelen = 5;
-    } else {
-      //alert( "不含中文" );
-      namelen = 8;
-    }
-    var name = ("　").concat(allSites[i].getName(), "　　　　").substring(0, namelen);
+    var name = "　" + getFixlengthName(allSites[i].getName(), 10);
     var wayDiv = getPairSiteHtml(allSites[i].getIcon(), name, getToSiteHtml(allSites, allSites[i], way && way.getTo()));
     waysElement.appendChild(wayDiv);
   }
