@@ -150,15 +150,6 @@ function addUserSite() {
   var favicon_url;
   if (isFirefox) {
     var g_connection;
-    // $.ajax({
-    //   method: "HEAD",
-    //   async: false,
-    //   url: "https://www.google.com"
-    // }).done(function () {
-    //   g_connection = true;
-    // }).fail(function () {
-    //   g_connection = false;
-    // })
     var xhr = new XMLHttpRequest();
     xhr.open('HEAD', 'https://www.google.com', false);
     try {
@@ -221,17 +212,37 @@ function getToSiteHtml(allSites, from, to) {
     if (selectedOption)
       selectedOption.setAttribute('selected', true);
   }
-  return html.outerHTML;
+  return html;
 }
+
+function getPairSiteHtml(SiteIcon, FromName, ToSiteHtml) {
+  const wayDiv = document.createElement('div');
+  wayDiv.classList.add('way');
+  const iconImg = document.createElement('img');
+  iconImg.src = SiteIcon;
+  iconImg.height = 16;
+  iconImg.width = 16;
+  const fromSpan = document.createElement('span');
+  fromSpan.classList.add('from');
+  fromSpan.textContent = FromName;
+  const toSiteHtml = document.createElement('span');
+  toSiteHtml.appendChild(ToSiteHtml);
+  wayDiv.appendChild(iconImg);
+  wayDiv.appendChild(fromSpan);
+  wayDiv.appendChild(document.createTextNode(' ----> '));
+  wayDiv.appendChild(toSiteHtml);
+  return wayDiv
+}
+
 var BG = window.chrome.extension.getBackgroundPage();
 var Ways = BG.Ways.getInstance();
 var Sites = BG.Sites.getInstance();
 
 function initWays() {
   var allSites = Sites.getAllSites();
-  var html = '';
   var way;
   var namelen;
+  const waysElement = byId('ways');
   for (var i = 0; i < allSites.length; i++) {
     way = Ways.findWayBySite(allSites[i]);
     if (/.*[\u4e00-\u9fa5]+.*/.test(allSites[i].getName())) {
@@ -242,27 +253,8 @@ function initWays() {
       namelen = 8;
     }
     var name = ("　").concat(allSites[i].getName(), "　　　　").substring(0, namelen);
-    html += '<div class="way"><img src="' + allSites[i].getIcon() + '" height="16" width="16"/><span class="from">' + name + '</span> ----> ' + getToSiteHtml(allSites, allSites[i], way && way.getTo()) + '</div>';
+    var wayDiv = getPairSiteHtml(allSites[i].getIcon(), name, getToSiteHtml(allSites, allSites[i], way && way.getTo()));
+    waysElement.appendChild(wayDiv);
   }
-  byId('ways').innerHTML = html
 }
 document.addEventListener("DOMContentLoaded", init, false);
-//获取canvas元素
-var cvs = document.getElementById("cvs");
-//创建image对象
-var imgObj = new Image();
-imgObj.src = "icon/bing.png";
-//待图片加载完后，将其显示在canvas上
-cvs.style["border-radius"] = "7.5px";
-imgObj.onload = function () {
-  var ctx = cvs.getContext('2d');
-  ctx.fillStyle = "black";
-  ctx.globalAlpha = 0.9;
-  // ctx.fillRect(4, 18, 28, 14);
-  ctx.fillRect(0, 16, 32, 16);
-  ctx.globalAlpha = 1;
-  // ctx.fillRect(0, 18, 4, 18);
-  // ctx.fillRect(32, 18, 4, 18);
-  // ctx.fillRect(0, 32, 36, 4);
-  ctx.drawImage(this, 2, 2, 28, 30);
-}
