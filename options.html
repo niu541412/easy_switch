@@ -6,28 +6,27 @@
 	<title>一键切换－选项</title>
 	<style type="text/css">
 		#save {
-			padding: 3px 20px;
-			border-width: 0;
-			border-radius: 16px;
-			color: white;
-			cursor: hand;
 			position: relative;
+			display: block;
+			margin: 10px auto;
+			background: linear-gradient(to bottom, #e0e0e0, #bababa);
+			border: 2px solid #888888;
+			border-radius: 10px;
+			box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #aaaaaa,
+				2px 2px 5px rgba(0, 0, 0, 0.3);
+			color: #333333;
+			padding: 5px 25px;
+			/* font-size: 18px; */
+			font-weight: bold;
+			text-shadow: 1px 1px 2px #ffffff;
 			cursor: pointer;
+			transition: box-shadow 0.3s, transform 0.3s;
 		}
 
 		#save:active {
-			left: 1px;
-			top: 1px;
-			padding: 2px 21px 4px 19px;
-		}
-
-		#save {
-			display: block;
-			margin: 10px auto;
-			width: 100px;
-			box-shadow: 0 8px 4px rgba(0, 0, 192, 0.5);
-			background-image: -webkit-gradient(linear, 0% 0%, 0% 90%, from(rgba(0, 0, 80, 0.5)), to(rgba(0, 0, 256, 0.9)));
-			background-image: -moz-linear-gradient(top, rgba(0, 0, 80, 0.5), rgba(0, 0, 256, 0.9));
+			box-shadow: inset 2px 2px 5px #aaaaaa, inset -2px -2px 5px #ffffff,
+				1px 1px 2px rgba(0, 0, 0, 0.3);
+			transform: translateY(2px);
 		}
 
 		#container {
@@ -38,11 +37,11 @@
 			border-radius: 8px;
 		}
 
-		#block1,
-		#block2 {
+		#left,
+		#right {
 			vertical-align: top;
 			display: inline-block;
-			width: 50%;
+			width: 80%;
 		}
 
 		.way {
@@ -107,7 +106,7 @@
 		<h2>选项</h2>
 		<hr />
 
-		<div id="block1">
+		<div id="left">
 			<h3 style="margin-top:30px;">快捷键：</h3>
 			<input id="useshortcut" type="checkbox">启用快捷键</input>
 			<br /><br />
@@ -155,8 +154,7 @@
 			<div id="ways"></div>
 		</div>
 
-
-		<div id="block2">
+		<div id="right">
 			<h3 style="margin-top:30px;">自定义网站：</h3>
 			已添加网站：<br />
 			<div id="usersites"></div>
@@ -168,9 +166,9 @@
 				<span class="tip">搜索地址：</span><input id="site_searchurl" type="text"
 					placeholder="关键字用%s代替，如：http://www.baidu.com/s?wd=%s"></input><br />
 				<!-- <input type="file" id="custom_icon_input" style="margin:0; width:0; height: 0; opacity: 0;">
-				<div style="height:1px;"></div>
-				<button id="custom_select_icon" style="vertical-align: top;">选择图标</button>
-				<div id="custom_preview" class="icon_preview"></div><br /> -->
+					<div style="height:1px;"></div>
+					<button id="custom_select_icon" style="vertical-align: top;">选择图标</button>
+					<div id="custom_preview" class="icon_preview"></div><br /> -->
 				<button id="site_add">完成添加</button> <span class="add-tip"></span>
 			</div>
 		</div>

@@ -7,7 +7,7 @@ function handleSave() {
   saveNewTab();
   // saveGoogle();
   savePart();
-  if (ret) alert('保存成功');
+  alert('保存成功');
 }
 
 function byId(id) {
@@ -44,12 +44,12 @@ function saveNewTab() {
 }
 
 function saveGoogle() {
-  return;
   // deprecated
   if (google_com.checked) localStorage.setItem('google', '.com');
   else localStorage.setItem('google', '.com.hk');
   if (byId('https_google').checked) localStorage.getItem('https_google', 'true');
   else localStorage.setItem('https_google', 'false');
+  return;
 }
 
 function savePart() {
@@ -253,7 +253,7 @@ var cvs = document.getElementById("cvs");
 var imgObj = new Image();
 imgObj.src = "icon/bing.png";
 //待图片加载完后，将其显示在canvas上
-cvs.style["border-radius"]="7.5px";
+cvs.style["border-radius"] = "7.5px";
 imgObj.onload = function () {
   var ctx = cvs.getContext('2d');
   ctx.fillStyle = "black";
