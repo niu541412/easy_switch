@@ -37,7 +37,6 @@ function revierwShortcut_new(shortcut) {
 }
 
 function saveShortcut() {
-  // localStorage.setItem('useshortcut', byId('useshortcut').checked ? '1' : '0');
   chrome.storage.local.set({ 'useshortcut': (byId('useshortcut').checked ? '1' : '0') });
   if (!ctrl.checked && !alt.checked && !shift.checked) {
     alert("请选择控制键(ctrl/alt/shift)");
@@ -48,13 +47,11 @@ function saveShortcut() {
   if (alt.checked) s += "alt+";
   if (shift.checked) s += "shift+";
   s += key.value;
-  // localStorage.setItem('shortcut', s);
   chrome.storage.local.set({ 'shortcut': s });
   return true;
 }
 
 function saveNewTab() {
-  // localStorage.setItem('newtab', byId("newtab").checked ? '1' : '0');
   chrome.storage.local.set({ 'newtab': (byId("newtab").checked ? '1' : '0') });
   return;
 }
@@ -93,13 +90,6 @@ function initShortCut() {
     if (shortcut.indexOf('shift') !== -1) shift.checked = true;
     key.value = shortcut.charAt(shortcut.length - 1);
   })
-  // chrome.storage.local.get("shortcut", (item) => {
-  //   var shortcut = revierwShortcut_new(item.shortcut);
-  //   if (shortcut.indexOf('ctrl') !== -1) ctrl.checked = true;
-  //   if (shortcut.indexOf('alt') !== -1) alt.checked = true;
-  //   if (shortcut.indexOf('shift') !== -1) shift.checked = true;
-  //   key.value = shortcut.charAt(shortcut.length - 1);
-  // })
 }
 
 function init() {
@@ -113,8 +103,6 @@ function init() {
   });
 
   // init newtab switch
-  // var useNewTab = localStorage.getItem('newtab') == '1';
-  // byId('newtab').checked = useNewTab;
   chrome.storage.local.get("newtab", (item) => {
     byId('newtab').checked = item.newtab == '1';
   });
@@ -152,7 +140,6 @@ function initUserSites() {
     })
   });
 
-  //$('#usersites').delegate('.delete','click',function(){
   byId('usersites').addEventListener('click', function (event) {
     if (event.target.classList.contains('delete')) {
       var siteName = event.target.getAttribute('data-site');
@@ -187,8 +174,14 @@ function addUserSiteClick() {
   // 判断是否为firefox
   var isFirefox = typeof InstallTrigger !== 'undefined';
   var favicon_url;
+
+  ico_size = 32;
+  const favicon_url1 = `https://www.google.com/s2/favicons?sz=${ico_size}&domain_url=${home}`;
+  const favicon_url2 = `https://www.google.cn/s2/favicons?sz=${ico_size}&domain_url=${home}`;
+  const favicon_url3 = `chrome://favicon/size/${ico_size}@1x/${home}`;
+
   if (isFirefox) {
-    var g_connection;
+    var g_connection; // check connection to google.
     var xhr = new XMLHttpRequest();
     xhr.open('HEAD', 'https://www.google.com', false);
     try {
@@ -201,9 +194,9 @@ function addUserSiteClick() {
     } catch (e) {
       g_connection = false;
     }
-    favicon_url = (g_connection && ('https://www.google.com/s2/favicons?sz=32&domain_url=' + home) || ('https://www.google.cn/s2/favicons?sz=32&domain_url=' + home));
+    favicon_url = (g_connection && favicon_url1 || favicon_url2);
   } else {
-    favicon_url = 'chrome://favicon/size/32@1x/' + home
+    favicon_url = favicon_url3
   }
   var ps = {
     name: name,

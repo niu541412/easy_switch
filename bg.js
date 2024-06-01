@@ -237,10 +237,6 @@ var Smzdm = new SearchSite({
 
 var Sites = Class(ObjectClass, {
   usersiteskey: 'usersites',
-  // init_old: function () {
-  //   var sysSites = [Baidu, Google, Bing, Taobao, Jingdong, Zhihu, Wiki, BaiduBaike, Bilibili, Douyin, Github, Smzdm, Douban, Youku, Wikiwand];
-  //   this.sites = sysSites.concat(this.getUserSites());
-  // },
   init: function () {
     var sysSites = [Baidu, Google, Bing, Taobao, Jingdong, Zhihu, Wiki, BaiduBaike, Bilibili, Douyin, Github, Smzdm, Douban, Youku, Wikiwand];
     this.getUserSites().then((userSites) => {
@@ -258,16 +254,6 @@ var Sites = Class(ObjectClass, {
     }
     return null;
   },
-  // getUserSites_old: function () {
-  //   var arr, ret = [];
-  //   if (localStorage.getItem(this.usersiteskey)) {// @niu541412
-  //     arr = JSON.parse(localStorage.getItem(this.usersiteskey));// @niu541412
-  //     arr.forEach(function (one) {
-  //       ret.push(new SearchSite(one));
-  //     });
-  //   }
-  //   return ret;
-  // },
   getUserSites: function () {
     return new Promise((resolve, reject) => {
       var arr, ret = [];
@@ -282,20 +268,6 @@ var Sites = Class(ObjectClass, {
       })
     })
   },
-  // addUserSite_old: function (ps) {
-  //   var sites = this.sites;
-  //   for (var i = sites.length - 1; i >= 0; i--) {
-  //     if (sites[i].getName() == ps.name) {
-  //       return false;
-  //     }
-  //   }
-  //   var arr = JSON.parse(localStorage.getItem(this.usersiteskey) || '[]'); // @niu541412
-  //   arr.push(ps);
-  //   localStorage.setItem(this.usersiteskey, JSON.stringify(arr));
-  //   chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
-  //   this.sites.push(new SearchSite(ps));
-  //   return true;
-  // },
   addUserSite: function (ps) {
     var sites = this.sites;
     for (var i = sites.length - 1; i >= 0; i--) {
@@ -311,25 +283,6 @@ var Sites = Class(ObjectClass, {
     })
     return true;
   },
-  // removeUserSite_old: function (ps) {
-  //   var name = ps.name || ps;
-  //   var sites = this.sites,
-  //     i;
-  //   for (i = sites.length - 1; i >= 0; i--) {
-  //     if (sites[i].getName() == name) {
-  //       sites.splice(i, 1);
-  //     }
-  //   }
-  //   var arr = JSON.parse(localStorage.getItem(this.usersiteskey) || '[]'); // @niu541412
-  //   // var arr = JSON.parse(chrome.storage.local.get(this.usersiteskey) || '[]');
-  //   for (i = arr.length - 1; i >= 0; i--) {
-  //     if (arr[i].name == name) {
-  //       arr.splice(i, 1);
-  //     }
-  //   }
-  //   localStorage.setItem(this.usersiteskey, JSON.stringify(arr));
-  //   chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
-  // },
   removeUserSite: function (ps) {
     var name = ps.name || ps;
     var sites = this.sites,
@@ -383,42 +336,6 @@ var Way = Class(ObjectClass, {
 
 var Ways = Class(ObjectClass, {
   savekey: 'ways',
-  // init_old: function () {
-  //   if (localStorage.getItem(this.savekey)) {// @niu541412
-  //     this.loadWays();// @niu541412
-  //     return;
-  //   }
-
-  //   this.ways = [];
-
-  //   // actually part2 does not take effect now.
-  //   switch (localStorage.getItem('part2')) {
-  //     // switch (chrome.storage.local.get('part2')) {
-  //     case 'part_binggoogle':
-  //       this.addDualWay(Bing, Google);
-  //       this.addWay(Baidu, Google);
-  //       break;
-  //     case 'part_baidugoogle':
-  //       this.addDualWay(Baidu, Google);
-  //       this.addWay(Bing, Google);
-  //       break;
-  //     case 'part_baidubing':
-  //       this.addDualWay(Baidu, Google);
-  //       this.addWay(Bing, Google);
-  //       break;
-  //     default:
-  //       this.addWay(Baidu, Google);
-  //       this.addWay(Google, Bing);
-  //       this.addWay(Bing, Baidu);
-  //   }
-  //   this.addDualWay(Taobao, Jingdong);
-  //   this.addDualWay(Douyin, Bilibili);
-  //   this.addDualWay(BaiduBaike, Wiki);
-  //   this.addDualWay(Zhihu, Douban);
-  //   this.addWay(Github, Google);
-  //   this.addWay(Smzdm, Jingdong);
-  //   this.addWay(Wikiwand, BaiduBaike);
-  // },
   init: function () {
     chrome.storage.local.get(this.savekey, (item) => {
       if (item[this.savekey]) {
@@ -456,23 +373,11 @@ var Ways = Class(ObjectClass, {
       this.addWay(Wikiwand, BaiduBaike);
     })
   },
-
   saveWays: function (waysArray) {
     chrome.storage.local.set({ [this.savekey]: JSON.stringify(waysArray) }, () => {
       this.loadWays();
     });
   },
-  // loadWays_old: function () {
-  //   this.ways = [];
-  //   var warr = JSON.parse(localStorage.getItem(this.savekey));// @niu541412
-  //   var sites = Sites.getInstance();
-  //   var the = this;
-  //   warr.forEach(function (one) {
-  //     if (one.from && one.to) {
-  //       the.addWay(sites.getSiteByName(one.from), sites.getSiteByName(one.to));
-  //     }
-  //   });
-  // },
   loadWays: function () {
     this.ways = [];
     var sites = Sites.getInstance();
@@ -550,9 +455,6 @@ var OneClick = Class(ObjectClass, {
   updateConfig: function () {
     this.ways.init();
   },
-  // getShortcut_old: function () {
-  //   return localStorage.getItem('shortcut') || 'alt+s';
-  // },
   getShortcut: function () {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get('shortcut', item => {
@@ -565,6 +467,7 @@ var OneClick = Class(ObjectClass, {
     chrome.storage.local.set({ 'shortcut': s });
   },
   setIogo: function (tab, path) {
+    // 给按钮增加个背景，防止和其他扩展图标一样分不清。
     // console.log("setting logo...");
     var cvs = document.createElement('canvas');
     var img = document.createElement('img');
@@ -599,10 +502,6 @@ var OneClick = Class(ObjectClass, {
     img.src = path;
   },
   swichSupport: function (tab, site) {
-    // chrome.pageAction.setIcon({
-    //   tabId: tab.id,
-    //   path: site.getIcon()
-    // });
     this.setIogo(tab, site.getIcon());
     chrome.pageAction.setTitle({
       tabId: tab.id,
@@ -611,11 +510,6 @@ var OneClick = Class(ObjectClass, {
     chrome.pageAction.show(tab.id);
     // shortcut support
     try {
-      // if (localStorage.getItem('useshortcut') !== '0') {
-      //   chrome.tabs.executeScript(tab.id, {
-      //     file: "shortcut.js"
-      //   });
-      // }
       chrome.storage.local.get('useshortcut', (item) => {
         if (item.useshotcut !== '0') {
           chrome.tabs.executeScript(tab.id, {
@@ -630,7 +524,7 @@ var OneClick = Class(ObjectClass, {
       the = this,
       way;
     if (url.substr(0, 4) != 'http') {
-      // no need to hide,chrome will hide it by default when update
+      // no need to hide, chrome will hide it by default when update
       // chrome.pageAction.hide(tab.id);
       return;
     }
@@ -653,18 +547,6 @@ var OneClick = Class(ObjectClass, {
     }
     var from = way.getFrom();
     getKeyword(function (keyword) {
-      // if (localStorage.getItem('newtab') == '1') {
-      //   // if (chrome.storage.local.get('newtab') == '1') {
-      //   // open in new tab.
-      //   chrome.tabs.create({
-      //     openerTabId: tab.id,
-      //     url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
-      //   });
-      // } else {
-      //   chrome.tabs.update(tab.id, {
-      //     url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
-      //   });
-      // }
       chrome.storage.local.get('newtab', (item) => {
         if (item.newtab == '1') {
           chrome.tabs.create({
@@ -695,11 +577,6 @@ var OneClick = Class(ObjectClass, {
     chrome.runtime.onMessage.addListener(function (req, sender, res) {
       if (req.action === "shortcut") {
         var s = req.value;
-        // if (the.getShortcut().toLowerCase() == s) {
-        //   chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-        //     the.switchAction(tab[0]);
-        //   });
-        // }
         the.getShortcut().then((result) => {
           console.log(result);
           if (result == s) {
@@ -708,13 +585,6 @@ var OneClick = Class(ObjectClass, {
             })
           }
         })
-        // chrome.storage.local.get('shortcut', (item) => {
-        //   if (item.shortcut.toLowerCase() == s) {
-        //     chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-        //       the.switchAction(tab[0]);
-        //     })
-        //   }
-        // })
       }
     })
   }
