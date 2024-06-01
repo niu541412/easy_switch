@@ -237,9 +237,15 @@ var Smzdm = new SearchSite({
 
 var Sites = Class(ObjectClass, {
   usersiteskey: 'usersites',
+  // init_old: function () {
+  //   var sysSites = [Baidu, Google, Bing, Taobao, Jingdong, Zhihu, Wiki, BaiduBaike, Bilibili, Douyin, Github, Smzdm, Douban, Youku, Wikiwand];
+  //   this.sites = sysSites.concat(this.getUserSites());
+  // },
   init: function () {
     var sysSites = [Baidu, Google, Bing, Taobao, Jingdong, Zhihu, Wiki, BaiduBaike, Bilibili, Douyin, Github, Smzdm, Douban, Youku, Wikiwand];
-    this.sites = sysSites.concat(this.getUserSites());
+    this.getUserSites().then((userSites) => {
+      this.sites = sysSites.concat(userSites);
+    })
   },
   getAllSites: function () {
     return this.sites;
@@ -252,16 +258,44 @@ var Sites = Class(ObjectClass, {
     }
     return null;
   },
+  // getUserSites_old: function () {
+  //   var arr, ret = [];
+  //   if (localStorage.getItem(this.usersiteskey)) {// @niu541412
+  //     arr = JSON.parse(localStorage.getItem(this.usersiteskey));// @niu541412
+  //     arr.forEach(function (one) {
+  //       ret.push(new SearchSite(one));
+  //     });
+  //   }
+  //   return ret;
+  // },
   getUserSites: function () {
-    var arr, ret = [];
-    if (localStorage.getItem(this.usersiteskey)) {
-      arr = JSON.parse(localStorage.getItem(this.usersiteskey));
-      arr.forEach(function (one) {
-        ret.push(new SearchSite(one));
-      });
-    }
-    return ret;
+    return new Promise((resolve, reject) => {
+      var arr, ret = [];
+      chrome.storage.local.get([this.usersiteskey], item => {
+        if (item[this.usersiteskey]) {
+          arr = JSON.parse(item[this.usersiteskey]);
+          arr.forEach((one) => {
+            ret.push(new SearchSite(one));
+          })
+        }
+        resolve(ret);
+      })
+    })
   },
+  // addUserSite_old: function (ps) {
+  //   var sites = this.sites;
+  //   for (var i = sites.length - 1; i >= 0; i--) {
+  //     if (sites[i].getName() == ps.name) {
+  //       return false;
+  //     }
+  //   }
+  //   var arr = JSON.parse(localStorage.getItem(this.usersiteskey) || '[]'); // @niu541412
+  //   arr.push(ps);
+  //   localStorage.setItem(this.usersiteskey, JSON.stringify(arr));
+  //   chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
+  //   this.sites.push(new SearchSite(ps));
+  //   return true;
+  // },
   addUserSite: function (ps) {
     var sites = this.sites;
     for (var i = sites.length - 1; i >= 0; i--) {
@@ -269,12 +303,33 @@ var Sites = Class(ObjectClass, {
         return false;
       }
     }
-    var arr = JSON.parse(localStorage.getItem(this.usersiteskey) || '[]');
-    arr.push(ps);
-    localStorage.setItem(this.usersiteskey, JSON.stringify(arr));
-    this.sites.push(new SearchSite(ps));
+    chrome.storage.local.get(this.usersiteskey, item => {
+      var arr = JSON.parse(item[this.usersiteskey] || '[]');
+      arr.push(ps);
+      chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
+      this.sites.push(new SearchSite(ps));
+    })
     return true;
   },
+  // removeUserSite_old: function (ps) {
+  //   var name = ps.name || ps;
+  //   var sites = this.sites,
+  //     i;
+  //   for (i = sites.length - 1; i >= 0; i--) {
+  //     if (sites[i].getName() == name) {
+  //       sites.splice(i, 1);
+  //     }
+  //   }
+  //   var arr = JSON.parse(localStorage.getItem(this.usersiteskey) || '[]'); // @niu541412
+  //   // var arr = JSON.parse(chrome.storage.local.get(this.usersiteskey) || '[]');
+  //   for (i = arr.length - 1; i >= 0; i--) {
+  //     if (arr[i].name == name) {
+  //       arr.splice(i, 1);
+  //     }
+  //   }
+  //   localStorage.setItem(this.usersiteskey, JSON.stringify(arr));
+  //   chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
+  // },
   removeUserSite: function (ps) {
     var name = ps.name || ps;
     var sites = this.sites,
@@ -284,13 +339,15 @@ var Sites = Class(ObjectClass, {
         sites.splice(i, 1);
       }
     }
-    var arr = JSON.parse(localStorage.getItem(this.usersiteskey) || '[]');
-    for (i = arr.length - 1; i >= 0; i--) {
-      if (arr[i].name == name) {
-        arr.splice(i, 1);
+    chrome.storage.local.get(this.usersiteskey, item => {
+      var arr = JSON.parse(item[this.usersiteskey] || '[]');
+      for (i = arr.length - 1; i >= 0; i--) {
+        if (arr[i].name == name) {
+          arr.splice(i, 1);
+        }
       }
-    }
-    localStorage.setItem(this.usersiteskey, JSON.stringify(arr));
+      chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
+    })
   }
 }, {
   getInstance: function () {
@@ -326,52 +383,108 @@ var Way = Class(ObjectClass, {
 
 var Ways = Class(ObjectClass, {
   savekey: 'ways',
+  // init_old: function () {
+  //   if (localStorage.getItem(this.savekey)) {// @niu541412
+  //     this.loadWays();// @niu541412
+  //     return;
+  //   }
+
+  //   this.ways = [];
+
+  //   // actually part2 does not take effect now.
+  //   switch (localStorage.getItem('part2')) {
+  //     // switch (chrome.storage.local.get('part2')) {
+  //     case 'part_binggoogle':
+  //       this.addDualWay(Bing, Google);
+  //       this.addWay(Baidu, Google);
+  //       break;
+  //     case 'part_baidugoogle':
+  //       this.addDualWay(Baidu, Google);
+  //       this.addWay(Bing, Google);
+  //       break;
+  //     case 'part_baidubing':
+  //       this.addDualWay(Baidu, Google);
+  //       this.addWay(Bing, Google);
+  //       break;
+  //     default:
+  //       this.addWay(Baidu, Google);
+  //       this.addWay(Google, Bing);
+  //       this.addWay(Bing, Baidu);
+  //   }
+  //   this.addDualWay(Taobao, Jingdong);
+  //   this.addDualWay(Douyin, Bilibili);
+  //   this.addDualWay(BaiduBaike, Wiki);
+  //   this.addDualWay(Zhihu, Douban);
+  //   this.addWay(Github, Google);
+  //   this.addWay(Smzdm, Jingdong);
+  //   this.addWay(Wikiwand, BaiduBaike);
+  // },
   init: function () {
-    if (localStorage.getItem(this.savekey)) {
-      this.loadWays();
-      return;
-    }
-    this.ways = [];
-    switch (localStorage.getItem('part2')) {
-      case 'part_binggoogle':
-        this.addDualWay(Bing, Google);
-        this.addWay(Baidu, Google);
-        break;
-      case 'part_baidugoogle':
-        this.addDualWay(Baidu, Google);
-        this.addWay(Bing, Google);
-        break;
-      case 'part_baidubing':
-        this.addDualWay(Baidu, Google);
-        this.addWay(Bing, Google);
-        break;
-      default:
-        this.addWay(Baidu, Google);
-        this.addWay(Google, Bing);
-        this.addWay(Bing, Baidu);
-    }
-    this.addDualWay(Taobao, Jingdong);
-    this.addDualWay(Douyin, Bilibili);
-    this.addDualWay(BaiduBaike, Wiki);
-    this.addDualWay(Zhihu, Douban);
-    this.addWay(Github, Google);
-    this.addWay(Smzdm, Jingdong);
-    this.addWay(Wikiwand, BaiduBaike);
+    chrome.storage.local.get(this.savekey, (item) => {
+      if (item[this.savekey]) {
+        this.loadWays();
+        return;
+      }
+      this.ways = [];
+      // actually part2 does not take effect now.
+      chrome.storage.local.get('part2', item => {
+        switch (item.part2) {
+          case 'part_binggoogle':
+            this.addDualWay(Bing, Google);
+            this.addWay(Baidu, Google);
+            break;
+          case 'part_baidugoogle':
+            this.addDualWay(Baidu, Google);
+            this.addWay(Bing, Google);
+            break;
+          case 'part_baidubing':
+            this.addDualWay(Baidu, Google);
+            this.addWay(Bing, Google);
+            break;
+          default:
+            this.addWay(Baidu, Google);
+            this.addWay(Google, Bing);
+            this.addWay(Bing, Baidu);
+        }
+      })
+      this.addDualWay(Taobao, Jingdong);
+      this.addDualWay(Douyin, Bilibili);
+      this.addDualWay(BaiduBaike, Wiki);
+      this.addDualWay(Zhihu, Douban);
+      this.addWay(Github, Google);
+      this.addWay(Smzdm, Jingdong);
+      this.addWay(Wikiwand, BaiduBaike);
+    })
   },
+
   saveWays: function (waysArray) {
-    localStorage.setItem(this.savekey, JSON.stringify(waysArray));
-    this.loadWays();
+    chrome.storage.local.set({ [this.savekey]: JSON.stringify(waysArray) }, () => {
+      this.loadWays();
+    });
   },
+  // loadWays_old: function () {
+  //   this.ways = [];
+  //   var warr = JSON.parse(localStorage.getItem(this.savekey));// @niu541412
+  //   var sites = Sites.getInstance();
+  //   var the = this;
+  //   warr.forEach(function (one) {
+  //     if (one.from && one.to) {
+  //       the.addWay(sites.getSiteByName(one.from), sites.getSiteByName(one.to));
+  //     }
+  //   });
+  // },
   loadWays: function () {
     this.ways = [];
-    var warr = JSON.parse(localStorage.getItem(this.savekey));
     var sites = Sites.getInstance();
     var the = this;
-    warr.forEach(function (one) {
-      if (one.from && one.to) {
-        the.addWay(sites.getSiteByName(one.from), sites.getSiteByName(one.to));
-      }
-    });
+    chrome.storage.local.get([this.savekey], (item) => {
+      var warr = JSON.parse(item[this.savekey]);
+      warr.forEach(function (one) {
+        if (one.from && one.to) {
+          the.addWay(sites.getSiteByName(one.from), sites.getSiteByName(one.to));
+        }
+      });
+    })
   },
   findWay: function (url) {
     for (var i = this.ways.length - 1; i >= 0; i--) {
@@ -437,29 +550,45 @@ var OneClick = Class(ObjectClass, {
   updateConfig: function () {
     this.ways.init();
   },
+  // getShortcut_old: function () {
+  //   return localStorage.getItem('shortcut') || 'alt+s';
+  // },
   getShortcut: function () {
-    return localStorage.getItem('shortcut') || 'alt+s';
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get('shortcut', item => {
+        resolve(item.shortcut || 'alt+s')
+      })
+    })
   },
   setShortcut: function (s) {
-    localStorage.setItem(('shortcut'), s);
+    // localStorage.setItem('shortcut', s);
+    chrome.storage.local.set({ 'shortcut': s });
   },
   setIogo: function (tab, path) {
-    console.log("setting logo...");
+    // console.log("setting logo...");
     var cvs = document.createElement('canvas');
     var img = document.createElement('img');
     img.onload = function () {
       var ctx = cvs.getContext('2d');
-      ctx.globalAlpha = 0.7;
-      var upPath = new Path2D();
-      upPath.roundRect(0, 0, 32, 16, [7.5, 7.5, 0, 0]);
-      ctx.fillStyle = "#fff";
-      ctx.fill(upPath, "evenodd");
-
-      var downPath = new Path2D();
-      downPath.roundRect(0, 16, 32, 16, [0, 0, 7.5, 7.5]);
-      ctx.fillStyle = "#000";
-      ctx.fill(downPath, "evenodd");
-
+      if (true) {
+        ctx.globalAlpha = 0.8;
+        ctx.roundRect(0, 0, 32, 32, 7.5);
+        const gradient = ctx.createLinearGradient(16.5, 0, 16.5, 32);
+        gradient.addColorStop(0, "white");
+        gradient.addColorStop(1, "black");
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      } else {
+        ctx.globalAlpha = 0.7;
+        var upPath = new Path2D();
+        upPath.roundRect(0, 0, 32, 16, [7.5, 7.5, 0, 0]);
+        ctx.fillStyle = "#fff";
+        ctx.fill(upPath, "evenodd");
+        var downPath = new Path2D();
+        downPath.roundRect(0, 16, 32, 16, [0, 0, 7.5, 7.5]);
+        ctx.fillStyle = "#000";
+        ctx.fill(downPath, "evenodd");
+      }
       ctx.globalAlpha = 1;
       ctx.drawImage(img, 2, 2, 28, 28);
       chrome.pageAction.setIcon({
@@ -482,11 +611,18 @@ var OneClick = Class(ObjectClass, {
     chrome.pageAction.show(tab.id);
     // shortcut support
     try {
-      if (localStorage.getItem('useshortcut') !== '0') {
-        chrome.tabs.executeScript(tab.id, {
-          file: "shortcut.js"
-        });
-      }
+      // if (localStorage.getItem('useshortcut') !== '0') {
+      //   chrome.tabs.executeScript(tab.id, {
+      //     file: "shortcut.js"
+      //   });
+      // }
+      chrome.storage.local.get('useshortcut', (item) => {
+        if (item.useshotcut !== '0') {
+          chrome.tabs.executeScript(tab.id, {
+            file: "shortcut.js"
+          })
+        }
+      })
     } catch (e) { }
   },
   updateAction: function (tab) {
@@ -517,17 +653,30 @@ var OneClick = Class(ObjectClass, {
     }
     var from = way.getFrom();
     getKeyword(function (keyword) {
-      if (localStorage.getItem('newtab') == '1') {
-        // open in new tab.
-        chrome.tabs.create({
-          openerTabId: tab.id,
-          url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
-        });
-      } else {
-        chrome.tabs.update(tab.id, {
-          url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
-        });
-      }
+      // if (localStorage.getItem('newtab') == '1') {
+      //   // if (chrome.storage.local.get('newtab') == '1') {
+      //   // open in new tab.
+      //   chrome.tabs.create({
+      //     openerTabId: tab.id,
+      //     url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
+      //   });
+      // } else {
+      //   chrome.tabs.update(tab.id, {
+      //     url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
+      //   });
+      // }
+      chrome.storage.local.get('newtab', (item) => {
+        if (item.newtab == '1') {
+          chrome.tabs.create({
+            openerTabId: tab.id,
+            url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
+          });
+        } else {
+          chrome.tabs.update(tab.id, {
+            url: way.getTo().getSearchUrl(way.getFrom().getSearchType(tab.url), keyword)
+          });
+        }
+      })
     }, from.getQ());
   },
   // begin work
@@ -546,13 +695,28 @@ var OneClick = Class(ObjectClass, {
     chrome.runtime.onMessage.addListener(function (req, sender, res) {
       if (req.action === "shortcut") {
         var s = req.value;
-        if (the.getShortcut().toLowerCase() == s) {
-          chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-            the.switchAction(tab[0]);
-          });
-        }
+        // if (the.getShortcut().toLowerCase() == s) {
+        //   chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
+        //     the.switchAction(tab[0]);
+        //   });
+        // }
+        the.getShortcut().then((result) => {
+          console.log(result);
+          if (result == s) {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
+              the.switchAction(tab[0]);
+            })
+          }
+        })
+        // chrome.storage.local.get('shortcut', (item) => {
+        //   if (item.shortcut.toLowerCase() == s) {
+        //     chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
+        //       the.switchAction(tab[0]);
+        //     })
+        //   }
+        // })
       }
-    });
+    })
   }
 });
 var App = new OneClick();

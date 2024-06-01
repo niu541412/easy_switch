@@ -16,7 +16,6 @@
 				2px 2px 5px rgba(0, 0, 0, 0.3);
 			color: #333333;
 			padding: 5px 25px;
-			/* font-size: 18px; */
 			font-weight: bold;
 			text-shadow: 1px 1px 2px #ffffff;
 			cursor: pointer;
@@ -45,11 +44,11 @@
 		}
 
 		#left {
-			width: 55%;
+			width: 60%;
 		}
 
 		#right {
-			width: 40%;
+			width: 38%;
 		}
 
 		.way {
@@ -63,6 +62,10 @@
 			vertical-align: middle;
 		}
 
+		.way select {
+			border-radius: 3px;
+		}
+
 		#container h2 {
 			margin: 0 auto;
 			width: 50px;
@@ -73,23 +76,32 @@
 		}
 
 		#addsite .tip {
-			width: 80px;
+			width: 65px;
 			display: inline-block;
 		}
 
 		#addsite input {
-			height: 24px;
-			width: 250px;
+			height: 20px;
+			width: 350px;
+			border-radius: 6px;
+			border: 1px solid;
 		}
 
 		#site_add {
+			padding: 5px, 3px;
 			position: relative;
-			left: 25%;
+			border-radius: 6px;
+			background: linear-gradient(to bottom, #e0e0e0, #bababa);
+			border: 2px solid #888888;
+			box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #aaaaaa,
+				2px 2px 5px rgba(0, 0, 0, 0.3);
+			left: 40%;
 		}
 
 		.usersite {
 			height: 32px;
 			line-height: 32px;
+			width: 60%;
 		}
 
 		.usersite .icon {
@@ -100,9 +112,18 @@
 			background-color: rgb(228, 236, 247);
 		}
 
+		.usersite .icon {
+			margin-left: 10px;
+			margin-right: 30px;
+		}
+
 		.usersite .delete {
 			display: none;
-			margin-left: 5px;
+			float: right;
+			margin: 6px;
+			background: linear-gradient(to bottom, #e0e0e0, #bababa);
+			border: 2px outset #888888;
+			border-radius: 6px;
 			vertical-align: middle;
 		}
 
@@ -152,6 +173,7 @@
 				<option value="y">Y</option>
 				<option value="z">Z</option>
 			</select>
+			
 			<h3 style="margin-top:30px;">新标签页打开：</h3>
 			<input id="newtab" type="checkbox">是</input>
 			<!-- <h3 style="margin-top:30px;">选择谷歌：</h3>
@@ -161,16 +183,18 @@
 			<input id="part_baidubing" type="radio" name="part">百度&lt=&gt必应</input>
 			<input id="part_baidugoogle" type="radio" name="part">百度&lt=&gt谷歌</input>
 			<input id="part_binggoogle" type="radio" name="part">必应&lt=&gt谷歌</input> -->
+			
 			<h3 style="margin-top:30px;">自定义网站：</h3>
 			已添加网站：<br />
 			<div id="usersites"></div>
+
 			<h3 style="margin-top:10px;">添加网站：</h3>
 			<div id="addsite">
-				<span class="tip">名称：</span><input id="site_name" type="text" placeholder="如：百度"></input><br />
-				<span class="tip">网站主页：</span><input id="site_home" type="text"
-					placeholder="如：http://www.baidu.com/"></input><br />
+				<span class="tip">名称：</span><input id="site_name" type="text" placeholder="如：头条搜索"></input><br />
+				<span class="tip">网站主页：</span><input id="site_home" type="text" placeholder="如：https://www.toutiao.com/"
+					title="以避免主页和搜索域名不一致的情况"></input><br />
 				<span class="tip">搜索地址：</span><input id="site_searchurl" type="text"
-					placeholder="关键字用%s代替，如：http://www.baidu.com/s?wd=%s"></input><br />
+					placeholder="如：https://so.toutiao.com/search?dvpf=pc&keyword=%s" title="关键字用%s代替"></input><br />
 				<!-- <input type="file" id="custom_icon_input" style="margin:0; width:0; height: 0; opacity: 0;">
 					<div style="height:1px;"></div>
 					<button id="custom_select_icon" style="vertical-align: top;">选择图标</button>
