@@ -6,7 +6,7 @@ function handleSave() {
 
   saveNewTab();
   // saveGoogle();
-  savePartner();
+  saveArrow();
   alert('保存成功');
 }
 
@@ -65,7 +65,8 @@ function saveGoogle() {
   else localStorage.setItem('https_google', 'false');
 }
 
-function savePartner() {
+function saveArrow() {
+  // makr the direction arrow to other site.
   var arr = [];
   var allSites = Sites.getAllSites();
   var name;
