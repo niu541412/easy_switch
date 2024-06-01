@@ -29,7 +29,6 @@
 
   function onShortcut(s) {
     if (chrome.runtime.sendMessage) {
-      console.log(s+" xxx");
       chrome.runtime.sendMessage({
         action: 'shortcut',
         value: s

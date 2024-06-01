@@ -87,5 +87,4 @@ window.ObjectClass.prototype = {
 };
 
 // Object is a original function. var a=new Object();
-
 // var SubClass=Class(Class,protoProps,staticProps);

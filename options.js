@@ -14,7 +14,6 @@ function byId(id) {
   return document.getElementById(id);
 }
 
-
 function revierwShortcut() {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('shortcut', item => {
@@ -172,44 +171,60 @@ function addUserSiteClick() {
   q = q[1];
 
   // 判断是否为firefox
-  var isFirefox = typeof InstallTrigger !== 'undefined';
+  const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   var favicon_url;
 
   ico_size = 32;
-  const favicon_url1 = `https://www.google.com/s2/favicons?sz=${ico_size}&domain_url=${home}`;
-  const favicon_url2 = `https://www.google.cn/s2/favicons?sz=${ico_size}&domain_url=${home}`;
+  // const favicon_url1 = `https://www.google.com/s2/favicons?sz=${ico_size}&domain_url=${home}`;
+  const favicon_url1 = `https://t3.gstatic.com/faviconV2?client=SOCIAL&size=${ico_size}&url=${home}`;
+  const favicon_url2 = `https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=${ico_size}&url=${home}`;
   const favicon_url3 = `chrome://favicon/size/${ico_size}@1x/${home}`;
 
   if (isFirefox) {
-    var g_connection; // check connection to google.
-    var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', 'https://www.google.com', false);
-    try {
-      xhr.send();
-      if (xhr.status >= 200 && xhr.status < 300) {
-        g_connection = true;
-      } else {
-        g_connection = false;
-      }
-    } catch (e) {
-      g_connection = false;
-    }
-    favicon_url = (g_connection && favicon_url1 || favicon_url2);
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const fetchTimeout = setTimeout(() => {
+      controller.abort();
+    }, 500);
+
+    fetch('https://www.google.com', { method: "HEAD", mode: 'no-cors', signal })
+      .then(response => {
+        clearTimeout(fetchTimeout);
+        if (response.ok) {
+          console.log(favicon_url1);
+          favicon_url = favicon_url1;
+        } else {
+          return Promise.reject(new Error('Non-OK status'));
+        }
+      })
+      .catch(error => {
+        clearTimeout(fetchTimeout);
+        console.log(favicon_url2)
+        favicon_url = favicon_url2;
+      })
+      .finally(() => {
+        finalizedNewSite()
+      });
+    // favicon_url = favicon_url2
+    // testtt()
   } else {
     favicon_url = favicon_url3
+    finalizedNewSite()
   }
-  var ps = {
-    name: name,
-    icon: favicon_url,
-    home: home,
-    searchUrl: searchurl,
-    q: q
-  };
-  if (getHost(ps.home) != getHost(ps.searchUrl)) {
-    ps.matches = [getMatch(ps.home), getMatch(ps.searchUrl)];
+  function finalizedNewSite() {
+    var ps = {
+      name: name,
+      icon: favicon_url,
+      home: home,
+      searchUrl: searchurl,
+      q: q
+    };
+    if (getHost(ps.home) != getHost(ps.searchUrl)) {
+      ps.matches = [getMatch(ps.home), getMatch(ps.searchUrl)];
+    }
+    Sites.addUserSite(ps);
+    location.reload();
   }
-  Sites.addUserSite(ps);
-  location.reload();
 }
 
 function getMatch(url) {
