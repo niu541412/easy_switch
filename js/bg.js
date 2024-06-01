@@ -382,7 +382,7 @@ var OneClick = Class(ObjectClass, {
       chrome.storage.local.get('useshortcut', (item) => {
         if (item.useshotcut !== '0') {
           chrome.tabs.executeScript(tab.id, {
-            file: "shortcut.js"
+            file: "js/shortcut.js"
           })
         }
       })
