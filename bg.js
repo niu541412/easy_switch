@@ -578,7 +578,6 @@ var OneClick = Class(ObjectClass, {
       if (req.action === "shortcut") {
         var s = req.value;
         the.getShortcut().then((result) => {
-          console.log(result);
           if (result == s) {
             chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
               the.switchAction(tab[0]);
