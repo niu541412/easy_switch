@@ -1,3 +1,7 @@
+# 2.4.0
+- 迁移 localStorage API 到 browser.storage.local
+- 修改部分代码为异步
+
 # 2.3.5
 - 给扩展栏按钮增加了一个外框，用以区分其他扩展。
 

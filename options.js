@@ -6,7 +6,7 @@ function handleSave() {
 
   saveNewTab();
   // saveGoogle();
-  savePart();
+  saveArrow();
   alert('保存成功');
 }
 
@@ -14,17 +14,30 @@ function byId(id) {
   return document.getElementById(id);
 }
 
-function getShortcut() {
-  var ret = localStorage.getItem('shortcut') || 'alt+s';
+
+function revierwShortcut() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get('shortcut', item => {
+      var ret = item.shortcut || 'alt+s';
+      if (!/[a-z]/.test(ret.charAt(ret.length - 1))) {
+        ret = ret.replace(/\+.*$/, '+s');
+      }
+      resolve(ret);
+    })
+  })
+}
+// shortcut 格式为 ctrl+key alt+shift+key
+
+function revierwShortcut_new(shortcut) {
+  var ret = shortcut || 'alt+s';
   if (!/[a-z]/.test(ret.charAt(ret.length - 1))) {
     ret = ret.replace(/\+.*$/, '+s');
   }
   return ret;
 }
-// shortcut 格式为 ctrl+key alt+shift+key
-function saveShortcut() {
-  localStorage.setItem('useshortcut', byId('useshortcut').checked ? '1' : '0');
 
+function saveShortcut() {
+  chrome.storage.local.set({ 'useshortcut': (byId('useshortcut').checked ? '1' : '0') });
   if (!ctrl.checked && !alt.checked && !shift.checked) {
     alert("请选择控制键(ctrl/alt/shift)");
     return false;
@@ -34,25 +47,26 @@ function saveShortcut() {
   if (alt.checked) s += "alt+";
   if (shift.checked) s += "shift+";
   s += key.value;
-  localStorage.setItem('shortcut', s);
+  chrome.storage.local.set({ 'shortcut': s });
   return true;
 }
 
 function saveNewTab() {
-  localStorage.setItem('newtab', byId("newtab").checked ? '1' : '0');
+  chrome.storage.local.set({ 'newtab': (byId("newtab").checked ? '1' : '0') });
   return;
 }
 
 function saveGoogle() {
+  return;
   // deprecated
   if (google_com.checked) localStorage.setItem('google', '.com');
   else localStorage.setItem('google', '.com.hk');
   if (byId('https_google').checked) localStorage.getItem('https_google', 'true');
   else localStorage.setItem('https_google', 'false');
-  return;
 }
 
-function savePart() {
+function saveArrow() {
+  // mark the direction arrow to other site.
   var arr = [];
   var allSites = Sites.getAllSites();
   var name;
@@ -66,24 +80,33 @@ function savePart() {
   Ways.saveWays(arr);
 }
 
-function init() {
-  byId('save').onclick = handleSave;
+function initShortCut() {
   ctrl = byId("ctrl");
   alt = byId("alt");
   shift = byId("shift");
   key = byId("key");
-  var shortcut = getShortcut();
-  if (shortcut.indexOf('ctrl') !== -1) ctrl.checked = true;
-  if (shortcut.indexOf('alt') !== -1) alt.checked = true;
-  if (shortcut.indexOf('shift') !== -1) shift.checked = true;
-  key.value = shortcut.charAt(shortcut.length - 1);
-  // use shortcut
-  var useShortcut = localStorage.getItem('useshortcut') !== '0';
-  byId('useshortcut').checked = useShortcut;
+  revierwShortcut().then((shortcut) => {
+    if (shortcut.indexOf('ctrl') !== -1) ctrl.checked = true;
+    if (shortcut.indexOf('alt') !== -1) alt.checked = true;
+    if (shortcut.indexOf('shift') !== -1) shift.checked = true;
+    key.value = shortcut.charAt(shortcut.length - 1);
+  })
+}
 
-  // init newtab
-  var useNewTab = localStorage.getItem('newtab') == '1';
-  byId('newtab').checked = useNewTab;
+function init() {
+  byId('save').onclick = handleSave;
+
+  initShortCut();
+
+  // init shortcut switch
+  chrome.storage.local.get("useshortcut", (item) => {
+    byId('useshortcut').checked = item.useshortcut !== '0';
+  });
+
+  // init newtab switch
+  chrome.storage.local.get("newtab", (item) => {
+    byId('newtab').checked = item.newtab == '1';
+  });
 
   // init ways
   initWays();
@@ -96,24 +119,28 @@ function initUserSites() {
   //bkg.console.log("hello: ");
   byId('usersites').innerHTML = '';
   var html = '';
-  var userSites = Sites.getUserSites();
-  userSites.forEach(function (userSite) {
-    var one = document.createElement('div');
-    one.className = "usersite";
-    var img_one = document.createElement('img');
-    img_one.className = "icon";
-    img_one.src = userSite.getIcon();
-    one.value = userSite.getName();
-    one.appendChild(img_one);
-    one.appendChild(document.createTextNode(userSite.getName()));
-    var del = document.createElement('img');
-    del.setAttribute('data-site', userSite.getName());
-    del.className = "delete";
-    del.src = "delete.png";
-    one.append(del);
-    byId('usersites').append(one);
+
+  Sites.getUserSites().then((userSites) => {
+    userSites.forEach(function (userSite) {
+      var one = document.createElement('div');
+      one.className = "usersite";
+      var img_one = document.createElement('img');
+      img_one.className = "icon";
+      img_one.src = userSite.getIcon();
+      img_one.width = 24;
+      img_one.height = 24;
+      one.value = userSite.getName();
+      one.appendChild(img_one);
+      one.appendChild(document.createTextNode(userSite.getName()));
+      var del = document.createElement('img');
+      del.setAttribute('data-site', userSite.getName());
+      del.className = "delete";
+      del.src = "delete.png";
+      one.append(del);
+      byId('usersites').append(one);
+    })
   });
-  //$('#usersites').delegate('.delete','click',function(){
+
   byId('usersites').addEventListener('click', function (event) {
     if (event.target.classList.contains('delete')) {
       var siteName = event.target.getAttribute('data-site');
@@ -122,15 +149,14 @@ function initUserSites() {
         var site = Sites.getSiteByName(siteName);
         Sites.removeUserSite(siteName);
         Ways.siteRemoved(site);
-        // $(this).parent().remove();
         location.reload();
       }
     }
   });
-  byId('site_add').addEventListener('click', addUserSite);
+  byId('site_add').addEventListener('click', addUserSiteClick);
 }
 
-function addUserSite() {
+function addUserSiteClick() {
   var name = byId('site_name').value;
   var home = byId('site_home').value;
   var searchurl = byId('site_searchurl').value;
@@ -148,8 +174,14 @@ function addUserSite() {
   // 判断是否为firefox
   var isFirefox = typeof InstallTrigger !== 'undefined';
   var favicon_url;
+
+  ico_size = 32;
+  const favicon_url1 = `https://www.google.com/s2/favicons?sz=${ico_size}&domain_url=${home}`;
+  const favicon_url2 = `https://www.google.cn/s2/favicons?sz=${ico_size}&domain_url=${home}`;
+  const favicon_url3 = `chrome://favicon/size/${ico_size}@1x/${home}`;
+
   if (isFirefox) {
-    var g_connection;
+    var g_connection; // check connection to google.
     var xhr = new XMLHttpRequest();
     xhr.open('HEAD', 'https://www.google.com', false);
     try {
@@ -162,11 +194,10 @@ function addUserSite() {
     } catch (e) {
       g_connection = false;
     }
-    favicon_url = (g_connection && ('https://www.google.com/s2/favicons?sz=32&domain_url=' + home) || ('https://www.google.cn/s2/favicons?sz=32&domain_url=' + home));
+    favicon_url = (g_connection && favicon_url1 || favicon_url2);
   } else {
-    favicon_url = 'chrome://favicon/size/32@1x/' + home
+    favicon_url = favicon_url3
   }
-  //alert(favicon_url);*/
   var ps = {
     name: name,
     icon: favicon_url,

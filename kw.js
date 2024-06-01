@@ -65,8 +65,8 @@ function getKeywordFromUrl(url, q) {
 }
 
 function getKeyword(callback, q) {
-  //检查
-  //var bkg = chrome.extension.getBackgroundPage();
+  // 检查
+  // var bkg = chrome.extension.getBackgroundPage();
   chrome.tabs.query({
     currentWindow: true,
     active: true
