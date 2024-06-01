@@ -26,7 +26,7 @@ function revierwShortcut() {
     })
   })
 }
-// // shortcut 格式为 ctrl+key alt+shift+key
+// shortcut 格式为 ctrl+key alt+shift+key
 
 function revierwShortcut_new(shortcut) {
   var ret = shortcut || 'alt+s';
@@ -66,7 +66,7 @@ function saveGoogle() {
 }
 
 function saveArrow() {
-  // makr the direction arrow to other site.
+  // mark the direction arrow to other site.
   var arr = [];
   var allSites = Sites.getAllSites();
   var name;
@@ -149,7 +149,6 @@ function initUserSites() {
         var site = Sites.getSiteByName(siteName);
         Sites.removeUserSite(siteName);
         Ways.siteRemoved(site);
-        // $(this).parent().remove();
         location.reload();
       }
     }
