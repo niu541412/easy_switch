@@ -332,7 +332,6 @@ var OneClick = Class(ObjectClass, {
     })
   },
   setShortcut: function (s) {
-    // localStorage.setItem('shortcut', s);
     chrome.storage.local.set({ 'shortcut': s });
   },
   setIogo: function (tab, path) {
