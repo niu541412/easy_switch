@@ -4,6 +4,7 @@ function handleSave() {
   var ret = saveShortcut();
   if (!ret) return;
 
+  saveButtonIcon();
   saveNewTab();
   // saveGoogle();
   saveArrow();
@@ -33,6 +34,17 @@ function revierwShortcut_new(shortcut) {
     ret = ret.replace(/\+.*$/, '+s');
   }
   return ret;
+}
+
+function saveButtonIcon() {
+  var radios = document.getElementsByName('button');
+  for (var i = 0, length = radios.length; i < length; i++) {
+    if (radios[i].checked) {
+      chrome.storage.local.set({ 'buttonicon': radios[i].value });
+      break;
+    }
+  }
+  return;
 }
 
 function saveShortcut() {
@@ -96,6 +108,12 @@ function init() {
   byId('save').onclick = handleSave;
 
   initShortCut();
+
+  // init button icon
+  chrome.storage.local.get("buttonicon", (item) => {
+    let idx = Math.min(item.buttonicon | 0, document.getElementsByName('button').length);
+    document.getElementsByName('button')[idx].checked = true;
+  });
 
   // init shortcut switch
   chrome.storage.local.get("useshortcut", (item) => {

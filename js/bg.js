@@ -3,7 +3,6 @@ var SearchSite = Class(ObjectClass, {
   // ps.icon .tip .home .searchUrl .q
   // .searchUrl https://www.baidu.com/s?word=%s
   constructor: function (ps) {
-    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     this.ps = isFirefox ? { ...ps } : ps;
     // don't know why ps property is need to be at least copied in firefox, or will get a DeadObject bug.
     this.host = this._getHost(ps.home);
@@ -335,41 +334,60 @@ var OneClick = Class(ObjectClass, {
     chrome.storage.local.set({ 'shortcut': s });
   },
   setIogo: function (tab, path) {
-    // 给按钮增加个背景，防止和其他扩展图标相同而分不清。
-    // console.log("setting logo...");
-    var cvs = document.createElement('canvas');
-    var img = document.createElement('img');
-    img.onload = function () {
-      var ctx = cvs.getContext('2d');
-      if (true) {
-        ctx.globalAlpha = 0.8;
-        ctx.roundRect(0, 0, 32, 32, 7.5);
-        const gradient = ctx.createLinearGradient(16.5, 0, 16.5, 32);
-        gradient.addColorStop(0, "white");
-        gradient.addColorStop(1, "black");
-        ctx.fillStyle = gradient;
-        ctx.fill();
+    chrome.storage.local.get('buttonicon', (item) => {
+      if (item.buttonicon) {
+        // 图标按钮的样式，可以避免和其他扩展图标相同而分不清。
+        // console.log("setting logo...");
+        var cvs = document.createElement('canvas');
+        var img = new Image();
+        var ctx = cvs.getContext('2d');
+        switch (item.buttonicon) {
+          case '1':
+            img.onload = function () {
+              img_old = new Image();
+              ctx.drawImage(img, 0, 0, 32, 32);
+              img_old.onload = function () {
+                ctx.drawImage(img_old, 16, 16, 16, 16);
+                chrome.pageAction.setIcon({
+                  imageData: { 32: ctx.getImageData(0, 0, 32, 32) },
+                  tabId: tab.id
+                });
+              };
+              img_old.src = isFirefox ? `https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url=${tab.favIconUrl}`
+                : `chrome://favicon/size/32@1x/${tab.favIconUrl}`;
+            }
+            break;
+          case '2':
+            img.onload = function () {
+              ctx.globalAlpha = 0.8;
+              ctx.roundRect(0, 0, 32, 32, 7.5);
+              const gradient = ctx.createLinearGradient(16.5, 0, 16.5, 32);
+              gradient.addColorStop(0, "white");
+              gradient.addColorStop(1, "black");
+              ctx.fillStyle = gradient;
+              ctx.fill();
+              ctx.globalAlpha = 1;
+              ctx.drawImage(img, 2, 2, 28, 28);
+              chrome.pageAction.setIcon({
+                imageData: { 32: ctx.getImageData(0, 0, 32, 32) },
+                tabId: tab.id
+              });
+            }
+            break;
+        }
+        img.src = path;
       } else {
-        ctx.globalAlpha = 0.7;
-        var upPath = new Path2D();
-        upPath.roundRect(0, 0, 32, 16, [7.5, 7.5, 0, 0]);
-        ctx.fillStyle = "#fff";
-        ctx.fill(upPath, "evenodd");
-        var downPath = new Path2D();
-        downPath.roundRect(0, 16, 32, 16, [0, 0, 7.5, 7.5]);
-        ctx.fillStyle = "#000";
-        ctx.fill(downPath, "evenodd");
+        chrome.pageAction.setIcon({
+          path: { 32: path },
+          tabId: tab.id
+        })
       }
-      ctx.globalAlpha = 1;
-      ctx.drawImage(img, 2, 2, 28, 28);
-      chrome.pageAction.setIcon({
-        imageData: ctx.getImageData(0, 0, 32, 32),
-        tabId: tab.id
-      });
-    };
-    img.src = path;
+    })
   },
   swichSupport: function (tab, site) {
+    console.log(this.way);
+    console.log(tab);
+    console.log(site);
     this.setIogo(tab, site.getIcon());
     chrome.pageAction.setTitle({
       tabId: tab.id,
@@ -456,6 +474,8 @@ var OneClick = Class(ObjectClass, {
     })
   }
 });
+
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 var App = new OneClick();
 
 function main() {

@@ -55,14 +55,14 @@ var Douyin = new SearchSite({
 });
 var BaiduVideo = new SearchSite({
     name: '百度视频',
-    icon: 'icon/v.baidu.png',
+    icon: 'icon/haokan.png',
     home: 'http://v.baidu.com/',
     matches: ['//(video|v)\\.baidu\\.com'],
     searchUrl: 'http://v.baidu.com/v?word=%s&ie=utf-8'
 });
 var BaiduBaike = new SearchSite({
     name: '百度百科',
-    icon: 'icon/baidu.png',
+    icon: 'icon/baike.png',
     home: 'http://baike.baidu.com/',
     searchUrl: 'http://baike.baidu.com/search?word=%s&pn=0&rn=0&enc=utf8',
 });
