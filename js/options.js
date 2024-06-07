@@ -104,16 +104,52 @@ function initShortCut() {
   })
 }
 
-function init() {
-  byId('save').onclick = handleSave;
 
-  initShortCut();
-
+function initButtonIcon() {
   // init button icon
+
+  // pattern 1
+  var cvs = document.getElementById('overlap-icon');
+  var img = new Image();
+  var ctx = cvs.getContext('2d');
+  img.onload = function () {
+    img_old = new Image();
+    ctx.drawImage(img, 0, 0, 32, 32);
+    img_old.onload = function () {
+      ctx.drawImage(img_old, 16, 16, 16, 16);
+    };
+    img_old.src = 'icon/google.png';
+  }
+  img.src = 'icon/bing.png';
+
+  // pattern 2
+  var cvs = document.getElementById('mask-icon');
+  var img2 = new Image();
+  var ctx2 = cvs.getContext('2d');
+  img2.onload = function () {
+    ctx2.globalAlpha = 0.8;
+    ctx2.roundRect(0, 0, 32, 32, 7.5);
+    const gradient = ctx.createLinearGradient(16.5, 0, 16.5, 32);
+    gradient.addColorStop(0, "white");
+    gradient.addColorStop(1, "black");
+    ctx2.fillStyle = gradient;
+    ctx2.fill();
+    ctx2.globalAlpha = 1;
+    ctx2.drawImage(img2, 2, 2, 28, 28);
+  }
+  img2.src = 'icon/google.png';
+
   chrome.storage.local.get("buttonicon", (item) => {
     let idx = Math.min(item.buttonicon | 0, document.getElementsByName('button').length);
     document.getElementsByName('button')[idx].checked = true;
   });
+}
+
+function init() {
+  byId('save').onclick = handleSave;
+
+  initButtonIcon();
+  initShortCut();
 
   // init shortcut switch
   chrome.storage.local.get("useshortcut", (item) => {

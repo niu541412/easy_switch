@@ -339,12 +339,16 @@ var OneClick = Class(ObjectClass, {
         // 图标按钮的样式，可以避免和其他扩展图标相同而分不清。
         // console.log("setting logo...");
         var cvs = document.createElement('canvas');
+        cvs.width = 32;
+        cvs.height = 32;
         var img = new Image();
+        if (isFirefox) img.crossOrigin = 'anonymous';
         var ctx = cvs.getContext('2d');
         switch (item.buttonicon) {
           case '1':
             img.onload = function () {
               img_old = new Image();
+              if (isFirefox) img_old.crossOrigin = 'anonymous';
               ctx.drawImage(img, 0, 0, 32, 32);
               img_old.onload = function () {
                 ctx.drawImage(img_old, 16, 16, 16, 16);
@@ -353,8 +357,9 @@ var OneClick = Class(ObjectClass, {
                   tabId: tab.id
                 });
               };
-              img_old.src = isFirefox ? `https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url=${tab.favIconUrl}`
-                : `chrome://favicon/size/32@1x/${tab.favIconUrl}`;
+              var from_url = new URL(tab.url);
+              img_old.src = isFirefox ? "https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url=" + from_url.origin
+                : "chrome://favicon/size/32@1x/" + from_url.origin;
             }
             break;
           case '2':
@@ -385,9 +390,6 @@ var OneClick = Class(ObjectClass, {
     })
   },
   swichSupport: function (tab, site) {
-    console.log(this.way);
-    console.log(tab);
-    console.log(site);
     this.setIogo(tab, site.getIcon());
     chrome.pageAction.setTitle({
       tabId: tab.id,

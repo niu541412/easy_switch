@@ -130,6 +130,35 @@
 		.usersite:hover .delete {
 			display: inline-block;
 		}
+
+		.radio-container {
+			display: flex;
+			align-items: center
+		}
+
+		.radio-container label {
+			margin-right: 5px;
+		}
+
+		.image-container {
+			margin-left: 10px;
+			width: 32px;
+			height: 32px;
+			position: relative;
+		}
+
+		.image-container img,
+		.image-container canvas {
+			display: none;
+			width: 100%;
+			height: 100%;
+		}
+
+		#nativeicon:checked~.image-container #native-icon,
+		#overlapicon:checked~.image-container #overlap-icon,
+		#maskicon:checked~.image-container #mask-icon {
+			display: block;
+		}
 	</style>
 </head>
 
@@ -140,9 +169,21 @@
 
 		<div id="left">
 			<h3 style="margin-top:30px;">按钮样式：</h3>
-			<input type="radio" name="button" id="nativeicon" value=0>原生<br>
-			<input type="radio" name="button" id="overlapicon" value=1>叠加<br>
-			<input type="radio" name="button" id="maskicon" value=2>遮罩<br>
+
+			<div class="radio-container">
+				<input type="radio" name="button" id="nativeicon" value="0">
+				<label for="nativeicon">原生</label>
+				<input type="radio" name="button" id="overlapicon" value="1">
+				<label for="overlapicon">叠加</label>
+				<input type="radio" name="button" id="maskicon" value="2">
+				<label for="maskicon">遮罩</label>
+
+				<div class="image-container">
+					<img id="native-icon" src="icon/google.png" alt="Native Icon">
+					<canvas id="overlap-icon" width=32 height=32 alt="Overlap Icon"></canvas>
+					<canvas id="mask-icon" width=32 height=32 alt="Mask Icon"></canvas>
+				</div>
+			</div>
 
 			<h3 style="margin-top:30px;">快捷键：</h3>
 			<input id="useshortcut" type="checkbox">启用快捷键</input>
