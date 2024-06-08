@@ -6,3 +6,4 @@ _debug
 _metadata
 
 *.zip
+create_zip.py
