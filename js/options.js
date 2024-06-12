@@ -355,7 +355,7 @@ function getPairSiteHtml(SiteIcon, FromName, ToSiteHtml) {
   return wayDiv
 }
 
-var BG = window.chrome.extension.getBackgroundPage();
+var BG = chrome.extension.getBackgroundPage();
 var Ways = BG.Ways.getInstance();
 var Sites = BG.Sites.getInstance();
 

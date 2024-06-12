@@ -1,6 +1,14 @@
 {
    "background": {
-      "page": "background.html"
+      "persistent": true,
+      "scripts": [
+         "js/oop.js",
+         "js/url.js",
+         "js/kw.js",
+         "js/bg.js",
+         "js/builtin.js",
+         "js/shortcut.js"
+      ]
    },
    "content_scripts": [],
    "content_security_policy": "script-src 'self' ; object-src 'self'; img-src https://*.gstatic.com https://*.gstatic.cn chrome://favicon;",
@@ -26,5 +34,5 @@
       "*://*/*"
    ],
    "short_name": "一键切换",
-   "version": "2.4.5"
+   "version": "2.4.6"
 }
