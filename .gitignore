@@ -1,5 +1,5 @@
 *~
-*.DS_store
+*.DS_Store
 node_modules
 # Temporary directory for debugging extension samples
 _debug

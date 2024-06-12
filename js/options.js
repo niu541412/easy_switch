@@ -118,9 +118,9 @@ function initButtonIcon() {
     img_old.onload = function () {
       ctx.drawImage(img_old, 16, 16, 16, 16);
     };
-    img_old.src = 'icon/google.png';
+    img_old.src = 'icon/bing.png';
   }
-  img.src = 'icon/bing.png';
+  img.src = 'icon/google.png';
 
   // pattern 2
   var cvs = document.getElementById('mask-icon');
