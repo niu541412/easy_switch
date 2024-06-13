@@ -106,7 +106,6 @@ var SearchSite = Class(ObjectClass, {
 var Sites = Class(ObjectClass, {
   usersiteskey: 'usersites',
   init: function () {
-    var sysSites = [Baidu, Google, Bing, Taobao, Jingdong, Zhihu, Wiki, BaiduBaike, Bilibili, Douyin, Github, Smzdm, Douban, Youku, Wikiwand];
     this.getUserSites().then((userSites) => {
       this.sites = sysSites.concat(userSites);
     })
@@ -125,7 +124,7 @@ var Sites = Class(ObjectClass, {
   getUserSites: function () {
     return new Promise((resolve, reject) => {
       var arr, ret = [];
-      chrome.storage.local.get([this.usersiteskey], item => {
+      chrome.storage.sync.get([this.usersiteskey], item => {
         if (item[this.usersiteskey]) {
           arr = JSON.parse(item[this.usersiteskey]);
           arr.forEach((one) => {
@@ -143,10 +142,10 @@ var Sites = Class(ObjectClass, {
         return false;
       }
     }
-    chrome.storage.local.get(this.usersiteskey, item => {
+    chrome.storage.sync.get(this.usersiteskey, item => {
       var arr = JSON.parse(item[this.usersiteskey] || '[]');
       arr.push(ps);
-      chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
+      chrome.storage.sync.set({ [this.usersiteskey]: JSON.stringify(arr) });
       this.sites.push(new SearchSite(ps));
     })
     return true;
@@ -160,14 +159,14 @@ var Sites = Class(ObjectClass, {
         sites.splice(i, 1);
       }
     }
-    chrome.storage.local.get(this.usersiteskey, item => {
+    chrome.storage.sync.get(this.usersiteskey, item => {
       var arr = JSON.parse(item[this.usersiteskey] || '[]');
       for (i = arr.length - 1; i >= 0; i--) {
         if (arr[i].name == name) {
           arr.splice(i, 1);
         }
       }
-      chrome.storage.local.set({ [this.usersiteskey]: JSON.stringify(arr) });
+      chrome.storage.sync.set({ [this.usersiteskey]: JSON.stringify(arr) });
     })
   }
 }, {
@@ -205,14 +204,14 @@ var Way = Class(ObjectClass, {
 var Ways = Class(ObjectClass, {
   savekey: 'ways',
   init: function () {
-    chrome.storage.local.get(this.savekey, (item) => {
+    chrome.storage.sync.get(this.savekey, (item) => {
       if (item[this.savekey]) {
         this.loadWays();
         return;
       }
       this.ways = [];
       // actually part2 does not take effect now.
-      chrome.storage.local.get('part2', item => {
+      chrome.storage.sync.get('part2', item => {
         switch (item.part2) {
           case 'part_binggoogle':
             this.addDualWay(Bing, Google);
@@ -242,7 +241,7 @@ var Ways = Class(ObjectClass, {
     })
   },
   saveWays: function (waysArray) {
-    chrome.storage.local.set({ [this.savekey]: JSON.stringify(waysArray) }, () => {
+    chrome.storage.sync.set({ [this.savekey]: JSON.stringify(waysArray) }, () => {
       this.loadWays();
     });
   },
@@ -250,7 +249,7 @@ var Ways = Class(ObjectClass, {
     this.ways = [];
     var sites = Sites.getInstance();
     var the = this;
-    chrome.storage.local.get([this.savekey], (item) => {
+    chrome.storage.sync.get([this.savekey], (item) => {
       var warr = JSON.parse(item[this.savekey]);
       warr.forEach(function (one) {
         if (one.from && one.to) {
@@ -325,22 +324,20 @@ var OneClick = Class(ObjectClass, {
   },
   getShortcut: function () {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get('shortcut', item => {
+      chrome.storage.sync.get('shortcut', item => {
         resolve(item.shortcut || 'alt+s')
       })
     })
   },
   setShortcut: function (s) {
-    chrome.storage.local.set({ 'shortcut': s });
+    chrome.storage.sync.set({ 'shortcut': s });
   },
   setIogo: function (tab, path) {
-    chrome.storage.local.get('buttonicon', (item) => {
+    chrome.storage.sync.get('buttonicon', (item) => {
       if (item.buttonicon) {
         // 图标按钮的样式，可以避免和其他扩展图标相同而分不清。
         // console.log("setting logo...");
-        var cvs = document.createElement('canvas');
-        cvs.width = 32;
-        cvs.height = 32;
+        var cvs = new OffscreenCanvas(32, 32);
         var img = new Image();
         if (isFirefox) img.crossOrigin = 'anonymous';
         var ctx = cvs.getContext('2d');
@@ -398,7 +395,7 @@ var OneClick = Class(ObjectClass, {
     chrome.pageAction.show(tab.id);
     // shortcut support
     try {
-      chrome.storage.local.get('useshortcut', (item) => {
+      chrome.storage.sync.get('useshortcut', (item) => {
         if (item.useshotcut !== '0') {
           chrome.tabs.executeScript(tab.id, {
             file: "js/shortcut.js"
@@ -435,7 +432,7 @@ var OneClick = Class(ObjectClass, {
     }
     var from = way.getFrom();
     getKeyword(function (keyword) {
-      chrome.storage.local.get('newtab', (item) => {
+      chrome.storage.sync.get('newtab', (item) => {
         if (item.newtab == '1') {
           chrome.tabs.create({
             openerTabId: tab.id,

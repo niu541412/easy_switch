@@ -1,13 +1,12 @@
 {
    "background": {
-      "persistent": true,
+      "persistent": false,
       "scripts": [
          "js/oop.js",
          "js/url.js",
          "js/kw.js",
          "js/bg.js",
-         "js/builtin.js",
-         "js/shortcut.js"
+         "js/builtin.js"
       ]
    },
    "content_scripts": [],

@@ -1,5 +1,5 @@
 
-var Baidu = new SearchSite({
+const Baidu = new SearchSite({
     name: '百度',
     icon: 'icon/baidu.png',
     tip: '百度一下',
@@ -13,7 +13,7 @@ var Baidu = new SearchSite({
         searchUrl: 'http://news.baidu.com/ns?word=%s',
     }]
 });
-var Bing = new SearchSite({
+const Bing = new SearchSite({
     name: '必应',
     icon: 'icon/bing.png',
     home: 'https://cn.bing.com/',
@@ -25,7 +25,7 @@ var Bing = new SearchSite({
         searchUrl: 'https://cn.bing.com/news/search?q=%s',
     }]
 });
-var Google = new SearchSite({
+const Google = new SearchSite({
     name: '谷歌',
     icon: 'icon/google.png',
     home: 'https://www.google.com/',
@@ -39,34 +39,34 @@ var Google = new SearchSite({
         typeRegexp: '(news\\.google\\.com|\\.google\\.com.*?\\Wtbm=nws)',
     }]
 });
-var Youku = new SearchSite({
+const Youku = new SearchSite({
     name: '优酷搜库',
     icon: 'icon/youku.png',
     home: 'http://www.youku.com/',
     searchUrl: 'http://www.soku.com/v?keyword=%s',
     matches: ['www\\.soku\\.com']
 });
-var Douyin = new SearchSite({
+const Douyin = new SearchSite({
     name: '抖音视频',
     icon: 'icon/douyin.png',
     home: 'https://www.douyin.com/',
     searchUrl: 'https://www.douyin.com/search/%s',
     matches: ['www\\.douyin\\.com']
 });
-var BaiduVideo = new SearchSite({
+const BaiduVideo = new SearchSite({
     name: '百度视频',
     icon: 'icon/haokan.png',
     home: 'http://v.baidu.com/',
     matches: ['//(video|v)\\.baidu\\.com'],
     searchUrl: 'http://v.baidu.com/v?word=%s&ie=utf-8'
 });
-var BaiduBaike = new SearchSite({
+const BaiduBaike = new SearchSite({
     name: '百度百科',
     icon: 'icon/baike.png',
     home: 'http://baike.baidu.com/',
     searchUrl: 'http://baike.baidu.com/search?word=%s&pn=0&rn=0&enc=utf8',
 });
-var Wiki = new SearchSite({
+const Wiki = new SearchSite({
     name: '维基百科中文',
     icon: 'icon/wiki.png',
     home: 'https://zh.wikipedia.org/',
@@ -74,7 +74,7 @@ var Wiki = new SearchSite({
     matches: ['//[\\w]*\\.wikipedia\\.org'],
     q: 'wiki'
 });
-var Wikiwand = new SearchSite({
+const Wikiwand = new SearchSite({
     name: 'Wikiwand',
     icon: 'icon/wikiwand.png',
     home: 'https://www.wikiwand.com/',
@@ -82,49 +82,49 @@ var Wikiwand = new SearchSite({
     matches: ['//[\\w]*\\.wikiwand\\.com'],
     q: 'wiki'
 });
-var Bilibili = new SearchSite({
+const Bilibili = new SearchSite({
     name: '哔哩哔哩',
     icon: 'icon/bilibili.png',
     home: 'https://www.bilibili.com/',
     searchUrl: 'https://search.bilibili.com/all?keyword=%s',
     matches: ['//search\\.bilibili\\.com']
 });
-var Zhihu = new SearchSite({
+const Zhihu = new SearchSite({
     name: '知乎',
     icon: 'icon/zhihu.png',
     home: 'https://www.zhihu.com/',
     searchUrl: 'https://www.zhihu.com/search?q=%s',
     matches: ['//[\\w]*\\.zhihu\\.com']
 });
-var Taobao = new SearchSite({
+const Taobao = new SearchSite({
     name: '淘宝',
     icon: 'icon/taobao.png',
     home: 'https://www.taobao.com',
     searchUrl: 'https://s.taobao.com/search?q=%s',
     matches: ['//[\\w]*\\.taobao\\.com']
 });
-var Jingdong = new SearchSite({
+const Jingdong = new SearchSite({
     name: '京东',
     icon: 'icon/jd.png',
     home: 'https://www.jd.com/',
     searchUrl: 'https://search.jd.com/Search?keyword=%s&enc=utf-8',
     matches: ['//[\\w]*\\.jd\\.com']
 });
-var Github = new SearchSite({
+const Github = new SearchSite({
     name: 'Github',
     icon: 'icon/github.png',
     home: 'https://www.github.com/',
     searchUrl: 'https://github.com/search?q=%s',
     matches: ['//[\\w\\.]*github\\.com.*search']
 });
-var Douban = new SearchSite({
+const Douban = new SearchSite({
     name: '豆瓣',
     icon: 'icon/douban.png',
     home: 'https://www.douban.com/',
     searchUrl: 'https://www.douban.com/search?q=%s',
     matches: ['//[\\w]*\\.douban\\.com']
 });
-var Smzdm = new SearchSite({
+const Smzdm = new SearchSite({
     name: '什么值得买',
     icon: 'icon/smzdm.png',
     home: 'https://www.smzdm.com/',
@@ -132,3 +132,4 @@ var Smzdm = new SearchSite({
     matches: ['//[\\w]*\\.smzdm\\.com'],
     q: 's'
 });
+const sysSites = [Baidu, Google, Bing, Taobao, Jingdong, Zhihu, Wiki, BaiduBaike, Bilibili, Douyin, Github, Smzdm, Douban, Youku, Wikiwand];

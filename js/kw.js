@@ -5,19 +5,21 @@
  *            回调方法
  * @returns {TimeLimitTask}
  */
-function TimeLimitTask(callback) {
-  this.finished = false;
-  this.realCallback = callback;
-  var self = this;
-  window.setTimeout(function () {
-    self.callback();
-  }, 200);
-}
-TimeLimitTask.prototype.callback = function (selection) {
-  if (this.finished)
-    return;
-  this.realCallback.apply(window, arguments);
-  this.finished = true;
+class TimeLimitTask {
+  constructor(callback) {
+    this.finished = false;
+    this.realCallback = callback;
+    var self = this;
+    window.setTimeout(function () {
+      self.callback();
+    }, 200);
+  }
+  callback(selection) {
+    if (this.finished)
+      return;
+    this.realCallback.apply(window, arguments);
+    this.finished = true;
+  }
 }
 /**
  * 获取选中项
