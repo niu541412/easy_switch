@@ -21,13 +21,14 @@ function getI18n(m) {
 
 function localizeHtmlPage() {
   //Localize by replacing __MSG_***__ meta tags
+  document.title = getI18n("optionTitle");
   var objects = document.getElementsByClassName('i18n');
   for (var j = 0; j < objects.length; j++) {
     var obj = objects[j];
 
     var localeMarker = obj.textContent;
     var localeStr = localeMarker.replace(/__MSG_(\w+)__/g, function (match, v1) {
-      return v1 ? chrome.i18n.getMessage(v1) : "";
+      return v1 ? getI18n(v1) : "";
     });
 
     if (localeStr != localeMarker) {
@@ -36,7 +37,7 @@ function localizeHtmlPage() {
 
     if (localeMarker = obj.placeholder) {
       var localeStr = localeMarker.replace(/__MSG_(\w+)__/g, function (match, v1) {
-        return v1 ? chrome.i18n.getMessage(v1) : "";
+        return v1 ? getI18n(v1) : "";
       });
       if (localeStr != localeMarker) {
         obj.placeholder = localeStr;
