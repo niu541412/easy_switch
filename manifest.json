@@ -2,6 +2,7 @@
    "background": {
       "persistent": false,
       "scripts": [
+         "js/syncloc.js",
          "js/oop.js",
          "js/url.js",
          "js/kw.js",
@@ -34,5 +35,5 @@
       "*://*/*"
    ],
    "short_name": "__MSG_extName__",
-   "version": "2.5.0"
+   "version": "2.5.1"
 }

@@ -6,7 +6,7 @@
       "message": "Easy Switch"
    },
    "description": {
-      "message": "Easily switching between websites, retaining search content for continued searching. You can switch using buttons or shortcuts. Supports custom search websites. Ported from a discontinued Chrome extension with the same name."
+      "message": "Easily switching between websites, retaining search content for continued searching. You can switch using buttons or shortcuts."
    },
    "noswitch": {
       "message": "No switch"
