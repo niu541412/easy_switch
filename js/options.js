@@ -21,18 +21,27 @@ function getI18n(m) {
 
 function localizeHtmlPage() {
   //Localize by replacing __MSG_***__ meta tags
-  var objects = document.getElementsByTagName('html');
+  var objects = document.getElementsByClassName('i18n');
   for (var j = 0; j < objects.length; j++) {
     var obj = objects[j];
 
-    var valStrH = obj.innerHTML.toString();
-    var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function (match, v1) {
+    var localeMarker = obj.textContent;
+    var localeStr = localeMarker.replace(/__MSG_(\w+)__/g, function (match, v1) {
       return v1 ? chrome.i18n.getMessage(v1) : "";
     });
 
-    if (valNewH != valStrH) {
-      obj.innerHTML = valNewH;
+    if (localeStr != localeMarker) {
+      obj.textContent = localeStr;
     }
+
+    if (localeMarker = obj.placeholder) {
+      var localeStr = localeMarker.replace(/__MSG_(\w+)__/g, function (match, v1) {
+        return v1 ? chrome.i18n.getMessage(v1) : "";
+      });
+      if (localeStr != localeMarker) {
+        obj.placeholder = localeStr;
+      }
+    };
   }
 }
 
@@ -170,9 +179,10 @@ function init() {
   var manifestData = chrome.runtime.getManifest();
   byId('ver').textContent = `v${manifestData.version}`;
 
+  localizeHtmlPage();
+
   byId('save').onclick = handleSave;
 
-  localizeHtmlPage();
   initButtonIcon();
   initShortCut();
 

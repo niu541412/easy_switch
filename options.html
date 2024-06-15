@@ -196,21 +196,21 @@
 
 <body>
 	<div id="container">
-		<h2>__MSG_optionMessage__
+		<h2><label class="i18n">__MSG_optionMessage__</label>
 			<a id="ver" href="https://github.com/niu541412/easy_switch" target="_blank"></a>
 		</h2>
 		<hr />
 
 		<div id="left">
-			<h3 style="margin-top:30px;">__MSG_iconStyle__</h3>
+			<h3 class="i18n" style="margin-top:30px;">__MSG_iconStyle__</h3>
 
 			<div class="radio-container">
 				<input type="radio" name="button" id="nativeicon" value="0">
-				<label for="nativeicon">__MSG_iconNative__</label>
+				<label class="i18n" for="nativeicon">__MSG_iconNative__</label>
 				<input type="radio" name="button" id="overlapicon" value="1">
-				<label for="overlapicon">__MSG_iconNested__</label>
+				<label class="i18n" for="overlapicon">__MSG_iconNested__</label>
 				<input type="radio" name="button" id="maskicon" value="2">
-				<label for="maskicon">__MSG_iconMasked__</label>
+				<label class="i18n" for="maskicon">__MSG_iconMasked__</label>
 
 				<div class="image-container">
 					<img id="native-icon" src="icon/google.png" alt="Native Icon">
@@ -219,8 +219,9 @@
 				</div>
 			</div>
 
-			<h3 style="margin-top:30px;">__MSG_shortcut__</h3>
-			<input id="useshortcut" type="checkbox">__MSG_enableShortcut__</input>
+			<h3 class="i18n" style="margin-top:30px;">__MSG_shortcut__</h3>
+			<input id="useshortcut" type="checkbox"></input>
+			<label class="i18n">__MSG_enableShortcut__</label>
 			<br /><br />
 			<input id="ctrl" type="checkbox">Ctrl</input>+
 			<input id="alt" type="checkbox">Alt</input>+
@@ -254,8 +255,9 @@
 				<option value="z">Z</option>
 			</select>
 
-			<h3 style="margin-top:30px;">__MSG_newTab__</h3>
-			<input id="newtab" type="checkbox">__MSG_yesMessage__</input>
+			<h3 class="i18n" style="margin-top:30px;">__MSG_newTab__</h3>
+			<input id="newtab" class="i18n" type="checkbox"></input>
+			<label class="i18n">__MSG_yesMessage__</label>
 			<!-- <h3 style="margin-top:30px;">选择谷歌：</h3>
 			<br /><br />
 			<input id=".com" type="radio" name="google">谷歌全球</input>
@@ -264,35 +266,38 @@
 			<input id="part_baidugoogle" type="radio" name="part">百度&lt=&gt谷歌</input>
 			<input id="part_binggoogle" type="radio" name="part">必应&lt=&gt谷歌</input> -->
 
-			<h3 style="margin-top:30px;">__MSG_customSite__</h3>
-			__MSG_sitesAdded__<br />
+			<h3 class="i18n" style="margin-top:30px;">__MSG_customSite__</h3>
+			<label class="i18n">__MSG_sitesAdded__</label><br />
 			<div id="usersites"></div>
 
-			<h3 style="margin-top:10px;">__MSG_addSite__</h3>
+			<h3 class="i18n" style="margin-top:10px;">__MSG_addSite__</h3>
 			<div id="addsite">
-				<span class="tip">__MSG_nameMessage__</span><input id="site_name" type="text"
-					placeholder="__MSG_toutiao__"></input><br />
-				<span class="tip">__MSG_siteHomepage__</span><input id="site_home" type="text"
-					placeholder="__MSG_example__https://www.toutiao.com" title="__MSG_tip1__"></input><br />
-				<span class="tip">__MSG_searchURL__</span><input id="site_searchurl" type="text"
+				<span class="tip i18n">__MSG_nameMessage__</span>
+				<input class="i18n" id="site_name" type="text" placeholder="__MSG_toutiao__"></input><br />
+				<span class="tip i18n">__MSG_siteHomepage__</span>
+				<input class="i18n" id="site_home" type="text" placeholder="__MSG_example__https://www.toutiao.com"
+					title="__MSG_tip1__"></input><br />
+				<span class="tip i18n">__MSG_searchURL__</span>
+				<input class="i18n" id="site_searchurl" type="text"
 					placeholder="__MSG_example__https://so.toutiao.com/search?dvpf=pc&keyword=%s"
-					title="__MSG_tip2__"></input><br />
+					title="__MSG_tip2__"></input>
+				<br />
 				<!-- <input type="file" id="custom_icon_input" style="margin:0; width:0; height: 0; opacity: 0;">
 					<div style="height:1px;"></div>
 					<button id="custom_select_icon" style="vertical-align: top;">选择图标</button>
 					<div id="custom_preview" class="icon_preview"></div><br /> -->
-				<button id="site_add">__MSG_successAdd__</button> <span class="add-tip"></span>
+				<button id="site_add" class="i18n">__MSG_successAdd__</button> <span class="add-tip"></span>
 			</div>
 		</div>
 
 		<div id="right">
-			<h3 style="margin-top:30px;">__MSG_switchSetting__</h3>
+			<h3 class="i18n" style="margin-top:30px;">__MSG_switchSetting__</h3>
 			<div id="ways"></div>
 
 		</div>
 
 	</div>
-	<button id="save">__MSG_saveMessage__</button>
+	<button id="save" class="i18n">__MSG_saveMessage__</button>
 
 	<script src="js/options.js"></script>
 </body>
