@@ -1,6 +1,6 @@
 (function () {
   var OOP = {};
-  window.OOP = OOP;
+  self.OOP = OOP;
   var isNumber = function (obj) {
     return !!(obj === 0 || (obj && obj.toExponential && obj.toFixed));
   };
@@ -76,10 +76,10 @@
 
 })();
 
-window.Class = OOP.Class;
-window.Extend = OOP.Extend;
-window.ObjectClass = function () { };
-window.ObjectClass.prototype = {
+self.Class = OOP.Class;
+self.Extend = OOP.Extend;
+self.ObjectClass = function () { };
+self.ObjectClass.prototype = {
   constructor: function () { },
   equals: function (that) {
     return this === that;

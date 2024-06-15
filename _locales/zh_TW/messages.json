@@ -1,0 +1,143 @@
+{
+   "extName": {
+      "message": "一鍵切換"
+   },
+   "defaultTitle": {
+      "message": "一鍵切換"
+   },
+   "description": {
+      "message": "網站間的快速切換，保留搜尋內容繼續搜尋。可以通過按鈕或者快捷鍵切換。支持自訂搜尋網站。移植於已下架的Chrome同名擴展。"
+   },
+   "noswitch": {
+      "message": "不切換"
+   },
+   "deleteUserSite": {
+      "message": "刪除自訂網站："
+   },
+   "warningUserSite": {
+      "message": "請補充網站信息!"
+   },
+   "warningURL": {
+      "message": "請檢查搜尋地址，關鍵字部分用%s替代"
+   },
+   "warningShortcut": {
+      "message": "請選擇控制鍵"
+   },
+   "successSav": {
+      "message": "保存成功"
+   },
+   "Search": {
+      "message": "搜尋"
+   },
+   "Baidu": {
+      "message": "百度"
+   },
+   "Google": {
+      "message": "Google"
+   },
+   "Bing": {
+      "message": "Bing"
+   },
+   "Youku": {
+      "message": "優酷搜庫"
+   },
+   "Douyin": {
+      "message": "抖音視頻"
+   },
+   "BaiduVideo": {
+      "message": "百度視頻"
+   },
+   "BaiduBaike": {
+      "message": "百度百科"
+   },
+   "WikiCN": {
+      "message": "維基百科中文"
+   },
+   "Bilibili": {
+      "message": "嗶哩嗶哩"
+   },
+   "Zhihu": {
+      "message": "知乎"
+   },
+   "Taobao": {
+      "message": "淘寶"
+   },
+   "Jingdong": {
+      "message": "京東"
+   },
+   "Douban": {
+      "message": "豆瓣"
+   },
+   "Smzdm": {
+      "message": "什麼值得買"
+   },
+   "iconNative": {
+      "message": "原生"
+   },
+   "iconNested": {
+      "message": "嵌套"
+   },
+   "iconMasked": {
+      "message": "遮罩"
+   },
+   "optionTitle": {
+      "message": "一鍵切換－選項"
+   },
+   "optionMessage": {
+      "message": "選項"
+   },
+   "iconStyle": {
+      "message": "按鈕樣式："
+   },
+   "shortcut": {
+      "message": "快捷鍵："
+   },
+   "enableShortcut": {
+      "message": "啟用快捷鍵"
+   },
+   "newTab": {
+      "message": "新標籤頁打開："
+   },
+   "yesMessage": {
+      "message": "是"
+   },
+   "customSite": {
+      "message": "自訂網站："
+   },
+   "sitesAdded": {
+      "message": "已添加網站："
+   },
+   "addSite": {
+      "message": "添加網站："
+   },
+   "nameMessage": {
+      "message": "名稱："
+   },
+   "toutiao": {
+      "message": "如：頭條搜尋"
+   },
+   "siteHomepage": {
+      "message": "網站主頁："
+   },
+   "example": {
+      "message": "如："
+   },
+   "tip1": {
+      "message": "無搜尋關鍵字時切換到對方主頁"
+   },
+   "searchURL": {
+      "message": "搜尋地址："
+   },
+   "tip2": {
+      "message": "關鍵字用%s替代"
+   },
+   "successAdd": {
+      "message": "完成添加"
+   },
+   "switchSetting": {
+      "message": "切換設置："
+   },
+   "saveMessage": {
+      "message": "保存"
+   }
+}

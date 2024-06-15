@@ -3,37 +3,38 @@
     return;
   }
   window.__shortcut__ = true;
-  var az = "abcdefghijklmnopqrstuvwxyz";
+
+  const az = "abcdefghijklmnopqrstuvwxyz";
 
   function keydown(e) {
-    var alt = e.altKey,
-      ctrl = e.ctrlKey,
-      shift = e.shiftKey;
-    var keycode = e.keyCode;
-    if (!alt && !ctrl && !shift) return;
-    if (keycode >= 48 && keycode <= 57) {
-      keycode -= 48;
-    } else if (keycode >= 65 && keycode <= 90) {
-      keycode = az.charAt(keycode - 65);
+    const { altKey, ctrlKey, shiftKey, keyCode } = e;
+    if (!altKey && !ctrlKey && !shiftKey) return;
+
+    let keycode;
+    if (keyCode >= 48 && keyCode <= 57) {
+      keycode = keyCode - 48;
+    } else if (keyCode >= 65 && keyCode <= 90) {
+      keycode = az.charAt(keyCode - 65);
     } else {
-      keycode = null;
+      return;
     }
-    if (keycode === null) return;
-    var s = "";
-    if (ctrl) s += "ctrl+";
-    if (alt) s += "alt+";
-    if (shift) s += "shift+";
-    s += keycode;
-    onShortcut(s);
+    const modifiers = [
+      ctrlKey ? "ctrl+" : "",
+      altKey ? "alt+" : "",
+      shiftKey ? "shift+" : "",
+    ].join("");
+    const shortcut = modifiers + keycode;
+    onShortcut(shortcut);
   }
 
-  function onShortcut(s) {
+  function onShortcut(shortcut) {
     if (chrome.runtime.sendMessage) {
       chrome.runtime.sendMessage({
         action: 'shortcut',
-        value: s
+        value: shortcut
       });
     }
   }
+
   document.addEventListener("keydown", keydown, false);
 })();
