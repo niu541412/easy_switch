@@ -1,0 +1,143 @@
+{
+   "extName": {
+      "message": "一键切换"
+   },
+   "defaultTitle": {
+      "message": "一键切换"
+   },
+   "description": {
+      "message": "网站间的快速切换，保留搜索内容继续搜索。可以通过按钮或者快捷键切换。支持自定义搜索网站。移植于已下架的Chrome同名扩展。"
+   },
+   "noswitch": {
+      "message": "不切换"
+   },
+   "deleteUserSite": {
+      "message": "删除自定义网站："
+   },
+   "warningUserSite": {
+      "message": "请补充网站信息!"
+   },
+   "warningURL": {
+      "message": "请检查搜索地址，关键字部分用%s代替"
+   },
+   "warningShortcut":{
+      "message": "请选择控制键"
+   },
+   "successSav":{
+      "message": "保存成功"
+   },
+   "Search": {
+      "message": "搜索"
+   },
+   "Baidu": {
+      "message": "百度"
+   },
+   "Google": {
+      "message": "谷歌"
+   },
+   "Bing": {
+      "message": "必应"
+   },
+   "Youku": {
+      "message": "优酷搜库"
+   },
+   "Douyin": {
+      "message": "抖音视频"
+   },
+   "BaiduVideo": {
+      "message": "百度视频"
+   },
+   "BaiduBaike": {
+      "message": "百度百科"
+   },
+   "WikiCN": {
+      "message": "维基百科中文"
+   },
+   "Bilibili": {
+      "message": "哔哩哔哩"
+   },
+   "Zhihu": {
+      "message": "知乎"
+   },
+   "Taobao": {
+      "message": "淘宝"
+   },
+   "Jingdong": {
+      "message": "京东"
+   },
+   "Douban": {
+      "message": "豆瓣"
+   },
+   "Smzdm": {
+      "message": "什么值得买"
+   },
+   "iconNative": {
+      "message": "原生"
+   },
+   "iconNested": {
+      "message": "嵌套"
+   },
+   "iconMasked": {
+      "message": "遮罩"
+   },
+   "optionTitle": {
+      "message": "一键切换－选项"
+   },
+   "optionMessage": {
+      "message": "选项"
+   },
+   "iconStyle": {
+      "message": "按钮样式："
+   },
+   "shortcut": {
+      "message": "快捷键："
+   },
+   "enableShortcut": {
+      "message": "启用快捷键"
+   },
+   "newTab": {
+      "message": "新标签页打开："
+   },
+   "yesMessage": {
+      "message": "是"
+   },
+   "customSite": {
+      "message": "自定义网站："
+   },
+   "sitesAdded": {
+      "message": "已添加网站："
+   },
+   "addSite": {
+      "message": "添加网站："
+   },
+   "nameMessage": {
+      "message": "名称："
+   },
+   "toutiao": {
+      "message": "如：头条搜索"
+   },
+   "siteHomepage": {
+      "message": "网站主页："
+   },
+   "example": {
+      "message": "如："
+   },
+   "tip1": {
+      "message": "无搜索关键字时切换到对方主页"
+   },
+   "searchURL": {
+      "message": "搜索地址："
+   },
+   "tip2": {
+      "message": "关键字用%s代替"
+   },
+   "successAdd": {
+      "message": "完成添加"
+   },
+   "switchSetting": {
+      "message": "切换设置："
+   },
+   "saveMessage": {
+      "message": "保存"
+   }
+}

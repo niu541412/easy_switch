@@ -1,6 +1,5 @@
-
 const Baidu = new SearchSite({
-    name: '百度',
+    name: 'Baidu',
     icon: 'icon/baidu.png',
     tip: '百度一下',
     home: 'https://www.baidu.com/',
@@ -14,7 +13,7 @@ const Baidu = new SearchSite({
     }]
 });
 const Bing = new SearchSite({
-    name: '必应',
+    name: 'Bing',
     icon: 'icon/bing.png',
     home: 'https://cn.bing.com/',
     matches: ['//www\\.bing\\.com', '//cn\\.bing\\.com'],
@@ -26,7 +25,7 @@ const Bing = new SearchSite({
     }]
 });
 const Google = new SearchSite({
-    name: '谷歌',
+    name: 'Google',
     icon: 'icon/google.png',
     home: 'https://www.google.com/',
     searchUrl: 'https://www.google.com/search?newwindow=1&hl=zh-CN&q=%s',
@@ -40,34 +39,34 @@ const Google = new SearchSite({
     }]
 });
 const Youku = new SearchSite({
-    name: '优酷搜库',
+    name: 'Youku',
     icon: 'icon/youku.png',
     home: 'http://www.youku.com/',
     searchUrl: 'http://www.soku.com/v?keyword=%s',
     matches: ['www\\.soku\\.com']
 });
 const Douyin = new SearchSite({
-    name: '抖音视频',
+    name: 'Douyin',
     icon: 'icon/douyin.png',
     home: 'https://www.douyin.com/',
     searchUrl: 'https://www.douyin.com/search/%s',
     matches: ['www\\.douyin\\.com']
 });
 const BaiduVideo = new SearchSite({
-    name: '百度视频',
+    name: 'BaiduVideo',
     icon: 'icon/haokan.png',
     home: 'http://v.baidu.com/',
     matches: ['//(video|v)\\.baidu\\.com'],
     searchUrl: 'http://v.baidu.com/v?word=%s&ie=utf-8'
 });
 const BaiduBaike = new SearchSite({
-    name: '百度百科',
+    name: 'BaiduBaike',
     icon: 'icon/baike.png',
     home: 'http://baike.baidu.com/',
     searchUrl: 'http://baike.baidu.com/search?word=%s&pn=0&rn=0&enc=utf8',
 });
 const Wiki = new SearchSite({
-    name: '维基百科中文',
+    name: 'WikiCN',
     icon: 'icon/wiki.png',
     home: 'https://zh.wikipedia.org/',
     searchUrl: 'https://zh.wikipedia.org/zh-cn/%s',
@@ -83,28 +82,28 @@ const Wikiwand = new SearchSite({
     q: 'wiki'
 });
 const Bilibili = new SearchSite({
-    name: '哔哩哔哩',
+    name: 'Bilibili',
     icon: 'icon/bilibili.png',
     home: 'https://www.bilibili.com/',
     searchUrl: 'https://search.bilibili.com/all?keyword=%s',
     matches: ['//search\\.bilibili\\.com']
 });
 const Zhihu = new SearchSite({
-    name: '知乎',
+    name: 'Zhihu',
     icon: 'icon/zhihu.png',
     home: 'https://www.zhihu.com/',
     searchUrl: 'https://www.zhihu.com/search?q=%s',
     matches: ['//[\\w]*\\.zhihu\\.com']
 });
 const Taobao = new SearchSite({
-    name: '淘宝',
+    name: 'Taobao',
     icon: 'icon/taobao.png',
     home: 'https://www.taobao.com',
     searchUrl: 'https://s.taobao.com/search?q=%s',
     matches: ['//[\\w]*\\.taobao\\.com']
 });
 const Jingdong = new SearchSite({
-    name: '京东',
+    name: 'Jingdong',
     icon: 'icon/jd.png',
     home: 'https://www.jd.com/',
     searchUrl: 'https://search.jd.com/Search?keyword=%s&enc=utf-8',
@@ -118,14 +117,14 @@ const Github = new SearchSite({
     matches: ['//[\\w\\.]*github\\.com.*search']
 });
 const Douban = new SearchSite({
-    name: '豆瓣',
+    name: 'Douban',
     icon: 'icon/douban.png',
     home: 'https://www.douban.com/',
     searchUrl: 'https://www.douban.com/search?q=%s',
     matches: ['//[\\w]*\\.douban\\.com']
 });
 const Smzdm = new SearchSite({
-    name: '什么值得买',
+    name: 'Smzdm',
     icon: 'icon/smzdm.png',
     home: 'https://www.smzdm.com/',
     searchUrl: 'https://search.smzdm.com/?s=%s',

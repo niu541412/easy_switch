@@ -17,7 +17,7 @@ var SearchSite = Class(ObjectClass, {
   },
   // 获取提示语
   getTip: function () {
-    return this.ps.tip || this.ps.name + '搜索';
+    return this.ps.tip || this.ps.name + getI18n('Search');
   },
   // 获取参数名
   getQ: function () {
@@ -473,6 +473,10 @@ var OneClick = Class(ObjectClass, {
     })
   }
 });
+
+function getI18n(m) {
+  return chrome.i18n.getMessage(m);
+}
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 var App = new OneClick();

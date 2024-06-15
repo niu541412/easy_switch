@@ -9,21 +9,22 @@
          "js/builtin.js"
       ]
    },
+   "default_locale": "en",
    "content_scripts": [],
    "content_security_policy": "script-src 'self' ; object-src 'self'; img-src https://*.gstatic.com https://*.gstatic.cn chrome://favicon;",
-   "description": "网站间的快速切换，保留搜索内容继续搜索。移植自Chrome同名扩展，原扩展已下架，并添加同步，以及更多默认搜索网站。",
+   "description": "__MSG_description__",
    "icons": {
       "128": "icon128.png"
    },
    "manifest_version": 2,
-   "name": "一键切换",
+   "name": "__MSG_extName__",
    "options_ui": {
       "open_in_tab": true,
       "page": "options.html"
    },
    "page_action": {
       "default_icon": "icon128.png",
-      "default_title": "一键切换"
+      "default_title": "__MSG_defaultTitle__"
    },
    "permissions": [
       "chrome://favicon/",
@@ -32,6 +33,6 @@
       "activeTab",
       "*://*/*"
    ],
-   "short_name": "一键切换",
-   "version": "2.4.6"
+   "short_name": "__MSG_extName__",
+   "version": "2.5.0"
 }

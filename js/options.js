@@ -8,11 +8,32 @@ function handleSave() {
   saveNewTab();
   // saveGoogle();
   saveArrow();
-  alert('保存成功');
+  alert(getI18n("successSav"));
 }
 
 function byId(id) {
   return document.getElementById(id);
+}
+
+function getI18n(m) {
+  return chrome.i18n.getMessage(m);
+}
+
+function localizeHtmlPage() {
+  //Localize by replacing __MSG_***__ meta tags
+  var objects = document.getElementsByTagName('html');
+  for (var j = 0; j < objects.length; j++) {
+    var obj = objects[j];
+
+    var valStrH = obj.innerHTML.toString();
+    var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function (match, v1) {
+      return v1 ? chrome.i18n.getMessage(v1) : "";
+    });
+
+    if (valNewH != valStrH) {
+      obj.innerHTML = valNewH;
+    }
+  }
 }
 
 function revierwShortcut() {
@@ -50,7 +71,7 @@ function saveButtonIcon() {
 function saveShortcut() {
   chrome.storage.sync.set({ 'useshortcut': (byId('useshortcut').checked ? '1' : '0') });
   if (!ctrl.checked && !alt.checked && !shift.checked) {
-    alert("请选择控制键(ctrl/alt/shift)");
+    alert(getI18n("warningShortcut") + "(ctrl/alt/shift)");
     return false;
   }
   var s = "";
@@ -146,8 +167,12 @@ function initButtonIcon() {
 }
 
 function init() {
+  var manifestData = chrome.runtime.getManifest();
+  byId('ver').textContent = `v${manifestData.version}`;
+
   byId('save').onclick = handleSave;
 
+  localizeHtmlPage();
   initButtonIcon();
   initShortCut();
 
@@ -197,7 +222,7 @@ function initUserSites() {
   byId('usersites').addEventListener('click', function (event) {
     if (event.target.classList.contains('delete')) {
       var siteName = event.target.getAttribute('data-site');
-      var r = confirm('删除自定义网站:' + siteName);
+      var r = confirm(getI18n("deleteUserSite") + siteName);
       if (r) {
         var site = Sites.getSiteByName(siteName);
         Sites.removeUserSite(siteName);
@@ -214,12 +239,12 @@ function addUserSiteClick() {
   var home = byId('site_home').value;
   var searchurl = byId('site_searchurl').value;
   if (!name || !home || !searchurl) {
-    alert('请补充网站信息!');
+    alert(getI18n("warningUserSite"));
     return;
   }
   var q = searchurl.match(/(\w+)[\W_]%s/);
   if (!q) {
-    alert('请检查搜索地址，关键字部分用%s代替');
+    alert(getI18n("warningURL"));
     return;
   }
   q = q[1];
@@ -318,7 +343,7 @@ function getToSiteHtml(allSites, from, to) {
   html.name = name;
   var html_option = document.createElement('option');
   html_option.value = '';
-  html_option.text = '不切换';
+  html_option.text = getI18n("noswitch");
   if (to == null)
     html_option.setAttribute('selected', true);
   html.appendChild(html_option);
@@ -327,7 +352,7 @@ function getToSiteHtml(allSites, from, to) {
       continue;
     var siteOption = document.createElement('option');
     siteOption.value = allSites[i].getName();
-    siteOption.text = allSites[i].getName();
+    siteOption.text = getI18n(allSites[i].getName()) || allSites[i].getName();
     html.appendChild(siteOption);
   }
   if (to != null) {
@@ -367,7 +392,8 @@ function initWays() {
   const waysElement = byId('ways');
   for (var i = 0; i < allSites.length; i++) {
     way = Ways.findWayBySite(allSites[i]);
-    var name = "　" + getFixlengthName(allSites[i].getName(), 10);
+    const fromName = getI18n(allSites[i].getName()) || allSites[i].getName();
+    var name = "　" + getFixlengthName(fromName, 10);
     var wayDiv = getPairSiteHtml(allSites[i].getIcon(), name, getToSiteHtml(allSites, allSites[i], way && way.getTo()));
     waysElement.appendChild(wayDiv);
   }

@@ -1,0 +1,140 @@
+{
+   "extName": {
+      "message": "Easy Switch"
+   },
+   "defaultTitle": {
+      "message": "Easy Switch"
+   },
+   "description": {
+      "message": "Easily switching between websites, retaining search content for continued searching. You can switch using buttons or shortcuts. Supports custom search websites. Ported from a discontinued Chrome extension with the same name."
+   },
+   "noswitch": {
+      "message": "No switch"
+   },
+   "deleteUserSite": {
+      "message": "Delete custom site:"
+   },
+   "warningUserSite": {
+      "message": "Please provide website information!"
+   },
+   "warningURL": {
+      "message": "Please check the search URL, replacing the keyword part with %s"
+   },
+   "warningShortcut": {
+      "message": "Please select keys "
+   },
+   "successSav": {
+      "message": "Saved successfully"
+   },
+   "Search": {
+      "message": "Search"
+   },
+   "Baidu": {
+      "message": "Baidu"
+   },
+   "Google": {
+      "message": "Google"
+   },
+   "Bing": {
+      "message": "Bing"
+   },
+   "Youku": {
+      "message": "Youku"
+   },
+   "Douyin": {
+      "message": "Douyin"
+   },
+   "BaiduVideo": {
+      "message": "Baidu Video"
+   },
+   "BaiduBaike": {
+      "message": "Baidu Baike"
+   },
+   "WikiCN": {
+      "message": "Wikipedia CN"
+   },
+   "Bilibili": {
+      "message": "Bilibili"
+   },
+   "Zhihu": {
+      "message": "Zhihu"
+   },
+   "Taobao": {
+      "message": "Taobao"
+   },
+   "Jingdong": {
+      "message": "JD.com"
+   },
+   "Douban": {
+      "message": "Douban"
+   },
+   "iconNative": {
+      "message": "Native"
+   },
+   "iconNested": {
+      "message": "Nested"
+   },
+   "iconMasked": {
+      "message": "Masked"
+   },
+   "optionTitle": {
+      "message": "Easy Switch - Options"
+   },
+   "optionMessage": {
+      "message": "Options"
+   },
+   "iconStyle": {
+      "message": "Button Style:"
+   },
+   "shortcut": {
+      "message": "Shortcut:"
+   },
+   "enableShortcut": {
+      "message": "Enable Shortcut"
+   },
+   "newTab": {
+      "message": "Open in New Tab:"
+   },
+   "yesMessage": {
+      "message": "Yes"
+   },
+   "customSite": {
+      "message": "Custom Site:"
+   },
+   "sitesAdded": {
+      "message": "Sites Added:"
+   },
+   "addSite": {
+      "message": "Add New Site:"
+   },
+   "nameMessage": {
+      "message": "Name: "
+   },
+   "toutiao": {
+      "message": "e.g., Toutiao Search"
+   },
+   "siteHomepage": {
+      "message": "Site Homepage: "
+   },
+   "example": {
+      "message": "e.g., "
+   },
+   "tip1": {
+      "message": "Switch to the homepage when there is no search keyword"
+   },
+   "searchURL": {
+      "message": "Search URL: "
+   },
+   "tip2": {
+      "message": "Replace keyword with %s"
+   },
+   "successAdd": {
+      "message": "Add"
+   },
+   "switchSetting": {
+      "message": "Switch Setting:"
+   },
+   "saveMessage": {
+      "message": "Save"
+   }
+}

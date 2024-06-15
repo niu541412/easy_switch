@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>一键切换－选项</title>
+	<title>__MSG_optionTitle__</title>
 	<style type="text/css">
 		/* @font-face {
 			font-family: "Smiley Sans Oblique";
@@ -83,8 +83,21 @@
 
 		#container h2 {
 			margin: 0 auto;
-			width: 100px;
+			width: 700px;
 			font-size: x-large;
+			text-align: center;
+			position: relative;
+		}
+
+		#ver {
+			font-size: small;
+			position: absolute;
+			bottom: 0;
+			right: 0;
+		}
+
+		#usersites {
+			margin-left: 2%;
 		}
 
 		#addsite {
@@ -183,19 +196,21 @@
 
 <body>
 	<div id="container">
-		<h2>选项</h2>
+		<h2>__MSG_optionMessage__
+			<a id="ver" href="https://github.com/niu541412/easy_switch" target="_blank"></a>
+		</h2>
 		<hr />
 
 		<div id="left">
-			<h3 style="margin-top:30px;">按钮样式：</h3>
+			<h3 style="margin-top:30px;">__MSG_iconStyle__</h3>
 
 			<div class="radio-container">
 				<input type="radio" name="button" id="nativeicon" value="0">
-				<label for="nativeicon">原生</label>
+				<label for="nativeicon">__MSG_iconNative__</label>
 				<input type="radio" name="button" id="overlapicon" value="1">
-				<label for="overlapicon">叠加</label>
+				<label for="overlapicon">__MSG_iconNested__</label>
 				<input type="radio" name="button" id="maskicon" value="2">
-				<label for="maskicon">遮罩</label>
+				<label for="maskicon">__MSG_iconMasked__</label>
 
 				<div class="image-container">
 					<img id="native-icon" src="icon/google.png" alt="Native Icon">
@@ -204,8 +219,8 @@
 				</div>
 			</div>
 
-			<h3 style="margin-top:30px;">快捷键：</h3>
-			<input id="useshortcut" type="checkbox">启用快捷键</input>
+			<h3 style="margin-top:30px;">__MSG_shortcut__</h3>
+			<input id="useshortcut" type="checkbox">__MSG_enableShortcut__</input>
 			<br /><br />
 			<input id="ctrl" type="checkbox">Ctrl</input>+
 			<input id="alt" type="checkbox">Alt</input>+
@@ -239,8 +254,8 @@
 				<option value="z">Z</option>
 			</select>
 
-			<h3 style="margin-top:30px;">新标签页打开：</h3>
-			<input id="newtab" type="checkbox">是</input>
+			<h3 style="margin-top:30px;">__MSG_newTab__</h3>
+			<input id="newtab" type="checkbox">__MSG_yesMessage__</input>
 			<!-- <h3 style="margin-top:30px;">选择谷歌：</h3>
 			<br /><br />
 			<input id=".com" type="radio" name="google">谷歌全球</input>
@@ -249,33 +264,35 @@
 			<input id="part_baidugoogle" type="radio" name="part">百度&lt=&gt谷歌</input>
 			<input id="part_binggoogle" type="radio" name="part">必应&lt=&gt谷歌</input> -->
 
-			<h3 style="margin-top:30px;">自定义网站：</h3>
-			已添加网站：<br />
+			<h3 style="margin-top:30px;">__MSG_customSite__</h3>
+			__MSG_sitesAdded__<br />
 			<div id="usersites"></div>
 
-			<h3 style="margin-top:10px;">添加网站：</h3>
+			<h3 style="margin-top:10px;">__MSG_addSite__</h3>
 			<div id="addsite">
-				<span class="tip">名称：</span><input id="site_name" type="text" placeholder="如：头条搜索"></input><br />
-				<span class="tip">网站主页：</span><input id="site_home" type="text" placeholder="如：https://www.toutiao.com/"
-					title="无搜索关键字时切换到对方主页"></input><br />
-				<span class="tip">搜索地址：</span><input id="site_searchurl" type="text"
-					placeholder="如：https://so.toutiao.com/search?dvpf=pc&keyword=%s" title="关键字用%s代替"></input><br />
+				<span class="tip">__MSG_nameMessage__</span><input id="site_name" type="text"
+					placeholder="__MSG_toutiao__"></input><br />
+				<span class="tip">__MSG_siteHomepage__</span><input id="site_home" type="text"
+					placeholder="__MSG_example__https://www.toutiao.com" title="__MSG_tip1__"></input><br />
+				<span class="tip">__MSG_searchURL__</span><input id="site_searchurl" type="text"
+					placeholder="__MSG_example__https://so.toutiao.com/search?dvpf=pc&keyword=%s"
+					title="__MSG_tip2__"></input><br />
 				<!-- <input type="file" id="custom_icon_input" style="margin:0; width:0; height: 0; opacity: 0;">
 					<div style="height:1px;"></div>
 					<button id="custom_select_icon" style="vertical-align: top;">选择图标</button>
 					<div id="custom_preview" class="icon_preview"></div><br /> -->
-				<button id="site_add">完成添加</button> <span class="add-tip"></span>
+				<button id="site_add">__MSG_successAdd__</button> <span class="add-tip"></span>
 			</div>
 		</div>
 
 		<div id="right">
-			<h3 style="margin-top:30px;">切换设置：</h3>
+			<h3 style="margin-top:30px;">__MSG_switchSetting__</h3>
 			<div id="ways"></div>
 
 		</div>
 
 	</div>
-	<button id="save">保存</button>
+	<button id="save">__MSG_saveMessage__</button>
 
 	<script src="js/options.js"></script>
 </body>
