@@ -8,7 +8,7 @@
    "description": {
       "message": "网站间的快速切换，保留搜索内容继续搜索。可以通过按钮或者快捷键切换。支持自定义搜索网站。移植于已下架的Chrome同名扩展。"
    },
-   "noswitch": {
+   "noSwitch": {
       "message": "不切换"
    },
    "deleteUserSite": {
@@ -109,6 +109,9 @@
    },
    "addSite": {
       "message": "添加网站："
+   },
+   "addFail":{
+      "message": "添加失败！"
    },
    "nameMessage": {
       "message": "名称："

@@ -312,8 +312,11 @@ function addUserSiteClick() {
     if (getHost(ps.home) != getHost(ps.searchUrl)) {
       ps.matches = [getMatch(ps.home), getMatch(ps.searchUrl)];
     }
-    Sites.addUserSite(ps);
-    location.reload();
+    if (Sites.addUserSite(ps)) {
+      location.reload();
+    } else {
+      alert(getI18n("addFail"));
+    }
   }
 }
 
@@ -354,7 +357,7 @@ function getToSiteHtml(allSites, from, to) {
   html.name = name;
   var html_option = document.createElement('option');
   html_option.value = '';
-  html_option.text = getI18n("noswitch");
+  html_option.text = getI18n("noSwitch");
   if (to == null)
     html_option.setAttribute('selected', true);
   html.appendChild(html_option);
