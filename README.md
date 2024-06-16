@@ -13,7 +13,7 @@
 ## 下载地址
 
  [Chrome 商店](https://chrome.google.com/webstore/detail/pchjdhcdlgghofamcpncdlhdonbeaplk)
- ，[Firefox Addon](https://addons.mozilla.org/zh-CN/firefox/addon/%E4%B8%80%E9%94%AE%E5%88%87%E6%8D%A2%E6%90%9C%E7%B4%A2/)
+ ，[Firefox Addon](https://addons.mozilla.org/zh-CN/firefox/addon/esay_switch)
  ，[Edge商店](https://microsoftedge.microsoft.com/addons/detail/jijkhdficgnnikdijnkienfnmfbolmpb)
 
 > 由于本人不用Edge，所以不保证Edge版本可以正常工作，仅保持和另外两个版本代码一致。
