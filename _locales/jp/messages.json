@@ -1,0 +1,146 @@
+{
+   "extName": {
+      "message": "一键切り替え"
+   },
+   "defaultTitle": {
+      "message": "一键切り替え"
+   },
+   "description": {
+      "message": "ウェブサイト間の高速切り替えを行い、検索内容を保持して検索を続けます。ボタンまたはショートカットキーで切り替え可能です。カスタム検索サイトに対応。廃止されたChromeの同名拡張機能から移植されました。"
+   },
+   "noSwitch": {
+      "message": "切り替えなし"
+   },
+   "deleteUserSite": {
+      "message": "カスタムサイトを削除："
+   },
+   "warningUserSite": {
+      "message": "ウェブサイト情報を補完してください！"
+   },
+   "warningURL": {
+      "message": "検索URLを確認し、キーワード部分を%sに置き換えてください"
+   },
+   "warningShortcut": {
+      "message": "コントロールキーを選択してください"
+   },
+   "successSav": {
+      "message": "保存に成功しました"
+   },
+   "Search": {
+      "message": "検索"
+   },
+   "Baidu": {
+      "message": "百度"
+   },
+   "Google": {
+      "message": "グーグル"
+   },
+   "Bing": {
+      "message": "ビング"
+   },
+   "Youku": {
+      "message": "优酷"
+   },
+   "Douyin": {
+      "message": "抖音"
+   },
+   "BaiduVideo": {
+      "message": "百度视频"
+   },
+   "BaiduBaike": {
+      "message": "百度百科"
+   },
+   "WikiCN": {
+      "message": "ウィキペディア中国語"
+   },
+   "Bilibili": {
+      "message": "哔哩哔哩"
+   },
+   "Zhihu": {
+      "message": "知乎"
+   },
+   "Taobao": {
+      "message": "淘宝"
+   },
+   "Jingdong": {
+      "message": "京东"
+   },
+   "Douban": {
+      "message": "豆瓣"
+   },
+   "Smzdm": {
+      "message": "什么值得买"
+   },
+   "iconNative": {
+      "message": "ネイティブ"
+   },
+   "iconNested": {
+      "message": "ネスト"
+   },
+   "iconMasked": {
+      "message": "マスク"
+   },
+   "optionTitle": {
+      "message": "一键切り替え－オプション"
+   },
+   "optionMessage": {
+      "message": "オプション"
+   },
+   "iconStyle": {
+      "message": "ボタンのスタイル："
+   },
+   "shortcut": {
+      "message": "ショートカットキー："
+   },
+   "enableShortcut": {
+      "message": "ショートカットキーを有効にする"
+   },
+   "newTab": {
+      "message": "新しいタブで開く："
+   },
+   "yesMessage": {
+      "message": "はい"
+   },
+   "customSite": {
+      "message": "カスタムサイト："
+   },
+   "sitesAdded": {
+      "message": "追加されたサイト："
+   },
+   "addSite": {
+      "message": "サイトを追加："
+   },
+   "addFail": {
+      "message": "追加に失敗しました！"
+   },
+   "nameMessage": {
+      "message": "名称："
+   },
+   "toutiao": {
+      "message": "例：头条検索"
+   },
+   "siteHomepage": {
+      "message": "サイトのホームページ："
+   },
+   "example": {
+      "message": "例："
+   },
+   "tip1": {
+      "message": "検索キーワードがない場合、相手のホームページに切り替えます"
+   },
+   "searchURL": {
+      "message": "検索URL："
+   },
+   "tip2": {
+      "message": "キーワードを%sに置き換えてください"
+   },
+   "successAdd": {
+      "message": "追加に成功しました"
+   },
+   "switchSetting": {
+      "message": "切り替え設定："
+   },
+   "saveMessage": {
+      "message": "保存"
+   }
+}

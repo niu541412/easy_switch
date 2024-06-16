@@ -1,0 +1,146 @@
+{
+   "extName": {
+      "message": "Cambio con un clic"
+   },
+   "defaultTitle": {
+      "message": "Cambio con un clic"
+   },
+   "description": {
+      "message": "Cambio rápido entre sitios web, manteniendo el contenido de búsqueda para continuar buscando. Puede cambiar usando botones o atajos de teclado. Soporta sitios de búsqueda personalizados. Adaptado de la extensión de Chrome con el mismo nombre, ahora descontinuada."
+   },
+   "noSwitch": {
+      "message": "No cambiar"
+   },
+   "deleteUserSite": {
+      "message": "Eliminar sitio personalizado:"
+   },
+   "warningUserSite": {
+      "message": "¡Por favor complete la información del sitio!"
+   },
+   "warningURL": {
+      "message": "Por favor verifique la dirección de búsqueda, reemplace la parte de palabra clave con %s"
+   },
+   "warningShortcut": {
+      "message": "Por favor seleccione una tecla de control"
+   },
+   "successSav": {
+      "message": "Guardado exitoso"
+   },
+   "Search": {
+      "message": "Buscar"
+   },
+   "Baidu": {
+      "message": "Baidu"
+   },
+   "Google": {
+      "message": "Google"
+   },
+   "Bing": {
+      "message": "Bing"
+   },
+   "Youku": {
+      "message": "Youku"
+   },
+   "Douyin": {
+      "message": "Douyin"
+   },
+   "BaiduVideo": {
+      "message": "Baidu Video"
+   },
+   "BaiduBaike": {
+      "message": "Baidu Baike"
+   },
+   "WikiCN": {
+      "message": "Wikipedia CN"
+   },
+   "Bilibili": {
+      "message": "Bilibili"
+   },
+   "Zhihu": {
+      "message": "Zhihu"
+   },
+   "Taobao": {
+      "message": "Taobao"
+   },
+   "Jingdong": {
+      "message": "JD.com"
+   },
+   "Douban": {
+      "message": "Douban"
+   },
+   "Smzdm": {
+      "message": "Smzdm"
+   },
+   "iconNative": {
+      "message": "Nativo"
+   },
+   "iconNested": {
+      "message": "Anidado"
+   },
+   "iconMasked": {
+      "message": "Enmascarado"
+   },
+   "optionTitle": {
+      "message": "Cambio con un clic - Opciones"
+   },
+   "optionMessage": {
+      "message": "Opciones"
+   },
+   "iconStyle": {
+      "message": "Estilo del botón:"
+   },
+   "shortcut": {
+      "message": "Atajo de teclado:"
+   },
+   "enableShortcut": {
+      "message": "Habilitar atajo de teclado"
+   },
+   "newTab": {
+      "message": "Abrir en nueva pestaña:"
+   },
+   "yesMessage": {
+      "message": "Sí"
+   },
+   "customSite": {
+      "message": "Sitio personalizado:"
+   },
+   "sitesAdded": {
+      "message": "Sitios agregados:"
+   },
+   "addSite": {
+      "message": "Agregar sitio:"
+   },
+   "addFail": {
+      "message": "¡Error al agregar!"
+   },
+   "nameMessage": {
+      "message": "Nombre:"
+   },
+   "toutiao": {
+      "message": "Ej: Toutiao"
+   },
+   "siteHomepage": {
+      "message": "Página principal del sitio:"
+   },
+   "example": {
+      "message": "Ej:"
+   },
+   "tip1": {
+      "message": "Cambiar a la página principal del otro sitio si no hay palabra clave"
+   },
+   "searchURL": {
+      "message": "Dirección de búsqueda:"
+   },
+   "tip2": {
+      "message": "Reemplace la palabra clave con %s"
+   },
+   "successAdd": {
+      "message": "Agregado exitosamente"
+   },
+   "switchSetting": {
+      "message": "Configuración de cambio:"
+   },
+   "saveMessage": {
+      "message": "Guardar"
+   }
+}
