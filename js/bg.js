@@ -337,30 +337,39 @@ var OneClick = Class(ObjectClass, {
       if (item.buttonicon) {
         // 图标按钮的样式，可以避免和其他扩展图标相同而分不清。
         // console.log("setting logo...");
-        var cvs = new OffscreenCanvas(32, 32);
-        var img = new Image();
-        if (isFirefox) img.crossOrigin = 'anonymous';
-        var ctx = cvs.getContext('2d');
-        switch (item.buttonicon) {
-          case '1':
-            img.onload = function () {
-              img_old = new Image();
-              if (isFirefox) img_old.crossOrigin = 'anonymous';
-              ctx.drawImage(img, 0, 0, 32, 32);
-              img_old.onload = function () {
-                ctx.drawImage(img_old, 16, 16, 16, 16);
-                chrome.pageAction.setIcon({
-                  imageData: { 32: ctx.getImageData(0, 0, 32, 32) },
-                  tabId: tab.id
+        const cvs = new OffscreenCanvas(32, 32);
+        const ctx = cvs.getContext('2d');
+
+        fetchImageBitmap(path, isFirefox, (imgBitmap) => {
+          if (!imgBitmap) {
+            console.error('Failed to load image');
+            return;
+          }
+          switch (item.buttonicon) {
+            case '1':
+              ctx.drawImage(imgBitmap, 0, 0, 32, 32);
+              try {
+                const from_url = new URL(tab.url);
+                const faviconPath = isFirefox ? "https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url="
+                  + from_url.origin : faviconURL(from_url.origin, 32);
+                fetchImageBitmap(faviconPath, isFirefox, (oldImgBitmap) => {
+                  if (!oldImgBitmap) {
+                    console.error('Failed to load small image');
+                    return;
+                  }
+                  ctx.drawImage(oldImgBitmap, 16, 16, 16, 16);
+                  const imageData = ctx.getImageData(0, 0, 32, 32);
+                  chrome.action.setIcon({
+                    imageData: { 32: imageData },
+                    tabId: tab.id
+                  });
                 });
-              };
-              var from_url = new URL(tab.url);
-              img_old.src = isFirefox ? "https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url=" + from_url.origin
-                : "chrome://favicon/size/32@1x/" + from_url.origin;
-            }
-            break;
-          case '2':
-            img.onload = function () {
+              } catch (error) {
+                console.error('Failed to create favicon:', error);
+              }
+              break;
+
+            case '2':
               ctx.globalAlpha = 0.8;
               ctx.roundRect(0, 0, 32, 32, 7.5);
               const gradient = ctx.createLinearGradient(16.5, 0, 16.5, 32);
@@ -369,37 +378,40 @@ var OneClick = Class(ObjectClass, {
               ctx.fillStyle = gradient;
               ctx.fill();
               ctx.globalAlpha = 1;
-              ctx.drawImage(img, 2, 2, 28, 28);
-              chrome.pageAction.setIcon({
-                imageData: { 32: ctx.getImageData(0, 0, 32, 32) },
+              ctx.drawImage(imgBitmap, 2, 2, 28, 28);
+
+              const imageData = ctx.getImageData(0, 0, 32, 32);
+              chrome.action.setIcon({
+                imageData: { 32: imageData },
                 tabId: tab.id
               });
-            }
-            break;
-        }
-        img.src = path;
+              break;
+          }
+        });
       } else {
-        chrome.pageAction.setIcon({
+        chrome.action.setIcon({
           path: { 32: path },
           tabId: tab.id
-        })
+        });
       }
-    })
+    });
   },
   swichSupport: function (tab, site) {
     this.setIogo(tab, site.getIcon());
-    chrome.pageAction.setTitle({
+    chrome.action.setTitle({
       tabId: tab.id,
       title: site.getTip()
     });
-    chrome.pageAction.show(tab.id);
+    // chrome.action.show(tab.id);@niu541412
     // shortcut support
     try {
       chrome.storage.sync.get('useshortcut', (item) => {
         if (item.useshotcut !== '0') {
-          chrome.tabs.executeScript(tab.id, {
-            file: "js/shortcut.js"
-          })
+          chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ["js/shortcut.js"]
+          }
+          )
         }
       })
     } catch (e) { }
@@ -410,20 +422,25 @@ var OneClick = Class(ObjectClass, {
       way;
     if (url.substr(0, 4) != 'http') {
       // no need to hide, chrome will hide it by default when update
-      // chrome.pageAction.hide(tab.id);
+      // chrome.action.hide(tab.id);
       return;
     }
     way = this.ways.findWay(tab.url);
     way && this.swichSupport(tab, way.getTo());
   },
   getKeywordAndSwitch: function (selector, tourl, tohome) {
-    var code = 'var keyword=document.querySelector("' + selector + '").value;' +
-      'var tourl="' + tourl + '".replace("%s",keyword);' +
-      'var tohome="' + tohome + '";' +
-      'window.location.href=keyword?tourl:tohome;'
-    chrome.tabs.executeScript({
-      code: code
-    });
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        func: (selector, tourl, tohome) => {
+          var keyword = document.querySelector(selector).value;
+          var tourlFinal = tourl.replace("%s", keyword);
+          var tohomeFinal = tohome;
+          window.location.href = keyword ? tourlFinal : tohomeFinal;
+        },
+        args: [selector, tourl, tohome]
+      })
+    })
   },
   switchAction: function (tab) {
     var way = this.ways.findWay(tab.url);
@@ -456,12 +473,14 @@ var OneClick = Class(ObjectClass, {
         });
       }
     });
-    chrome.pageAction.onClicked.addListener(function (tab) {
+    chrome.action.onClicked.addListener(function (tab) {
       the.switchAction(tab);
     });
-    chrome.runtime.onMessage.addListener(function (req, sender, res) {
-      if (req.action === "shortcut") {
-        var s = req.value;
+    var ways = Ways.getInstance();
+    var sites = Sites.getInstance();
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.action === "shortcut") {
+        var s = message.value;
         the.getShortcut().then((result) => {
           if (result == s) {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -469,8 +488,37 @@ var OneClick = Class(ObjectClass, {
             })
           }
         })
+      } else if (message.action === 'getSites') {
+        sendResponse({
+          sites: sites.getAllSites()
+        });
+      } else if (message.action === 'initWaysAndSites') {
+        sendResponse({ success: true });
+      } else if (message.action === 'getAllSites') {
+        const allSites = sites.getAllSites();
+        sendResponse({ allSites: allSites });
+      } else if (message.action === 'getUserSites') {
+        sites.getUserSites().then((userSites) => {
+          sendResponse(userSites);
+        });
+        return true;
+      } else if (message.action === 'findWayBySite') {
+        const way = ways.findWayBySite(sites.getAllSites()[message.siteIndex]);
+        sendResponse({ way: way });
+      } else if (message.action === 'removeUserSite') {
+        const siteName = message.siteName;
+        sites.removeUserSite(siteName);
+        sendResponse({ success: true });
+      } else if (message.action === 'addUserSite') {
+        const newSite = message.site;
+        sites.addUserSite(newSite);
+        sendResponse({ success: true });
+      } else if (message.action === 'saveWays') {
+        const newWay = message.ways;
+        ways.saveWays(newWay);
+        sendResponse({ success: true });
       }
-    })
+    });
   }
 });
 
@@ -479,6 +527,29 @@ function getI18n(m) {
 }
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
+function faviconURL(u, s) {
+  const url = new URL(chrome.runtime.getURL('/_favicon/'));
+  url.searchParams.set('pageUrl', u);
+  url.searchParams.set('size', s);
+  return url.toString();
+}
+
+function fetchImageBitmap(url, isFirefox, callback) {
+  const pattern = /^(https?|chrome(-extension)?|file|filesystem):\/\//;
+  // check url is a local file or not
+  if (!pattern.test(url))
+    url = chrome.runtime.getURL(url);
+  fetch(url, { mode: isFirefox ? 'cors' : 'no-cors' })
+    .then(response => response.blob())
+    .then(blob => createImageBitmap(blob))
+    .then(bitmap => callback(bitmap))
+    .catch(error => {
+      console.error('Error fetching image:', error);
+      callback(null);
+    });
+}
+
 var App = new OneClick();
 
 function main() {

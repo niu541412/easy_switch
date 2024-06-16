@@ -45,7 +45,6 @@ function localizeHtmlPage() {
     };
   }
 }
-
 function revierwShortcut() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get('shortcut', item => {
@@ -109,17 +108,28 @@ function saveGoogle() {
 
 function saveArrow() {
   // mark the direction arrow to other site.
-  var arr = [];
-  var allSites = Sites.getAllSites();
-  var name;
-  for (var i = 0; i < allSites.length; i++) {
-    var name = allSites[i].getName();
-    arr.push({
-      from: name,
-      to: byId(name + '_to').value
-    });
-  }
-  Ways.saveWays(arr);
+  chrome.runtime.sendMessage({ action: 'getAllSites' }, (response) => {
+    if (response && response.allSites) {
+      const allSites = response.allSites;
+      const arr = [];
+      allSites.forEach(site => {
+        const name = site.ps.name;
+        arr.push({
+          from: name,
+          to: byId(name + '_to').value
+        });
+      });
+      chrome.runtime.sendMessage({ action: 'saveWays', ways: arr }, (response) => {
+        if (response && response.success) {
+          console.log('Ways saved successfully.');
+        } else {
+          console.error('Failed to save ways.');
+        }
+      });
+    } else {
+      console.error('Failed to get all sites.');
+    }
+  });
 }
 
 function initShortCut() {
@@ -137,10 +147,10 @@ function initShortCut() {
 
 
 function initButtonIcon() {
-  // init button icon
+  // init example button icon
 
   // pattern 1
-  var cvs = document.getElementById('overlap-icon');
+  var cvs = byId('overlap-icon');
   var img = new Image();
   var ctx = cvs.getContext('2d');
   img.onload = function () {
@@ -154,7 +164,7 @@ function initButtonIcon() {
   img.src = 'icon/google.png';
 
   // pattern 2
-  var cvs = document.getElementById('mask-icon');
+  var cvs = byId('mask-icon');
   var img2 = new Image();
   var ctx2 = cvs.getContext('2d');
   img2.onload = function () {
@@ -209,40 +219,50 @@ function initUserSites() {
   byId('usersites').innerHTML = '';
   var html = '';
 
-  Sites.getUserSites().then((userSites) => {
-    userSites.forEach(function (userSite) {
-      var one = document.createElement('div');
-      one.className = "usersite";
-      var img_one = document.createElement('img');
-      img_one.className = "icon";
-      img_one.src = userSite.getIcon();
-      img_one.width = 24;
-      img_one.height = 24;
-      one.value = userSite.getName();
-      one.appendChild(img_one);
-      one.appendChild(document.createTextNode(userSite.getName()));
-      var del = document.createElement('img');
-      del.setAttribute('data-site', userSite.getName());
-      del.className = "delete";
-      del.src = "image/delete.png";
-      one.append(del);
-      byId('usersites').append(one);
-    })
+  chrome.runtime.sendMessage({ action: 'getUserSites' }, (response) => {
+    if (response) {
+      response.forEach((userSite) => {
+        const one = document.createElement('div');
+        one.className = "usersite";
+        const img_one = document.createElement('img');
+        img_one.className = "icon";
+        img_one.src = userSite.ps.icon;
+        img_one.width = 24;
+        img_one.height = 24;
+        one.value = userSite.ps.name;
+        one.appendChild(img_one);
+        one.appendChild(document.createTextNode(userSite.ps.name));
+        const del = document.createElement('img');
+        del.setAttribute('data-site', userSite.ps.name);
+        del.className = "delete";
+        del.src = "image/delete.png";
+        one.append(del);
+        byId('usersites').append(one);
+      })
+    }
   });
 
   byId('usersites').addEventListener('click', function (event) {
     if (event.target.classList.contains('delete')) {
-      var siteName = event.target.getAttribute('data-site');
-      var r = confirm(getI18n("deleteUserSite") + siteName);
+      const siteName = event.target.getAttribute('data-site');
+      const r = confirm(getI18n("deleteUserSite") + siteName);
       if (r) {
-        var site = Sites.getSiteByName(siteName);
-        Sites.removeUserSite(siteName);
-        Ways.siteRemoved(site);
-        location.reload();
+        chrome.runtime.sendMessage({ action: 'removeUserSite', siteName }, (response) => {
+          if (response.success) {
+            location.reload();
+          }
+        });
       }
     }
   });
   byId('site_add').addEventListener('click', addUserSiteClick);
+}
+
+function faviconURL(u, s) {
+  const url = new URL(chrome.runtime.getURL('/_favicon/'));
+  url.searchParams.set('pageUrl', u); // this encodes the URL as well
+  url.searchParams.set('size', s);
+  return url.toString();
 }
 
 function addUserSiteClick() {
@@ -264,11 +284,11 @@ function addUserSiteClick() {
   const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   var favicon_url;
 
-  ico_size = 32;
+  const ico_size = 32;
   // const favicon_url1 = `https://www.google.com/s2/favicons?sz=${ico_size}&domain_url=${home}`;
   const favicon_url1 = `https://t3.gstatic.com/faviconV2?client=SOCIAL&size=${ico_size}&url=${home}`;
   const favicon_url2 = `https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=${ico_size}&url=${home}`;
-  const favicon_url3 = `chrome://favicon/size/${ico_size}@1x/${home}`;
+  const favicon_url3 = faviconURL(home, ico_size);
 
   if (isFirefox) {
     const controller = new AbortController();
@@ -296,7 +316,6 @@ function addUserSiteClick() {
         finalizedNewSite()
       });
     // favicon_url = favicon_url2
-    // testtt()
   } else {
     favicon_url = favicon_url3
     finalizedNewSite()
@@ -312,11 +331,13 @@ function addUserSiteClick() {
     if (getHost(ps.home) != getHost(ps.searchUrl)) {
       ps.matches = [getMatch(ps.home), getMatch(ps.searchUrl)];
     }
-    if (Sites.addUserSite(ps)) {
-      location.reload();
-    } else {
-      alert(getI18n("addFail"));
-    }
+    chrome.runtime.sendMessage({ action: 'addUserSite', site: ps }, (response) => {
+      if (response.success) {
+        location.reload();
+      } else {
+        alert(getI18n("addFail"));
+      }
+    });
   }
 }
 
@@ -351,7 +372,7 @@ function getFixlengthName(name, namelen) {
 }
 
 function getToSiteHtml(allSites, from, to) {
-  var name = from.getName() + '_to';
+  var name = from.ps.name + '_to';
   var html = document.createElement('select');
   html.id = name;
   html.name = name;
@@ -362,15 +383,15 @@ function getToSiteHtml(allSites, from, to) {
     html_option.setAttribute('selected', true);
   html.appendChild(html_option);
   for (var i = 0; i < allSites.length; i++) {
-    if (allSites[i].getName() === from.getName())
+    if (allSites[i].ps.name === from.ps.name)
       continue;
     var siteOption = document.createElement('option');
-    siteOption.value = allSites[i].getName();
-    siteOption.text = getI18n(allSites[i].getName()) || allSites[i].getName();
+    siteOption.value = allSites[i].ps.name;
+    siteOption.text = getI18n(allSites[i].ps.name) || allSites[i].ps.name;
     html.appendChild(siteOption);
   }
   if (to != null) {
-    var selectedOption = html.querySelector('[value="' + to.getName() + '"]');
+    var selectedOption = html.querySelector('[value="' + to.ps.name + '"]');
     if (selectedOption)
       selectedOption.setAttribute('selected', true);
   }
@@ -396,20 +417,24 @@ function getPairSiteHtml(SiteIcon, FromName, ToSiteHtml) {
   return wayDiv
 }
 
-var BG = chrome.extension.getBackgroundPage();
-var Ways = BG.Ways.getInstance();
-var Sites = BG.Sites.getInstance();
-
 function initWays() {
-  var allSites = Sites.getAllSites();
-  var way;
-  const waysElement = byId('ways');
-  for (var i = 0; i < allSites.length; i++) {
-    way = Ways.findWayBySite(allSites[i]);
-    const fromName = getI18n(allSites[i].getName()) || allSites[i].getName();
-    var name = "　" + getFixlengthName(fromName, 10);
-    var wayDiv = getPairSiteHtml(allSites[i].getIcon(), name, getToSiteHtml(allSites, allSites[i], way && way.getTo()));
-    waysElement.appendChild(wayDiv);
-  }
+  chrome.runtime.sendMessage({ action: 'getAllSites' }, (response) => {
+    if (response) {
+      const allSites = response.allSites;
+      const waysElement = byId('ways');
+
+      for (var i = 0; i < allSites.length; i++) {
+        const site = allSites[i];
+        chrome.runtime.sendMessage({ action: 'findWayBySite', siteIndex: i }, (response) => {
+          const fromName = getI18n(site.ps.name) || site.ps.name;
+          const way = response.way;
+          const name = "　" + getFixlengthName(fromName, 10);
+          const wayDiv = getPairSiteHtml(site.ps.icon, name, getToSiteHtml(allSites, site, way && way.to));
+          waysElement.appendChild(wayDiv);
+        });
+      }
+    }
+  });
 }
+
 document.addEventListener("DOMContentLoaded", init, false);
