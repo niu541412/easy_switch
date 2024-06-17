@@ -412,7 +412,7 @@ function getPairSiteHtml(SiteIcon, FromName, ToSiteHtml) {
   toSiteHtml.appendChild(ToSiteHtml);
   wayDiv.appendChild(iconImg);
   wayDiv.appendChild(fromSpan);
-  wayDiv.appendChild(document.createTextNode(' ----> '));
+  wayDiv.appendChild(document.createTextNode('---->'));
   wayDiv.appendChild(toSiteHtml);
   return wayDiv
 }
@@ -428,7 +428,8 @@ function initWays() {
         chrome.runtime.sendMessage({ action: 'findWayBySite', siteIndex: i }, (response) => {
           const fromName = getI18n(site.ps.name) || site.ps.name;
           const way = response.way;
-          const name = "　" + getFixlengthName(fromName, 10);
+          // const name = "　" + getFixlengthName(fromName, 10);
+          const name = fromName;
           const wayDiv = getPairSiteHtml(site.ps.icon, name, getToSiteHtml(allSites, site, way && way.to));
           waysElement.appendChild(wayDiv);
         });
