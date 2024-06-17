@@ -406,7 +406,7 @@ var OneClick = Class(ObjectClass, {
     // shortcut support
     try {
       chrome.storage.sync.get('useshortcut', (item) => {
-        if (item.useshotcut !== '0') {
+        if (item.useshortcut !== '0') {
           chrome.scripting.executeScript({
             target: { tabId: tab.id },
             files: ["js/shortcut.js"]
