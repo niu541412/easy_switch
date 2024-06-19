@@ -47,7 +47,7 @@ function localizeHtmlPage() {
 }
 function revierwShortcut() {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get('shortcut', item => {
+    browserStorage.get('shortcut', item => {
       var ret = item.shortcut || 'alt+s';
       if (!/[a-z]/.test(ret.charAt(ret.length - 1))) {
         ret = ret.replace(/\+.*$/, '+s');
@@ -70,7 +70,7 @@ function saveButtonIcon() {
   var radios = document.getElementsByName('button');
   for (var i = 0, length = radios.length; i < length; i++) {
     if (radios[i].checked) {
-      chrome.storage.sync.set({ 'buttonicon': radios[i].value });
+      browserStorage.set({ 'buttonicon': radios[i].value });
       break;
     }
   }
@@ -78,7 +78,7 @@ function saveButtonIcon() {
 }
 
 function saveShortcut() {
-  chrome.storage.sync.set({ 'useshortcut': (byId('useshortcut').checked ? '1' : '0') });
+  browserStorage.set({ 'useshortcut': (byId('useshortcut').checked ? '1' : '0') });
   if (!ctrl.checked && !alt.checked && !shift.checked) {
     alert(getI18n("warningShortcut") + "(ctrl/alt/shift)");
     return false;
@@ -88,12 +88,12 @@ function saveShortcut() {
   if (alt.checked) s += "alt+";
   if (shift.checked) s += "shift+";
   s += key.value;
-  chrome.storage.sync.set({ 'shortcut': s });
+  browserStorage.set({ 'shortcut': s });
   return true;
 }
 
 function saveNewTab() {
-  chrome.storage.sync.set({ 'newtab': (byId("newtab").checked ? '1' : '0') });
+  browserStorage.set({ 'newtab': (byId("newtab").checked ? '1' : '0') });
   return;
 }
 
@@ -180,7 +180,7 @@ function initButtonIcon() {
   }
   img2.src = 'icon/google.png';
 
-  chrome.storage.sync.get("buttonicon", (item) => {
+  browserStorage.get("buttonicon", (item) => {
     let idx = Math.min(item.buttonicon | 0, document.getElementsByName('button').length);
     document.getElementsByName('button')[idx].checked = true;
   });
@@ -198,12 +198,12 @@ function init() {
   initShortCut();
 
   // init shortcut switch
-  chrome.storage.sync.get("useshortcut", (item) => {
+  browserStorage.get("useshortcut", (item) => {
     byId('useshortcut').checked = item.useshortcut !== '0';
   });
 
   // init newtab switch
-  chrome.storage.sync.get("newtab", (item) => {
+  browserStorage.get("newtab", (item) => {
     byId('newtab').checked = item.newtab == '1';
   });
 
@@ -437,5 +437,10 @@ function initWays() {
     }
   });
 }
+
+const userAgent = navigator.userAgent.toLowerCase();
+const isFirefox = userAgent.indexOf('firefox') > -1;
+const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+const browserStorage = isSafari ? chrome.storage.local : chrome.storage.sync;
 
 document.addEventListener("DOMContentLoaded", init, false);

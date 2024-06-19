@@ -124,7 +124,7 @@ var Sites = Class(ObjectClass, {
   getUserSites: function () {
     return new Promise((resolve, reject) => {
       var arr, ret = [];
-      chrome.storage.sync.get([this.usersiteskey], item => {
+      browserStorage.get([this.usersiteskey], item => {
         if (item[this.usersiteskey]) {
           arr = JSON.parse(item[this.usersiteskey]);
           arr.forEach((one) => {
@@ -142,10 +142,10 @@ var Sites = Class(ObjectClass, {
         return false;
       }
     }
-    chrome.storage.sync.get(this.usersiteskey, item => {
+    browserStorage.get(this.usersiteskey, item => {
       var arr = JSON.parse(item[this.usersiteskey] || '[]');
       arr.push(ps);
-      chrome.storage.sync.set({ [this.usersiteskey]: JSON.stringify(arr) });
+      browserStorage.set({ [this.usersiteskey]: JSON.stringify(arr) });
       this.sites.push(new SearchSite(ps));
     })
     return true;
@@ -159,14 +159,14 @@ var Sites = Class(ObjectClass, {
         sites.splice(i, 1);
       }
     }
-    chrome.storage.sync.get(this.usersiteskey, item => {
+    browserStorage.get(this.usersiteskey, item => {
       var arr = JSON.parse(item[this.usersiteskey] || '[]');
       for (i = arr.length - 1; i >= 0; i--) {
         if (arr[i].name == name) {
           arr.splice(i, 1);
         }
       }
-      chrome.storage.sync.set({ [this.usersiteskey]: JSON.stringify(arr) });
+      browserStorage.set({ [this.usersiteskey]: JSON.stringify(arr) });
     })
   }
 }, {
@@ -204,14 +204,14 @@ var Way = Class(ObjectClass, {
 var Ways = Class(ObjectClass, {
   savekey: 'ways',
   init: function () {
-    chrome.storage.sync.get(this.savekey, (item) => {
+    browserStorage.get(this.savekey, (item) => {
       if (item[this.savekey]) {
         this.loadWays();
         return;
       }
       this.ways = [];
       // actually part2 does not take effect now.
-      chrome.storage.sync.get('part2', item => {
+      browserStorage.get('part2', item => {
         switch (item.part2) {
           case 'part_binggoogle':
             this.addDualWay(Bing, Google);
@@ -241,7 +241,7 @@ var Ways = Class(ObjectClass, {
     })
   },
   saveWays: function (waysArray) {
-    chrome.storage.sync.set({ [this.savekey]: JSON.stringify(waysArray) }, () => {
+    browserStorage.set({ [this.savekey]: JSON.stringify(waysArray) }, () => {
       this.loadWays();
     });
   },
@@ -249,7 +249,7 @@ var Ways = Class(ObjectClass, {
     this.ways = [];
     var sites = Sites.getInstance();
     var the = this;
-    chrome.storage.sync.get([this.savekey], (item) => {
+    browserStorage.get([this.savekey], (item) => {
       var warr = JSON.parse(item[this.savekey]);
       warr.forEach(function (one) {
         if (one.from && one.to) {
@@ -324,16 +324,16 @@ var OneClick = Class(ObjectClass, {
   },
   getShortcut: function () {
     return new Promise((resolve, reject) => {
-      chrome.storage.sync.get('shortcut', item => {
+      browserStorage.get('shortcut', item => {
         resolve(item.shortcut || 'alt+s')
       })
     })
   },
   setShortcut: function (s) {
-    chrome.storage.sync.set({ 'shortcut': s });
+    browserStorage.set({ 'shortcut': s });
   },
   setIogo: function (tab, path) {
-    chrome.storage.sync.get('buttonicon', (item) => {
+    browserStorage.get('buttonicon', (item) => {
       if (item.buttonicon) {
         // 图标按钮的样式，可以避免和其他扩展图标相同而分不清。
         // console.log("setting logo...");
@@ -424,7 +424,7 @@ var OneClick = Class(ObjectClass, {
     // chrome.action.show(tab.id);
     // shortcut support
     try {
-      chrome.storage.sync.get('useshortcut', (item) => {
+      browserStorage.get('useshortcut', (item) => {
         if (item.useshortcut !== '0') {
           chrome.scripting.executeScript({
             target: { tabId: tab.id },
@@ -468,7 +468,7 @@ var OneClick = Class(ObjectClass, {
     }
     var from = way.getFrom();
     getKeyword(function (keyword) {
-      chrome.storage.sync.get('newtab', (item) => {
+      browserStorage.get('newtab', (item) => {
         if (item.newtab == '1') {
           chrome.tabs.create({
             openerTabId: tab.id,
@@ -544,8 +544,6 @@ var OneClick = Class(ObjectClass, {
 function getI18n(m) {
   return chrome.i18n.getMessage(m);
 }
-
-const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 function faviconURL(u, s) {
   const url = new URL(chrome.runtime.getURL('/_favicon/'));
