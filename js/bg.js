@@ -350,6 +350,25 @@ var OneClick = Class(ObjectClass, {
               ctx.drawImage(imgBitmap, 0, 0, 32, 32);
               try {
                 const from_url = new URL(tab.url);
+
+                // future feature@niu541412
+                // chrome.tabs.get(
+                //   tab.id, tab2 => {
+                //     const faviconPath = tab2.favIconUrl;
+                //     fetchImageBitmap(faviconPath, false, (oldImgBitmap) => {
+                //       if (!oldImgBitmap) {
+                //         console.error('Failed to load small image');
+                //         return;
+                //       }
+                //       ctx.drawImage(oldImgBitmap, 16, 16, 16, 16);
+                //       const imageData = ctx.getImageData(0, 0, 32, 32);
+                //       chrome.action.setIcon({
+                //         imageData: { 32: imageData },
+                //         tabId: tab.id
+                //       });
+                //     })
+                //   }
+                // )
                 const faviconPath = isFirefox ? "https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url="
                   + from_url.origin : faviconURL(from_url.origin, 32);
                 fetchImageBitmap(faviconPath, isFirefox, (oldImgBitmap) => {
@@ -402,7 +421,7 @@ var OneClick = Class(ObjectClass, {
       tabId: tab.id,
       title: site.getTip()
     });
-    // chrome.action.show(tab.id);@niu541412
+    // chrome.action.show(tab.id);
     // shortcut support
     try {
       chrome.storage.sync.get('useshortcut', (item) => {

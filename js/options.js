@@ -235,7 +235,7 @@ function initUserSites() {
         const del = document.createElement('img');
         del.setAttribute('data-site', userSite.ps.name);
         del.className = "delete";
-        del.src = "image/delete.png";
+        del.src = "asset/delete.png";
         one.append(del);
         byId('usersites').append(one);
       })

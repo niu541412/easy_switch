@@ -8,7 +8,10 @@
    },
    "description": "__MSG_description__",
    "icons": {
-      "128": "icon128.png"
+      "16": "asset/logo/icon_16x16.png",
+      "32": "asset/logo/icon_32x32.png",
+      "128": "asset/logo/icon_128x128.png",
+      "256": "asset/logo/icon_256x256.png"
    },
    "manifest_version": 3,
    "name": "__MSG_extName__",
@@ -18,7 +21,10 @@
    },
    "action": {
       "default_icon": {
-         "128": "icon128.png"
+         "16": "asset/logo/icon_16x16.png",
+         "32": "asset/logo/icon_32x32.png",
+         "128": "asset/logo/icon_128x128.png",
+         "256": "asset/logo/icon_256x256.png"
       },
       "default_title": "__MSG_defaultTitle__"
    },
