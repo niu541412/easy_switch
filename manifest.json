@@ -6,10 +6,12 @@
    "content_security_policy": {
       "extension_pages": "script-src 'self' ; object-src 'self'; img-src https://*.gstatic.com https://*.gstatic.cn;"
    },
+   "author": "書",
    "description": "__MSG_description__",
    "icons": {
       "16": "asset/logo/icon_16x16.png",
       "32": "asset/logo/icon_32x32.png",
+      "64": "asset/logo/icon_64x64.png",
       "128": "asset/logo/icon_128x128.png",
       "256": "asset/logo/icon_256x256.png"
    },
@@ -23,6 +25,7 @@
       "default_icon": {
          "16": "asset/logo/icon_16x16.png",
          "32": "asset/logo/icon_32x32.png",
+         "64": "asset/logo/icon_64x64.png",
          "128": "asset/logo/icon_128x128.png",
          "256": "asset/logo/icon_256x256.png"
       },

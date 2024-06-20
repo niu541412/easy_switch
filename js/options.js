@@ -280,8 +280,6 @@ function addUserSiteClick() {
   }
   q = q[1];
 
-  // 判断是否为firefox
-  const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   var favicon_url;
 
   const ico_size = 32;
@@ -290,7 +288,7 @@ function addUserSiteClick() {
   const favicon_url2 = `https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=${ico_size}&url=${home}`;
   const favicon_url3 = faviconURL(home, ico_size);
 
-  if (isFirefox) {
+  if (notChrome) {
     const controller = new AbortController();
     const signal = controller.signal;
     const fetchTimeout = setTimeout(() => {
@@ -441,6 +439,7 @@ function initWays() {
 const userAgent = navigator.userAgent.toLowerCase();
 const isFirefox = userAgent.indexOf('firefox') > -1;
 const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+const notChrome = isFirefox || isSafari;
 const browserStorage = isSafari ? chrome.storage.local : chrome.storage.sync;
 
 document.addEventListener("DOMContentLoaded", init, false);

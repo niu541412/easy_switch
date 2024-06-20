@@ -1,6 +1,7 @@
 const userAgent = navigator.userAgent.toLowerCase();
 const isFirefox = userAgent.indexOf('firefox') > -1;
 const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+const notChrome = isFirefox || isSafari;
 const browserStorage = isSafari ? chrome.storage.local : chrome.storage.sync;
 
 if (!isSafari)

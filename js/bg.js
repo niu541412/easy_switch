@@ -333,6 +333,8 @@ var OneClick = Class(ObjectClass, {
     browserStorage.set({ 'shortcut': s });
   },
   setIogo: function (tab, path) {
+    // const cvs = new OffscreenCanvas(32, 32);
+    // const ctx = cvs.getContext('2d');
     browserStorage.get('buttonicon', (item) => {
       if (item.buttonicon) {
         // 图标按钮的样式，可以避免和其他扩展图标相同而分不清。
@@ -340,7 +342,7 @@ var OneClick = Class(ObjectClass, {
         const cvs = new OffscreenCanvas(32, 32);
         const ctx = cvs.getContext('2d');
 
-        fetchImageBitmap(path, isFirefox, (imgBitmap) => {
+        fetchImageBitmap(path, notChrome, (imgBitmap) => {
           if (!imgBitmap) {
             console.error('Failed to load image');
             return;
@@ -369,9 +371,9 @@ var OneClick = Class(ObjectClass, {
                 //     })
                 //   }
                 // )
-                const faviconPath = isFirefox ? "https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url="
+                const faviconPath = notChrome ? "https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url="
                   + from_url.origin : faviconURL(from_url.origin, 32);
-                fetchImageBitmap(faviconPath, isFirefox, (oldImgBitmap) => {
+                fetchImageBitmap(faviconPath, notChrome, (oldImgBitmap) => {
                   if (!oldImgBitmap) {
                     console.error('Failed to load small image');
                     return;
@@ -408,6 +410,14 @@ var OneClick = Class(ObjectClass, {
           }
         });
       } else {
+        // fetchImageBitmap(path, notChrome, (imgBitmap) => {
+        //   ctx.drawImage(imgBitmap, 0, 0, 32, 32);
+        //   const imageData = ctx.getImageData(0, 0, 32, 32);
+        //   chrome.action.setIcon({
+        //     imageData: { 32: imageData },
+        //     tabId: tab.id
+        //   });
+        // })  //  safari
         chrome.action.setIcon({
           path: { 32: path },
           tabId: tab.id
@@ -486,7 +496,7 @@ var OneClick = Class(ObjectClass, {
   start: function () {
     var the = this;
     chrome.tabs.onUpdated.addListener(function (tabId, change) {
-      if (change.status === "loading") {
+      if (change.status === (isSafari ? "compelte" : "loading")) {
         chrome.tabs.get(tabId, function (tab) {
           the.updateAction(tab);
         });
@@ -552,12 +562,15 @@ function faviconURL(u, s) {
   return url.toString();
 }
 
-function fetchImageBitmap(url, isFirefox, callback) {
+function fetchImageBitmap(url, isCors, callback) {
   const pattern = /^(https?|chrome(-extension)?|file|filesystem):\/\//;
   // check url is a local file or not
   if (!pattern.test(url))
     url = chrome.runtime.getURL(url);
-  fetch(url, { mode: isFirefox ? 'cors' : 'no-cors' })
+
+
+
+  fetch(url, { mode: isCors ? 'cors' : 'no-cors' })
     .then(response => response.blob())
     .then(blob => createImageBitmap(blob))
     .then(bitmap => callback(bitmap))
