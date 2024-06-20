@@ -13,8 +13,9 @@
 [Chrome 商店](https://chrome.google.com/webstore/detail/pchjdhcdlgghofamcpncdlhdonbeaplk)
 ，[Firefox Addon](https://addons.mozilla.org/zh-CN/firefox/addon/easy_switch)
 ，[Edge商店](https://microsoftedge.microsoft.com/addons/detail/jijkhdficgnnikdijnkienfnmfbolmpb)
-
 > 由于本人不用Edge，所以不保证Edge版本可以正常工作，仅保持和另外两个版本代码一致。
+
+Safari测试版可以从[Realse](https://github.com/niu541412/easy_switch/releases/latest)下载。
 
 ## 后续计划
 
