@@ -30,7 +30,7 @@ const Google = new SearchSite({
   home: 'https://www.google.com/',
   searchUrl: 'https://www.google.com/search?newwindow=1&hl=zh-CN&q=%s',
   matches: ['//[\\w]*\\.google\\.'],
-  exclude: ['chrome\\.google\\.com'],
+  exclude: ['chrome(webstore)?\\.google\\.com', ],
   types: [{
     type: 'news',
     home: 'https://news.google.com/nwshp?hl=zh-CN',

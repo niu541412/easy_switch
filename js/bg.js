@@ -336,7 +336,7 @@ var OneClick = Class(ObjectClass, {
     // const cvs = new OffscreenCanvas(32, 32);
     // const ctx = cvs.getContext('2d');
     browserStorage.get('buttonicon', (item) => {
-      if (item.buttonicon) {
+      if (parseInt(item.buttonicon)) {
         // 图标按钮的样式，可以避免和其他扩展图标相同而分不清。
         // console.log("setting logo...");
         const cvs = new OffscreenCanvas(32, 32);
@@ -419,7 +419,7 @@ var OneClick = Class(ObjectClass, {
         //   });
         // })  //  safari
         chrome.action.setIcon({
-          path: { 32: path },
+          path: { 32: chrome.runtime.getURL(path) },
           tabId: tab.id
         });
       }

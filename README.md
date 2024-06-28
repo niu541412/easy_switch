@@ -1,6 +1,6 @@
 # easy_switch
 
-<img src="asset/logo.svg" width=64 >
+<img src="asset/logo.svg" width=96 >
 
 一个浏览器扩展。网站间的快速切换，保留搜索内容继续搜索。可以通过按钮或者快捷键切换。支持自定义搜索网站。
 移植自Chrome同名扩展，原扩展已下架([备份地址](https://www.crx4chrome.com/extensions/fknieppmhfgnjilnkdeoegocjkijpbfh/))。
