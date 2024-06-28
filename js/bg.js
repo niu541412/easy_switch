@@ -419,7 +419,7 @@ var OneClick = Class(ObjectClass, {
         //   });
         // })  //  safari
         chrome.action.setIcon({
-          path: { 32: chrome.runtime.getURL(path) },
+          path: { 32: getFullUrl(path) },
           tabId: tab.id
         });
       }
@@ -477,6 +477,7 @@ var OneClick = Class(ObjectClass, {
       return;
     }
     var from = way.getFrom();
+    // if (notChrome) this.compare_icon(tab, from);
     getKeyword(function (keyword) {
       browserStorage.get('newtab', (item) => {
         if (item.newtab == '1') {
@@ -492,9 +493,31 @@ var OneClick = Class(ObjectClass, {
       })
     }, from.getQ());
   },
+  // compare_icon: function (tab, site) {
+  //   const faviconPath = tab.favIconUrl;
+  //   console.log(faviconPath, site.getIcon(), site.getName());
+  //   if (faviconPath && faviconPath.startsWith('http') && faviconPath != site.getIcon() && site.getName() != 'BaiduBaike') {
+  //     console.log("%cchange", 'color: red; font-size: 20px;');
+  //     browserStorage.get('usersites', item => {
+  //       arr = JSON.parse(item['usersites']);
+  //       arr.forEach((usersite) => {
+  //         console.log(usersite.icon);
+  //         if (usersite.name == site.getName())
+  //           usersite.icon = faviconPath;
+  //       })
+  //       console.log(arr);
+  //       browserStorage.set({ ['usersites']: JSON.stringify(arr) });
+  //     })
+  //   } else {
+  //     console.log("%cnot change", 'color: blue; font-size: 20px;');
+  //   }
+
+  // },
   // begin work
   start: function () {
     var the = this;
+    var ways = Ways.getInstance();
+    var sites = Sites.getInstance();
     chrome.tabs.onUpdated.addListener(function (tabId, change) {
       if (change.status === (isSafari ? "compelte" : "loading")) {
         chrome.tabs.get(tabId, function (tab) {
@@ -505,8 +528,6 @@ var OneClick = Class(ObjectClass, {
     chrome.action.onClicked.addListener(function (tab) {
       the.switchAction(tab);
     });
-    var ways = Ways.getInstance();
-    var sites = Sites.getInstance();
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.action === "shortcut") {
         var s = message.value;
@@ -562,15 +583,16 @@ function faviconURL(u, s) {
   return url.toString();
 }
 
-function fetchImageBitmap(url, isCors, callback) {
+function getFullUrl(url) {
   const pattern = /^(https?|chrome(-extension)?|file|filesystem):\/\//;
   // check url is a local file or not
   if (!pattern.test(url))
     url = chrome.runtime.getURL(url);
+  return url.toString();
+}
 
-
-
-  fetch(url, { mode: isCors ? 'cors' : 'no-cors' })
+function fetchImageBitmap(url, isCors, callback) {
+  fetch(getFullUrl(url), { mode: isCors ? 'cors' : 'no-cors' })
     .then(response => response.blob())
     .then(blob => createImageBitmap(blob))
     .then(bitmap => callback(bitmap))
