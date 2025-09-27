@@ -3,7 +3,7 @@ const Baidu = new SearchSite({
   icon: 'icon/baidu.png',
   tip: '百度一下',
   home: 'https://www.baidu.com/',
-  searchUrl: 'https://www.baidu.com/s?wd=%s',
+  searchUrl: 'https://www.baidu.com/s?wd=%s&ie=utf-8',
   matches: ['//[\\w]*\\.baidu\\.com'],
   exclude: ['//(video|v|baike)\\.baidu\\.com'],
   types: [{
@@ -30,7 +30,7 @@ const Google = new SearchSite({
   home: 'https://www.google.com/',
   searchUrl: 'https://www.google.com/search?newwindow=1&hl=zh-CN&q=%s',
   matches: ['//[\\w]*\\.google\\.'],
-  exclude: ['chrome(webstore)?\\.google\\.com', ],
+  exclude: ['chrome(webstore)?\\.google\\.com'],
   types: [{
     type: 'news',
     home: 'https://news.google.com/nwshp?hl=zh-CN',
