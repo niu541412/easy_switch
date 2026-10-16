@@ -329,9 +329,11 @@ var Ways = Class(
 var OneClick = Class(ObjectClass, {
   constructor: function () {
     this.ways = Ways.getInstance();
+    this.ready = this.ways.ready;
   },
   updateConfig: function () {
-    this.ways.init();
+    this.ready = this.ways.init();
+    return this.ready;
   },
   getShortcut: function () {
     return new Promise((resolve, reject) => {
@@ -491,53 +493,68 @@ var OneClick = Class(ObjectClass, {
     chrome.tabs.onUpdated.addListener(function (tabId, change) {
       if (change.status === (isSafari ? 'complete' : 'loading')) {
         chrome.tabs.get(tabId, function (tab) {
-          the.updateAction(tab);
+          the.ready.then(() => the.updateAction(tab));
         });
       }
     });
     chrome.action.onClicked.addListener(function (tab) {
-      the.switchAction(tab);
+      the.ready.then(() => the.switchAction(tab));
     });
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.action === 'shortcut') {
-        var s = message.value;
-        the.getShortcut().then((result) => {
-          if (result == s) {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-              the.switchAction(tabs[0]);
-            });
-          }
+        the.ready.then(() => {
+          the.getShortcut().then((result) => {
+            if (result == message.value) {
+              chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                the.switchAction(tabs[0]);
+              });
+            }
+          });
         });
-      } else if (message.action === 'getSites') {
-        sendResponse({
-          sites: sites.getAllSites(),
-        });
-      } else if (message.action === 'initWaysAndSites') {
-        sendResponse({ success: true });
-      } else if (message.action === 'getAllSites') {
-        const allSites = sites.getAllSites();
-        sendResponse({ allSites: allSites });
-      } else if (message.action === 'getUserSites') {
-        sites.getUserSites().then((userSites) => {
-          sendResponse(userSites);
-        });
-        return true;
-      } else if (message.action === 'findWayBySite') {
-        const way = ways.findWayBySite(sites.getAllSites()[message.siteIndex]);
-        sendResponse({ way: way });
-      } else if (message.action === 'removeUserSite') {
-        const siteName = message.siteName;
-        sites.removeUserSite(siteName);
-        sendResponse({ success: true });
-      } else if (message.action === 'addUserSite') {
-        const newSite = message.site;
-        sites.addUserSite(newSite);
-        sendResponse({ success: true });
-      } else if (message.action === 'saveWays') {
-        const newWay = message.ways;
-        ways.saveWays(newWay);
-        sendResponse({ success: true });
+        return;
       }
+      if (
+        ![
+          'getSites',
+          'initWaysAndSites',
+          'getAllSites',
+          'getUserSites',
+          'findWayBySite',
+          'removeUserSite',
+          'addUserSite',
+          'saveWays',
+        ].includes(message.action)
+      )
+        return;
+      the.ready
+        .then(() => {
+          if (message.action === 'getSites') {
+            sendResponse({ sites: sites.getAllSites() });
+          } else if (message.action === 'initWaysAndSites') {
+            sendResponse({ success: true });
+          } else if (message.action === 'getAllSites') {
+            sendResponse({ allSites: sites.getAllSites() });
+          } else if (message.action === 'getUserSites') {
+            return sites.getUserSites().then(sendResponse);
+          } else if (message.action === 'findWayBySite') {
+            const way = ways.findWayBySite(sites.getAllSites()[message.siteIndex]);
+            sendResponse({ way: way });
+          } else if (message.action === 'removeUserSite') {
+            sites.removeUserSite(message.siteName);
+            sendResponse({ success: true });
+          } else if (message.action === 'addUserSite') {
+            sites.addUserSite(message.site);
+            sendResponse({ success: true });
+          } else if (message.action === 'saveWays') {
+            ways.saveWays(message.ways);
+            sendResponse({ success: true });
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to handle message:', error);
+          sendResponse({ success: false });
+        });
+      return true;
     });
   },
 });
