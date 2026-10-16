@@ -6,11 +6,13 @@ const Baidu = new SearchSite({
   searchUrl: 'https://www.baidu.com/s?wd=%s&ie=utf-8',
   matches: ['//[\\w]*\\.baidu\\.com'],
   exclude: ['//(video|v|baike)\\.baidu\\.com'],
-  types: [{
-    type: 'news',
-    home: 'http://news.baidu.com/',
-    searchUrl: 'http://news.baidu.com/ns?word=%s',
-  }]
+  types: [
+    {
+      type: 'news',
+      home: 'http://news.baidu.com/',
+      searchUrl: 'http://news.baidu.com/ns?word=%s',
+    },
+  ],
 });
 const Bing = new SearchSite({
   name: 'Bing',
@@ -18,11 +20,13 @@ const Bing = new SearchSite({
   home: 'https://cn.bing.com/',
   matches: ['//www\\.bing\\.com', '//cn\\.bing\\.com'],
   searchUrl: 'https://cn.bing.com/search?q=%s',
-  types: [{
-    type: 'news',
-    home: 'https://cn.bing.com/news',
-    searchUrl: 'https://cn.bing.com/news/search?q=%s',
-  }]
+  types: [
+    {
+      type: 'news',
+      home: 'https://cn.bing.com/news',
+      searchUrl: 'https://cn.bing.com/news/search?q=%s',
+    },
+  ],
 });
 const Google = new SearchSite({
   name: 'Google',
@@ -31,36 +35,38 @@ const Google = new SearchSite({
   searchUrl: 'https://www.google.com/search?newwindow=1&hl=zh-CN&q=%s',
   matches: [
     '//www\\.google\\.(com|com\\.hk|co\\.uk|co\\.jp|com\\.au|co\\.in|de|fr|ca|cn)',
-    '//news\\.google\\.com'
+    '//news\\.google\\.com',
   ],
   allowedPaths: ['/', '/search', '/webhp', '/imghp', '/nwshp'],
-  types: [{
-    type: 'news',
-    home: 'https://news.google.com/nwshp?hl=zh-CN',
-    searchUrl: 'https://www.google.com/search?q=%s&newwindow=1&tbm=nws&hl=zh-CN',
-    typeRegexp: '(news\\.google\\.com|\\.google\\.com.*?\\Wtbm=nws)',
-  }]
+  types: [
+    {
+      type: 'news',
+      home: 'https://news.google.com/nwshp?hl=zh-CN',
+      searchUrl: 'https://www.google.com/search?q=%s&newwindow=1&tbm=nws&hl=zh-CN',
+      typeRegexp: '(news\\.google\\.com|\\.google\\.com.*?\\Wtbm=nws)',
+    },
+  ],
 });
 const Youku = new SearchSite({
   name: 'Youku',
   icon: 'icon/youku.png',
   home: 'http://www.youku.com/',
   searchUrl: 'http://www.soku.com/v?keyword=%s',
-  matches: ['www\\.soku\\.com']
+  matches: ['www\\.soku\\.com'],
 });
 const Douyin = new SearchSite({
   name: 'Douyin',
   icon: 'icon/douyin.png',
   home: 'https://www.douyin.com/',
   searchUrl: 'https://www.douyin.com/search/%s',
-  matches: ['www\\.douyin\\.com']
+  matches: ['www\\.douyin\\.com'],
 });
 const BaiduVideo = new SearchSite({
   name: 'BaiduVideo',
   icon: 'icon/haokan.png',
   home: 'http://v.baidu.com/',
   matches: ['//(video|v)\\.baidu\\.com'],
-  searchUrl: 'http://v.baidu.com/v?word=%s&ie=utf-8'
+  searchUrl: 'http://v.baidu.com/v?word=%s&ie=utf-8',
 });
 const BaiduBaike = new SearchSite({
   name: 'BaiduBaike',
@@ -74,7 +80,7 @@ const Wiki = new SearchSite({
   home: 'https://zh.wikipedia.org/',
   searchUrl: 'https://zh.wikipedia.org/zh-cn/%s',
   matches: ['//[\\w]*\\.wikipedia\\.org'],
-  q: 'wiki'
+  q: 'wiki',
 });
 const Wikiwand = new SearchSite({
   name: 'Wikiwand',
@@ -82,35 +88,35 @@ const Wikiwand = new SearchSite({
   home: 'https://www.wikiwand.com/',
   searchUrl: 'https://www.wikiwand.com/zh-cn/%s',
   matches: ['//[\\w]*\\.wikiwand\\.com'],
-  q: 'wiki'
+  q: 'wiki',
 });
 const Bilibili = new SearchSite({
   name: 'Bilibili',
   icon: 'icon/bilibili.png',
   home: 'https://www.bilibili.com/',
   searchUrl: 'https://search.bilibili.com/all?keyword=%s',
-  matches: ['//search\\.bilibili\\.com']
+  matches: ['//search\\.bilibili\\.com'],
 });
 const Zhihu = new SearchSite({
   name: 'Zhihu',
   icon: 'icon/zhihu.png',
   home: 'https://www.zhihu.com/',
   searchUrl: 'https://www.zhihu.com/search?q=%s',
-  matches: ['//[\\w]*\\.zhihu\\.com']
+  matches: ['//[\\w]*\\.zhihu\\.com'],
 });
 const Taobao = new SearchSite({
   name: 'Taobao',
   icon: 'icon/taobao.png',
   home: 'https://www.taobao.com',
   searchUrl: 'https://s.taobao.com/search?q=%s',
-  matches: ['//[\\w]*\\.taobao\\.com']
+  matches: ['//[\\w]*\\.taobao\\.com'],
 });
 const Jingdong = new SearchSite({
   name: 'Jingdong',
   icon: 'icon/jd.png',
   home: 'https://www.jd.com/',
   searchUrl: 'https://search.jd.com/Search?keyword=%s&enc=utf-8',
-  matches: ['//[\\w]*\\.jd\\.com']
+  matches: ['//[\\w]*\\.jd\\.com'],
 });
 const Github = new SearchSite({
   name: 'Github',
@@ -118,14 +124,14 @@ const Github = new SearchSite({
   home: 'https://www.github.com/',
   searchUrl: 'https://github.com/search?q=%s',
   matches: ['//(www\\.)?github\\.com'],
-  allowedPaths: ['/search']
+  allowedPaths: ['/search'],
 });
 const Douban = new SearchSite({
   name: 'Douban',
   icon: 'icon/douban.png',
   home: 'https://www.douban.com/',
   searchUrl: 'https://www.douban.com/search?q=%s',
-  matches: ['//[\\w]*\\.douban\\.com']
+  matches: ['//[\\w]*\\.douban\\.com'],
 });
 const Smzdm = new SearchSite({
   name: 'Smzdm',
@@ -133,6 +139,22 @@ const Smzdm = new SearchSite({
   home: 'https://www.smzdm.com/',
   searchUrl: 'https://search.smzdm.com/?s=%s',
   matches: ['//[\\w]*\\.smzdm\\.com'],
-  q: 's'
+  q: 's',
 });
-const sysSites = [Baidu, Google, Bing, Taobao, Jingdong, Zhihu, Wiki, BaiduBaike, Bilibili, Douyin, Github, Smzdm, Douban, Youku, Wikiwand];
+const sysSites = [
+  Baidu,
+  Google,
+  Bing,
+  Taobao,
+  Jingdong,
+  Zhihu,
+  Wiki,
+  BaiduBaike,
+  Bilibili,
+  Douyin,
+  Github,
+  Smzdm,
+  Douban,
+  Youku,
+  Wikiwand,
+];

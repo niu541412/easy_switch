@@ -19,12 +19,15 @@ test('site patterns match only complete hostnames', () => {
   const baidu = site('Baidu');
   const bing = site('Bing');
   const douyin = site('Douyin');
-  const custom = vm.runInContext(`new SearchSite({
+  const custom = vm.runInContext(
+    `new SearchSite({
     name: 'Custom',
     home: 'https://www.my-site.com/',
     searchUrl: 'https://search.my-site.com/?q=%s',
     matches: ['//www\\.my-site\\.com', '//search\\.my-site\\.com']
-  })`, context);
+  })`,
+    context,
+  );
 
   assert.equal(baidu.acceptUrl('https://www.baidu.com/s?wd=test'), true);
   assert.equal(baidu.acceptUrl('https://www.baidu.com.evil.test/s'), false);
@@ -101,12 +104,18 @@ test('custom-site host patterns preserve hyphenated domains', () => {
 test('source query decoding preserves spaces and special characters', () => {
   const keywordContext = vm.createContext({
     URL,
-    chrome: { runtime: { onMessage: { addListener() {} } } },
+    chrome: {
+      alarms: { onAlarm: { addListener() {} } },
+      runtime: { onMessage: { addListener() {} } },
+    },
   });
   keywordContext.self = keywordContext;
   vm.runInContext(fs.readFileSync(path.join(root, 'js/kw.js'), 'utf8'), keywordContext);
   assert.equal(
-    vm.runInContext("getKeywordFromUrl('https://www.google.com/search?q=hello+world%26more', 'q')", keywordContext),
-    'hello world&more'
+    vm.runInContext(
+      "getKeywordFromUrl('https://www.google.com/search?q=hello+world%26more', 'q')",
+      keywordContext,
+    ),
+    'hello world&more',
   );
 });

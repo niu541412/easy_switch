@@ -4,7 +4,7 @@
   }
   window.__shortcut__ = true;
 
-  const az = "abcdefghijklmnopqrstuvwxyz";
+  const az = 'abcdefghijklmnopqrstuvwxyz';
 
   function keydown(e) {
     const { altKey, ctrlKey, shiftKey, keyCode } = e;
@@ -18,11 +18,9 @@
     } else {
       return;
     }
-    const modifiers = [
-      ctrlKey ? "ctrl+" : "",
-      altKey ? "alt+" : "",
-      shiftKey ? "shift+" : "",
-    ].join("");
+    const modifiers = [ctrlKey ? 'ctrl+' : '', altKey ? 'alt+' : '', shiftKey ? 'shift+' : ''].join(
+      '',
+    );
     const shortcut = modifiers + keycode;
     onShortcut(shortcut);
   }
@@ -31,10 +29,10 @@
     if (chrome.runtime.sendMessage) {
       chrome.runtime.sendMessage({
         action: 'shortcut',
-        value: shortcut
+        value: shortcut,
       });
     }
   }
 
-  document.addEventListener("keydown", keydown, false);
+  document.addEventListener('keydown', keydown, false);
 })();

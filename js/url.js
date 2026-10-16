@@ -24,7 +24,7 @@ var parseUrl = function (url) {
       }
       return ret;
     })(),
-    hash: a.hash.replace('#', '')
+    hash: a.hash.replace('#', ''),
   };
 };
 // http://www.baidu.com/ -> www.baidu.com
