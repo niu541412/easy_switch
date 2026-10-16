@@ -20,6 +20,6 @@
 
 ## 构建与发布
 
-运行 `python3 scripts/build.py` 构建三个浏览器的扩展包。更新 `manifest.json` 版本并推送对应标签（如 `v3.0.6`）后，GitHub Actions 会把 Chrome ZIP、Firefox ZIP 和 macOS Safari App ZIP 附到 Release；不会提交浏览器商店。
+运行 `python3 scripts/build.py` 构建三个浏览器的扩展包。更新 `manifest.json` 版本并推送对应标签（如 `v3.0.7`）后，GitHub Actions 会把 Chrome ZIP、Firefox ZIP 和 macOS Safari App ZIP 附到 Release；不会提交浏览器商店。
 
 Chrome ZIP 可解压后加载；Firefox ZIP 仅供临时测试，常规安装需要签名的 XPI。Safari App 解压后放入“应用程序”并运行一次，再到 Safari 设置 > 开发者中允许未签名扩展、到“扩展”中启用；Safari 重启后需重新允许。[Apple 安装说明](https://developer.apple.com/documentation/safariservices/running-your-safari-web-extension)。
