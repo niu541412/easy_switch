@@ -410,18 +410,23 @@ var OneClick = Class(ObjectClass, {
           }
         });
       } else {
-        // fetchImageBitmap(path, notChrome, (imgBitmap) => {
-        //   ctx.drawImage(imgBitmap, 0, 0, 32, 32);
-        //   const imageData = ctx.getImageData(0, 0, 32, 32);
-        //   chrome.action.setIcon({
-        //     imageData: { 32: imageData },
-        //     tabId: tab.id
-        //   });
-        // })  //  safari
-        chrome.action.setIcon({
-          path: { 32: getFullUrl(path) },
-          tabId: tab.id
-        });
+        if (/^https?:\/\//.test(path)) {
+          fetchImageBitmap(path, true, (imgBitmap) => {
+            if (!imgBitmap) return;
+            const canvas = new OffscreenCanvas(32, 32);
+            const context = canvas.getContext('2d');
+            context.drawImage(imgBitmap, 0, 0, 32, 32);
+            chrome.action.setIcon({
+              imageData: { 32: context.getImageData(0, 0, 32, 32) },
+              tabId: tab.id
+            });
+          });
+        } else {
+          chrome.action.setIcon({
+            path: { 32: path },
+            tabId: tab.id
+          });
+        }
       }
     });
   },
@@ -519,7 +524,7 @@ var OneClick = Class(ObjectClass, {
     var ways = Ways.getInstance();
     var sites = Sites.getInstance();
     chrome.tabs.onUpdated.addListener(function (tabId, change) {
-      if (change.status === (isSafari ? "compelte" : "loading")) {
+      if (change.status === (isSafari ? "complete" : "loading")) {
         chrome.tabs.get(tabId, function (tab) {
           the.updateAction(tab);
         });
@@ -601,10 +606,3 @@ function fetchImageBitmap(url, isCors, callback) {
       callback(null);
     });
 }
-
-var App = new OneClick();
-
-function main() {
-  App.start();
-}
-main();
