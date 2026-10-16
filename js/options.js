@@ -345,7 +345,7 @@ function getMatch(url) {
 }
 
 function getHost(url) {
-  return url.match(/\/\/([\w\.]*)/)[1];
+  return new URL(url).hostname.toLowerCase();
 }
 
 function getFixlengthName(name, namelen) {

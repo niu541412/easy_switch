@@ -80,6 +80,15 @@ function getInput(callback) {
 
 function getKeywordFromUrl(url, q) {
   if (!url.startsWith('http')) return '';
+  if (q != 'wiki') {
+    try {
+      var params = new URL(url).searchParams;
+      var names = [q, 'q', 'p', 'keyword', 'keywords', 'word', 'wd', 'kw', 'key', 'query'];
+      for (var name of names) {
+        if (name && params.has(name)) return params.get(name);
+      }
+    } catch (err) { }
+  }
   var m = null;
   if (q == 'wiki') {
     m = url.match(/[\/\-?&#!_](?:\w+-?\w+)[=_\/\-]([^&\/?=]*)/);

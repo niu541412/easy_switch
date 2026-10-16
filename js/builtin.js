@@ -29,8 +29,11 @@ const Google = new SearchSite({
   icon: 'icon/google.png',
   home: 'https://www.google.com/',
   searchUrl: 'https://www.google.com/search?newwindow=1&hl=zh-CN&q=%s',
-  matches: ['//[\\w]*\\.google\\.'],
-  exclude: ['chrome(webstore)?\\.google\\.com'],
+  matches: [
+    '//www\\.google\\.(com|com\\.hk|co\\.uk|co\\.jp|com\\.au|co\\.in|de|fr|ca|cn)',
+    '//news\\.google\\.com'
+  ],
+  allowedPaths: ['/', '/search', '/webhp', '/imghp', '/nwshp'],
   types: [{
     type: 'news',
     home: 'https://news.google.com/nwshp?hl=zh-CN',
@@ -114,7 +117,8 @@ const Github = new SearchSite({
   icon: 'icon/github.png',
   home: 'https://www.github.com/',
   searchUrl: 'https://github.com/search?q=%s',
-  matches: ['//[\\w\\.]*github\\.com.*search']
+  matches: ['//(www\\.)?github\\.com'],
+  allowedPaths: ['/search']
 });
 const Douban = new SearchSite({
   name: 'Douban',

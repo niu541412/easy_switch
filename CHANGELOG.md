@@ -1,3 +1,7 @@
+# Unreleased
+- 修正站点匹配误认其他域名的问题，并限制 Google 只匹配搜索相关页面
+- 切换站点时编码搜索词，避免空格和特殊字符破坏搜索链接
+
 # 3.0.6
 - GitHub Release 自动生成 Chrome、Firefox 和 macOS Safari 测试版 App 三个包
 - 修复 Safari 图标更新问题，统一构建时的浏览器判断

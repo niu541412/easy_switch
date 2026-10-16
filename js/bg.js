@@ -26,24 +26,31 @@ var SearchSite = Class(ObjectClass, {
   // 该链接是否由该网站处理
   // 两步判断：1，根据matches或者是域名判断 2，判断是否在exclude里
   acceptUrl: function (url) {
+    var parsed;
+    try {
+      parsed = new URL(url);
+    } catch (e) {
+      return false;
+    }
+    if (parsed.protocol != 'http:' && parsed.protocol != 'https:') return false;
+
+    var host = '//' + parsed.hostname.toLowerCase();
+    var matchesHost = function (pattern) {
+      return new RegExp('^' + (pattern.startsWith('//') ? pattern : '//' + pattern) + '$', 'i').test(host);
+    };
     var ret;
     if (this.ps.matches) {
-      ret = this.ps.matches.some(function (one) {
-        return new RegExp(one).test(url);
-      });
+      ret = this.ps.matches.some(matchesHost);
     } else {
-      ret = this.host == this._getHost(url);
+      ret = this.host == parsed.hostname.toLowerCase();
     }
-    if (ret && this.ps.exclude) {
-      return this.ps.exclude.every(function (one) {
-        return !new RegExp(one).test(url);
-      });
-    }
+    if (ret && this.ps.exclude) ret = !this.ps.exclude.some(matchesHost);
+    if (ret && this.ps.allowedPaths) ret = this.ps.allowedPaths.includes(parsed.pathname);
     return ret;
   },
   // 获取域名
   _getHost: function (url) {
-    return url.match(/\/\/([\w\.]*)/)[1];
+    return new URL(url).hostname.toLowerCase();
   },
   // 获取域名和路径 用于匹配链接
   // 'https://www.baidu.com/s?wd=%s' ->www.baidu.com/s
@@ -95,7 +102,7 @@ var SearchSite = Class(ObjectClass, {
       typeSite = this.ps;
     }
     if (keyword)
-      return typeSite.searchUrl.replace('%s', keyword);
+      return typeSite.searchUrl.replace('%s', encodeURIComponent(keyword));
     return typeSite.home;
   },
   equals: function (that) {
@@ -468,7 +475,7 @@ var OneClick = Class(ObjectClass, {
         target: { tabId: tabs[0].id },
         func: (selector, tourl, tohome) => {
           var keyword = document.querySelector(selector).value;
-          var tourlFinal = tourl.replace("%s", keyword);
+          var tourlFinal = tourl.replace("%s", encodeURIComponent(keyword));
           var tohomeFinal = tohome;
           window.location.href = keyword ? tourlFinal : tohomeFinal;
         },
