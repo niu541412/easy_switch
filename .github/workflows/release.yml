@@ -31,7 +31,7 @@ jobs:
             python3 scripts/build.py
           fi
           python3 -m unittest discover -s tests
-          node --test tests/test_search.js
+          node --test tests/test_*.js
       - name: Lint Firefox package
         run: npx --yes web-ext@10.5.0 lint --source-dir dist/firefox
       - name: Upload packages

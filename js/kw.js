@@ -1,70 +1,63 @@
-/**
- * 有的任务需要和页面交互，但是这种交互或存在不确定性（消息广播,页面内交互）
- * 为了保证任务会被执行，创建此类
- * @param callback
- *            回调方法
- * @returns {TimeLimitTask}
- */
+// 页面交互可能没有回复；每个任务用独立闹钟确保回调最多执行一次。
+let nextTimeoutId = 0;
+const timeoutTasks = new Map();
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  const task = timeoutTasks.get(alarm.name);
+  if (task) task.callback();
+});
+
 class TimeLimitTask {
-  constructor(callback) {
+  constructor(callback, onFinish) {
     this.finished = false;
     this.realCallback = callback;
+    this.onFinish = onFinish || function () {};
+    this.alarmName = 'timeoutAlarm-' + Date.now() + '-' + ++nextTimeoutId;
     this.startTimeout();
   }
   startTimeout() {
-    chrome.alarms.create('timeoutAlarm', { delayInMinutes: 0.003 }); // 200 ms = 0.0033 min
-    chrome.alarms.onAlarm.addListener(this.timeoutCallback.bind(this));
-  }
-  timeoutCallback(alarm) {
-    if (alarm.name === 'timeoutAlarm') {
-      this.callback();
-    }
+    timeoutTasks.set(this.alarmName, this);
+    chrome.alarms.create(this.alarmName, { delayInMinutes: 0.003 });
   }
   callback(selection) {
-    if (this.finished)
-      return;
-    this.realCallback.apply(self, arguments);
+    if (this.finished) return;
     this.finished = true;
+    timeoutTasks.delete(this.alarmName);
+    chrome.alarms.clear(this.alarmName);
+    this.onFinish();
+    this.realCallback.apply(self, arguments);
   }
 }
-/**
- * 获取选中项
- *
- * @param callback
- *            回调方法 callback(selection)
- */
+// 从当前页面读取选中文本，超时则以空值回调。
 function getSelection(callback) {
-  var task = new TimeLimitTask(callback);
+  var task = new TimeLimitTask(callback, () => {
+    if (self._selectionTask === task) self._selectionTask = null;
+  });
   self._selectionTask = task;
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.scripting.executeScript({
       target: { tabId: tabs[0].id },
       func: () => {
-        var selection = self.getSelection().toString() || "";
-        chrome.runtime.sendMessage({ action: "getselection", selection: selection });
-      }
+        var selection = self.getSelection().toString() || '';
+        chrome.runtime.sendMessage({ action: 'getselection', selection: selection });
+      },
     });
   });
 }
-// 监听来自内容脚本的消息
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "getselection") {
-    if (self._selectionTask) {
-      self._selectionTask.complete(message.selection);
-      self._selectionTask = null;
-    }
-  }
-});
-
 function getInput(callback) {
-  var task = new TimeLimitTask(callback);
+  var task = new TimeLimitTask(callback, () => {
+    if (self._inputTask === task) self._inputTask = null;
+  });
   self._inputTask = task;
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.scripting.executeScript({
       target: { tabId: tabs[0].id },
       func: () => {
-        var inputs = document.querySelectorAll("input[type=text],input:not([type])");
-        var maxsize = 100, i = 0, size, input;
+        var inputs = document.querySelectorAll('input[type=text],input:not([type])');
+        var maxsize = 100,
+          i = 0,
+          size,
+          input;
         for (; i < inputs.length; i++) {
           size = inputs[i].clientWidth * inputs[i].clientHeight;
           if (size > maxsize) {
@@ -72,8 +65,8 @@ function getInput(callback) {
             input = inputs[i];
           }
         }
-        chrome.runtime.sendMessage({ action: "getinput", value: input && input.value });
-      }
+        chrome.runtime.sendMessage({ action: 'getinput', value: input && input.value });
+      },
     });
   });
 }
@@ -87,7 +80,7 @@ function getKeywordFromUrl(url, q) {
       for (var name of names) {
         if (name && params.has(name)) return params.get(name);
       }
-    } catch (err) { }
+    } catch (err) {}
   }
   var m = null;
   if (q == 'wiki') {
@@ -95,12 +88,15 @@ function getKeywordFromUrl(url, q) {
   } else if (q) {
     m = url.match(new RegExp('\\W(?:' + q + '\\W)([^&\\/?=]*)'));
   }
-  if (!m) m = url.match(/[\/\-?&#!_](?:q|p|keyword|keywords|word|wd|kw|key|query|wiki)[=_\/\-]([^&\/?=]*)/);
+  if (!m)
+    m = url.match(
+      /[\/\-?&#!_](?:q|p|keyword|keywords|word|wd|kw|key|query|wiki)[=_\/\-]([^&\/?=]*)/,
+    );
   if (!m) m = url.match(/[\/\-?&#!_](?:search\/)([^&\/?=]*)/);
   if (m) {
     try {
       return decodeURIComponent(m[1]);
-    } catch (err) { }
+    } catch (err) {}
   }
   return '';
 }
@@ -118,11 +114,9 @@ function getKeyword(callback, q) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action == "getinput") {
+  if (message.action == 'getinput') {
     self._inputTask && self._inputTask.callback(message.value);
-    self._inputTask = null;
-  } else if (message.action == "getselection") {
+  } else if (message.action == 'getselection') {
     self._selectionTask && self._selectionTask.callback(message.selection);
-    self._selectionTask = null;
   }
 });
