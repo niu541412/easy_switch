@@ -1,6 +1,9 @@
 *~
 *.DS_Store
 node_modules
+dist/
+__pycache__/
+*.py[cod]
 # Temporary directory for debugging extension samples
 _debug
 _metadata

@@ -4,7 +4,7 @@
    },
    "default_locale": "en",
    "content_security_policy": {
-      "extension_pages": "script-src 'self' ; object-src 'self'; img-src https://*.gstatic.com https://*.gstatic.cn;"
+      "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' https://*.gstatic.com https://*.gstatic.cn;"
    },
    "author": "書",
    "description": "__MSG_description__",
@@ -44,5 +44,5 @@
       "https://*/*"
    ],
    "short_name": "__MSG_extName__",
-   "version": "3.0.5"
+   "version": "3.0.6"
 }

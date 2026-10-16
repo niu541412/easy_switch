@@ -1,3 +1,9 @@
+# 3.0.6
+- GitHub Release 自动生成 Chrome、Firefox 和 macOS Safari 测试版 App 三个包
+- 修复 Safari 图标更新问题，统一构建时的浏览器判断
+- Safari App 图标使用白色背景填充 logo 的透明区域，不再出现额外的圆角底
+- 修复 macOS Safari App 未在扩展列表中出现的问题
+
 # 3.0.5
 - 强制让百度用UTF8编码的关键字
 
