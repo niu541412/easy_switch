@@ -1,0 +1,73 @@
+name: Build release packages
+
+on:
+  pull_request:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: extension-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test and build
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            python3 scripts/build.py --release-tag "$GITHUB_REF_NAME"
+          else
+            python3 scripts/build.py
+          fi
+          python3 -m unittest discover -s tests
+      - name: Lint Firefox package
+        run: npx --yes web-ext@10.5.0 lint --source-dir dist/firefox
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-packages
+          path: dist/*.zip
+          if-no-files-found: error
+
+  safari:
+    needs: build
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: extension-packages
+          path: dist
+      - name: Build unsigned macOS Safari app
+        run: bash scripts/build_safari_app.sh
+      - name: Upload Safari app
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-macos-app
+          path: dist/easy_switch-safari-macos-*.zip
+          if-no-files-found: error
+      - name: Attach all three packages to GitHub Release
+        if: github.ref_type == 'tag'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/easy_switch-chrome-*.zip dist/easy_switch-firefox-*.zip dist/easy_switch-safari-macos-*.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/easy_switch-chrome-*.zip dist/easy_switch-firefox-*.zip dist/easy_switch-safari-macos-*.zip --generate-notes
+          fi

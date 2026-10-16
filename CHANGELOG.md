@@ -1,3 +1,7 @@
+# 3.0.6
+- GitHub Release 自动生成 Chrome、Firefox 和 macOS Safari 测试版 App 三个包
+- 修复 Safari 图标更新问题，统一构建时的浏览器判断
+
 # 3.0.5
 - 强制让百度用UTF8编码的关键字
 
