@@ -10,7 +10,9 @@
 
 ## 下载
 
-[GitHub Releases](https://github.com/niu541412/easy_switch/releases/latest) 提供 Chrome、Firefox 扩展包和 macOS Safari App 测试版；Safari App 使用无需证书的临时签名，未经过 Apple 公证。
+[GitHub Releases](https://github.com/niu541412/easy_switch/releases/latest) 提供 Chrome、Firefox 扩展包和 macOS Safari App 测试版。Safari App 没有 Apple 开发者证书签名，也未经过公证；即使允许未签名扩展，部分系统上仍可能无法在 Safari 中显示，不适合长期稳定使用。
+
+测试 Safari App 时，解压并将 `Easy Switch.app` 移入“应用程序”，运行一次，再到 Safari 设置 > 开发者中允许未签名扩展，并在“扩展”中启用。每次重启 Safari 后都需重新允许；App ZIP 不能通过“添加临时扩展”加载。[Apple 的未签名扩展说明](https://developer.apple.com/documentation/safariservices/running-your-safari-web-extension)。
 
 商店版本：[Chrome](https://chrome.google.com/webstore/detail/pchjdhcdlgghofamcpncdlhdonbeaplk) · [Firefox](https://addons.mozilla.org/zh-CN/firefox/addon/easy_switch) · [Edge](https://microsoftedge.microsoft.com/addons/detail/jijkhdficgnnikdijnkienfnmfbolmpb)。商店版本不随 GitHub Release 自动更新；Edge 版本未做持续测试。
 
@@ -20,6 +22,6 @@
 
 ## 构建与发布
 
-运行 `python3 scripts/build.py` 构建三个浏览器的扩展包。更新 `manifest.json` 版本并推送对应标签（如 `v3.0.7`）后，GitHub Actions 会把 Chrome ZIP、Firefox ZIP 和 macOS Safari App ZIP 附到 Release；不会提交浏览器商店。
+运行 `python3 scripts/build.py` 构建三个浏览器的扩展包。更新 `manifest.json` 版本并推送对应标签后，GitHub Actions 会把 Chrome ZIP、Firefox ZIP 和 macOS Safari App ZIP 附到 Release；不会提交浏览器商店。
 
-Chrome ZIP 可解压后加载；Firefox ZIP 仅供临时测试，常规安装需要签名的 XPI。Safari App 解压后放入“应用程序”并运行一次，再到 Safari 设置 > 开发者中允许未签名扩展、到“扩展”中启用；Safari 重启后需重新允许。[Apple 安装说明](https://developer.apple.com/documentation/safariservices/running-your-safari-web-extension)。
+Chrome ZIP 可解压后加载；Firefox ZIP 仅供临时测试，常规安装需要签名的 XPI。
