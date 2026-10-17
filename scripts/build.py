@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
-RUNTIME_DIRS = ("_locales", "icon", "js")
+RUNTIME_DIRS = ("_locales", "js")
 RUNTIME_FILES = ("options.html", "asset/delete.png")
 FIREFOX_ID = "{c1ebe747-6504-4cc9-8330-a03d33af8dcc}"
 FIREFOX_SCRIPTS = [

@@ -92,6 +92,7 @@ class BuildTest(unittest.TestCase):
                     )
                     self.assertIn("options.html", names)
                     self.assertIn("asset/logo/icon_32x32.png", names)
+                    self.assertFalse(any(name.startswith("icon/") for name in names))
                     for locale in (build.ROOT / "_locales").iterdir():
                         if locale.is_dir():
                             self.assertIn(f"_locales/{locale.name}/messages.json", names)
