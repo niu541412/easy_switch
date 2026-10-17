@@ -6,7 +6,7 @@
       "message": "Cambio con un clic"
    },
    "description": {
-      "message": "Cambio rápido entre sitios web, manteniendo el contenido de búsqueda para continuar buscando. Puede cambiar usando botones o atajos de teclado. Soporta sitios de búsqueda personalizados. Adaptado de la extensión de Chrome con el mismo nombre, ahora descontinuada."
+      "message": "Cambia entre sitios web y continúa buscando con las mismas palabras clave. Admite atajos y buscadores personalizados."
    },
    "noSwitch": {
       "message": "No cambiar"
@@ -117,7 +117,7 @@
       "message": "Nombre:"
    },
    "toutiao": {
-      "message": "Ej: Toutiao"
+      "message": "Ej.: Buscador de ejemplo"
    },
    "siteHomepage": {
       "message": "Página principal del sitio:"

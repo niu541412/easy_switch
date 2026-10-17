@@ -103,7 +103,8 @@ var Sites = Class(
     usersiteskey: 'usersites',
     init: function () {
       this.ready = this.getUserSites().then((userSites) => {
-        this.sites = sysSites.concat(userSites);
+        const userNames = new Set(userSites.map((site) => site.getName()));
+        this.sites = sysSites.filter((site) => !userNames.has(site.getName())).concat(userSites);
       });
       return this.ready;
     },
@@ -117,6 +118,14 @@ var Sites = Class(
         }
       }
       return null;
+    },
+    restoreLegacySites: function (names) {
+      const requested = new Set(names);
+      for (const site of legacySites) {
+        if (requested.has(site.getName()) && !this.getSiteByName(site.getName())) {
+          this.sites.push(site);
+        }
+      }
     },
     getUserSites: function () {
       return new Promise((resolve, reject) => {
@@ -205,7 +214,8 @@ var Ways = Class(
     savekey: 'ways',
     init: function () {
       this.ways = [];
-      this.ready = Sites.getInstance().ready.then(
+      const sites = Sites.getInstance();
+      this.ready = sites.ready.then(
         () =>
           new Promise((resolve) => {
             browserStorage.get(this.savekey, (item) => {
@@ -214,31 +224,41 @@ var Ways = Class(
                 return;
               }
               browserStorage.get('part2', (item) => {
-                switch (item.part2) {
-                  case 'part_binggoogle':
-                    this.addDualWay(Bing, Google);
-                    this.addWay(Baidu, Google);
-                    break;
-                  case 'part_baidugoogle':
-                    this.addDualWay(Baidu, Google);
-                    this.addWay(Bing, Google);
-                    break;
-                  case 'part_baidubing':
-                    this.addDualWay(Baidu, Google);
-                    this.addWay(Bing, Google);
-                    break;
-                  default:
-                    this.addWay(Baidu, Google);
-                    this.addWay(Google, Bing);
-                    this.addWay(Bing, Baidu);
+                const byName = (name) => sites.getSiteByName(name);
+                if (item.part2) {
+                  sites.restoreLegacySites(legacySites.map((site) => site.getName()));
+                  switch (item.part2) {
+                    case 'part_binggoogle':
+                      this.addDualWay(byName('Bing'), byName('Google'));
+                      this.addWay(byName('Baidu'), byName('Google'));
+                      break;
+                    case 'part_baidugoogle':
+                    case 'part_baidubing':
+                      this.addDualWay(byName('Baidu'), byName('Google'));
+                      this.addWay(byName('Bing'), byName('Google'));
+                      break;
+                    default:
+                      this.addWay(byName('Baidu'), byName('Google'));
+                      this.addWay(byName('Google'), byName('Bing'));
+                      this.addWay(byName('Bing'), byName('Baidu'));
+                  }
+                  this.addDualWay(byName('Taobao'), byName('Jingdong'));
+                  this.addDualWay(byName('Douyin'), byName('Bilibili'));
+                  this.addDualWay(byName('BaiduBaike'), byName('WikiCN'));
+                  this.addDualWay(byName('Zhihu'), byName('Douban'));
+                  this.addWay(byName('Github'), byName('Google'));
+                  this.addWay(byName('Smzdm'), byName('Jingdong'));
+                  this.addWay(byName('Wikiwand'), byName('BaiduBaike'));
+                } else {
+                  this.addWay(byName('Google'), byName('Bing'));
+                  this.addWay(byName('Bing'), byName('Baidu'));
+                  this.addWay(byName('Baidu'), byName('Google'));
+                  this.addWay(byName('Amazon'), byName('Google'));
+                  this.addWay(byName('Wikipedia'), byName('Google'));
+                  this.addWay(byName('YouTube'), byName('Google'));
+                  this.addWay(byName('Reddit'), byName('Google'));
+                  this.addWay(byName('Github'), byName('Google'));
                 }
-                this.addDualWay(Taobao, Jingdong);
-                this.addDualWay(Douyin, Bilibili);
-                this.addDualWay(BaiduBaike, Wiki);
-                this.addDualWay(Zhihu, Douban);
-                this.addWay(Github, Google);
-                this.addWay(Smzdm, Jingdong);
-                this.addWay(Wikiwand, BaiduBaike);
                 resolve();
               });
             });
@@ -258,6 +278,7 @@ var Ways = Class(
       return new Promise((resolve) => {
         browserStorage.get([this.savekey], (item) => {
           var warr = JSON.parse(item[this.savekey]);
+          sites.restoreLegacySites(warr.flatMap((one) => [one.from, one.to]));
           warr.forEach(function (one) {
             if (one.from && one.to) {
               the.addWay(sites.getSiteByName(one.from), sites.getSiteByName(one.to));
@@ -363,21 +384,26 @@ var OneClick = Class(ObjectClass, {
               try {
                 const from_url = new URL(tab.url);
 
-                const faviconPath = notChrome
-                  ? 'https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=32&url=' + from_url.origin
-                  : faviconURL(from_url.origin, 32);
-                fetchImageBitmap(faviconPath, notChrome, (oldImgBitmap) => {
-                  if (!oldImgBitmap) {
-                    console.error('Failed to load small image');
-                    return;
-                  }
-                  ctx.drawImage(oldImgBitmap, 16, 16, 16, 16);
-                  const imageData = ctx.getImageData(0, 0, 32, 32);
-                  chrome.action.setIcon({
-                    imageData: { 32: imageData },
-                    tabId: tab.id,
+                const fallbackIcon = siteFaviconURL(from_url.origin);
+                const drawFavicon = (iconUrl, retry) =>
+                  fetchImageBitmap(iconUrl, notChrome, (oldImgBitmap) => {
+                    if (!oldImgBitmap) {
+                      if (retry) {
+                        drawFavicon(fallbackIcon, false);
+                        return;
+                      }
+                      console.error('Failed to load small image');
+                      return;
+                    }
+                    ctx.drawImage(oldImgBitmap, 16, 16, 16, 16);
+                    const imageData = ctx.getImageData(0, 0, 32, 32);
+                    chrome.action.setIcon({
+                      imageData: { 32: imageData },
+                      tabId: tab.id,
+                    });
                   });
-                });
+                const tabIcon = notChrome && tab.status === 'complete' ? tab.favIconUrl : null;
+                drawFavicon(tabIcon || fallbackIcon, !!tabIcon);
               } catch (error) {
                 console.error('Failed to create favicon:', error);
               }
@@ -403,7 +429,7 @@ var OneClick = Class(ObjectClass, {
           }
         });
       } else {
-        if (/^https?:\/\//.test(path)) {
+        if (/^[a-z][a-z\d+.-]*:/i.test(path)) {
           fetchImageBitmap(path, true, (imgBitmap) => {
             if (!imgBitmap) return;
             const canvas = new OffscreenCanvas(32, 32);
@@ -491,7 +517,10 @@ var OneClick = Class(ObjectClass, {
     var ways = Ways.getInstance();
     var sites = Sites.getInstance();
     chrome.tabs.onUpdated.addListener(function (tabId, change) {
-      if (change.status === (isSafari ? 'complete' : 'loading')) {
+      if (
+        change.status === (isSafari ? 'complete' : 'loading') ||
+        (notChrome && (change.status === 'complete' || change.favIconUrl))
+      ) {
         chrome.tabs.get(tabId, function (tab) {
           the.ready.then(() => the.updateAction(tab));
         });
@@ -563,15 +592,8 @@ function getI18n(m) {
   return chrome.i18n.getMessage(m);
 }
 
-function faviconURL(u, s) {
-  const url = new URL(chrome.runtime.getURL('/_favicon/'));
-  url.searchParams.set('pageUrl', u);
-  url.searchParams.set('size', s);
-  return url.toString();
-}
-
 function getFullUrl(url) {
-  const pattern = /^(https?|chrome(-extension)?|file|filesystem):\/\//;
+  const pattern = /^[a-z][a-z\d+.-]*:/i;
   if (!pattern.test(url)) url = chrome.runtime.getURL(url);
   return url.toString();
 }

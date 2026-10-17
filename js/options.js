@@ -140,14 +140,15 @@ function initButtonIcon() {
   var img = new Image();
   var ctx = cvs.getContext('2d');
   img.onload = function () {
-    img_old = new Image();
+    var img_old = new Image();
     ctx.drawImage(img, 0, 0, 32, 32);
     img_old.onload = function () {
       ctx.drawImage(img_old, 16, 16, 16, 16);
     };
-    img_old.src = 'icon/bing.png';
+    img_old.src = siteFaviconURL('https://www.bing.com/');
   };
-  img.src = 'icon/google.png';
+  img.src = siteFaviconURL('https://www.google.com/');
+  byId('native-icon').src = img.src;
 
   // 预览遮罩图标。
   var cvs = byId('mask-icon');
@@ -164,7 +165,7 @@ function initButtonIcon() {
     ctx2.globalAlpha = 1;
     ctx2.drawImage(img2, 2, 2, 28, 28);
   };
-  img2.src = 'icon/google.png';
+  img2.src = siteFaviconURL('https://www.google.com/');
 
   browserStorage.get('buttonicon', (item) => {
     let idx = Math.min(item.buttonicon | 0, document.getElementsByName('button').length);
@@ -239,13 +240,6 @@ function initUserSites() {
   byId('site_add').addEventListener('click', addUserSiteClick);
 }
 
-function faviconURL(u, s) {
-  const url = new URL(chrome.runtime.getURL('/_favicon/'));
-  url.searchParams.set('pageUrl', u); // this encodes the URL as well
-  url.searchParams.set('size', s);
-  return url.toString();
-}
-
 function addUserSiteClick() {
   var name = byId('site_name').value;
   var home = byId('site_home').value;
@@ -261,61 +255,23 @@ function addUserSiteClick() {
   }
   q = q[1];
 
-  var favicon_url;
-
-  const ico_size = 32;
-  const favicon_url1 = `https://t3.gstatic.com/faviconV2?client=SOCIAL&size=${ico_size}&url=${home}`;
-  const favicon_url2 = `https://t3.gstatic.cn/faviconV2?client=SOCIAL&size=${ico_size}&url=${home}`;
-  const favicon_url3 = faviconURL(home, ico_size);
-
-  if (notChrome) {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const fetchTimeout = setTimeout(() => {
-      controller.abort();
-    }, 500);
-
-    fetch('https://www.google.com', { method: 'HEAD', mode: 'no-cors', signal })
-      .then((response) => {
-        clearTimeout(fetchTimeout);
-        if (response.ok) {
-          console.log(favicon_url1);
-          favicon_url = favicon_url1;
-        } else {
-          return Promise.reject(new Error('Non-OK status'));
-        }
-      })
-      .catch((error) => {
-        clearTimeout(fetchTimeout);
-        console.log(favicon_url2);
-        favicon_url = favicon_url2;
-      })
-      .finally(() => {
-        finalizedNewSite();
-      });
-  } else {
-    favicon_url = favicon_url3;
-    finalizedNewSite();
+  var ps = {
+    name: name,
+    icon: siteFaviconURL(home),
+    home: home,
+    searchUrl: searchurl,
+    q: q,
+  };
+  if (getHost(ps.home) != getHost(ps.searchUrl)) {
+    ps.matches = [getMatch(ps.home), getMatch(ps.searchUrl)];
   }
-  function finalizedNewSite() {
-    var ps = {
-      name: name,
-      icon: favicon_url,
-      home: home,
-      searchUrl: searchurl,
-      q: q,
-    };
-    if (getHost(ps.home) != getHost(ps.searchUrl)) {
-      ps.matches = [getMatch(ps.home), getMatch(ps.searchUrl)];
+  chrome.runtime.sendMessage({ action: 'addUserSite', site: ps }, (response) => {
+    if (response.success) {
+      location.reload();
+    } else {
+      alert(getI18n('addFail'));
     }
-    chrome.runtime.sendMessage({ action: 'addUserSite', site: ps }, (response) => {
-      if (response.success) {
-        location.reload();
-      } else {
-        alert(getI18n('addFail'));
-      }
-    });
-  }
+  });
 }
 
 function getMatch(url) {

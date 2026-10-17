@@ -5,9 +5,9 @@ const test = require('node:test');
 const vm = require('node:vm');
 
 const root = path.join(__dirname, '..');
-const context = vm.createContext({ URL, isFirefox: false });
+const context = vm.createContext({ URL, isFirefox: false, notChrome: true });
 context.self = context;
-for (const file of ['oop.js', 'bg.js', 'builtin.js']) {
+for (const file of ['oop.js', 'favicon.js', 'bg.js', 'builtin.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, 'js', file), 'utf8'), context);
 }
 
@@ -74,10 +74,25 @@ test('GitHub still matches only its search page', () => {
 
 test('built-in search destinations remain recognized', () => {
   const sites = vm.runInContext('sysSites', context);
+  assert.deepEqual(
+    Array.from(sites, (current) => current.getName()),
+    ['Google', 'Bing', 'Baidu', 'Wikipedia', 'YouTube', 'Reddit', 'Amazon', 'Github'],
+  );
   for (const current of sites) {
     const url = current.ps.searchUrl.replace('%s', 'test');
     assert.equal(current.acceptUrl(url), true, current.ps.name + ': ' + url);
+    assert.equal(new URL(current.getIcon()).hostname, 't3.gstatic.cn');
   }
+});
+
+test('international sites match their search pages and reject unrelated hosts', () => {
+  for (const name of ['DuckDuckGo', 'Wikipedia', 'YouTube', 'Reddit', 'Amazon', 'eBay']) {
+    const current = site(name === 'eBay' ? 'Ebay' : name);
+    assert.equal(current.acceptUrl(current.ps.searchUrl.replace('%s', 'test')), true, name);
+    assert.equal(current.acceptUrl('https://example.com/search?q=test'), false, name);
+  }
+  assert.equal(site('YouTube').acceptUrl('https://www.youtube.com/watch?v=abc'), false);
+  assert.equal(site('Reddit').acceptUrl('https://www.reddit.com/r/test/'), false);
 });
 
 test('search keywords are encoded for query and path templates', () => {

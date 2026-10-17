@@ -1,6 +1,9 @@
-const Baidu = new SearchSite({
+function builtinSite(config) {
+  return new SearchSite({ ...config, icon: siteFaviconURL(config.home) });
+}
+
+const Baidu = builtinSite({
   name: 'Baidu',
-  icon: 'icon/baidu.png',
   tip: '百度一下',
   home: 'https://www.baidu.com/',
   searchUrl: 'https://www.baidu.com/s?wd=%s&ie=utf-8',
@@ -14,25 +17,23 @@ const Baidu = new SearchSite({
     },
   ],
 });
-const Bing = new SearchSite({
+const Bing = builtinSite({
   name: 'Bing',
-  icon: 'icon/bing.png',
-  home: 'https://cn.bing.com/',
+  home: 'https://www.bing.com/',
   matches: ['//www\\.bing\\.com', '//cn\\.bing\\.com'],
-  searchUrl: 'https://cn.bing.com/search?q=%s',
+  searchUrl: 'https://www.bing.com/search?q=%s',
   types: [
     {
       type: 'news',
-      home: 'https://cn.bing.com/news',
-      searchUrl: 'https://cn.bing.com/news/search?q=%s',
+      home: 'https://www.bing.com/news',
+      searchUrl: 'https://www.bing.com/news/search?q=%s',
     },
   ],
 });
-const Google = new SearchSite({
+const Google = builtinSite({
   name: 'Google',
-  icon: 'icon/google.png',
   home: 'https://www.google.com/',
-  searchUrl: 'https://www.google.com/search?newwindow=1&hl=zh-CN&q=%s',
+  searchUrl: 'https://www.google.com/search?q=%s',
   matches: [
     '//www\\.google\\.(com|com\\.hk|co\\.uk|co\\.jp|com\\.au|co\\.in|de|fr|ca|cn)',
     '//news\\.google\\.com',
@@ -41,110 +42,140 @@ const Google = new SearchSite({
   types: [
     {
       type: 'news',
-      home: 'https://news.google.com/nwshp?hl=zh-CN',
-      searchUrl: 'https://www.google.com/search?q=%s&newwindow=1&tbm=nws&hl=zh-CN',
+      home: 'https://news.google.com/',
+      searchUrl: 'https://www.google.com/search?q=%s&tbm=nws',
       typeRegexp: '(news\\.google\\.com|\\.google\\.com.*?\\Wtbm=nws)',
     },
   ],
 });
-const Youku = new SearchSite({
+const Youku = builtinSite({
   name: 'Youku',
-  icon: 'icon/youku.png',
   home: 'http://www.youku.com/',
   searchUrl: 'http://www.soku.com/v?keyword=%s',
   matches: ['www\\.soku\\.com'],
 });
-const Douyin = new SearchSite({
+const Douyin = builtinSite({
   name: 'Douyin',
-  icon: 'icon/douyin.png',
   home: 'https://www.douyin.com/',
   searchUrl: 'https://www.douyin.com/search/%s',
   matches: ['www\\.douyin\\.com'],
 });
-const BaiduVideo = new SearchSite({
+const BaiduVideo = builtinSite({
   name: 'BaiduVideo',
-  icon: 'icon/haokan.png',
   home: 'http://v.baidu.com/',
   matches: ['//(video|v)\\.baidu\\.com'],
   searchUrl: 'http://v.baidu.com/v?word=%s&ie=utf-8',
 });
-const BaiduBaike = new SearchSite({
+const BaiduBaike = builtinSite({
   name: 'BaiduBaike',
-  icon: 'icon/baike.png',
   home: 'http://baike.baidu.com/',
   searchUrl: 'http://baike.baidu.com/search?word=%s&pn=0&rn=0&enc=utf8',
 });
-const Wiki = new SearchSite({
+const Wiki = builtinSite({
   name: 'WikiCN',
-  icon: 'icon/wiki.png',
   home: 'https://zh.wikipedia.org/',
   searchUrl: 'https://zh.wikipedia.org/zh-cn/%s',
   matches: ['//[\\w]*\\.wikipedia\\.org'],
   q: 'wiki',
 });
-const Wikiwand = new SearchSite({
+const Wikiwand = builtinSite({
   name: 'Wikiwand',
-  icon: 'icon/wikiwand.png',
   home: 'https://www.wikiwand.com/',
   searchUrl: 'https://www.wikiwand.com/zh-cn/%s',
   matches: ['//[\\w]*\\.wikiwand\\.com'],
   q: 'wiki',
 });
-const Bilibili = new SearchSite({
+const Bilibili = builtinSite({
   name: 'Bilibili',
-  icon: 'icon/bilibili.png',
   home: 'https://www.bilibili.com/',
   searchUrl: 'https://search.bilibili.com/all?keyword=%s',
   matches: ['//search\\.bilibili\\.com'],
 });
-const Zhihu = new SearchSite({
+const Zhihu = builtinSite({
   name: 'Zhihu',
-  icon: 'icon/zhihu.png',
   home: 'https://www.zhihu.com/',
   searchUrl: 'https://www.zhihu.com/search?q=%s',
   matches: ['//[\\w]*\\.zhihu\\.com'],
 });
-const Taobao = new SearchSite({
+const Taobao = builtinSite({
   name: 'Taobao',
-  icon: 'icon/taobao.png',
   home: 'https://www.taobao.com',
   searchUrl: 'https://s.taobao.com/search?q=%s',
   matches: ['//[\\w]*\\.taobao\\.com'],
 });
-const Jingdong = new SearchSite({
+const Jingdong = builtinSite({
   name: 'Jingdong',
-  icon: 'icon/jd.png',
   home: 'https://www.jd.com/',
   searchUrl: 'https://search.jd.com/Search?keyword=%s&enc=utf-8',
   matches: ['//[\\w]*\\.jd\\.com'],
 });
-const Github = new SearchSite({
+const Github = builtinSite({
   name: 'Github',
-  icon: 'icon/github.png',
   home: 'https://www.github.com/',
   searchUrl: 'https://github.com/search?q=%s',
   matches: ['//(www\\.)?github\\.com'],
   allowedPaths: ['/search'],
 });
-const Douban = new SearchSite({
+const Douban = builtinSite({
   name: 'Douban',
-  icon: 'icon/douban.png',
   home: 'https://www.douban.com/',
   searchUrl: 'https://www.douban.com/search?q=%s',
   matches: ['//[\\w]*\\.douban\\.com'],
 });
-const Smzdm = new SearchSite({
+const Smzdm = builtinSite({
   name: 'Smzdm',
-  icon: 'icon/smzdm.png',
   home: 'https://www.smzdm.com/',
   searchUrl: 'https://search.smzdm.com/?s=%s',
   matches: ['//[\\w]*\\.smzdm\\.com'],
   q: 's',
 });
-const sysSites = [
-  Baidu,
-  Google,
-  Bing,
+const DuckDuckGo = builtinSite({
+  name: 'DuckDuckGo',
+  home: 'https://duckduckgo.com/',
+  searchUrl: 'https://duckduckgo.com/?q=%s',
+});
+const Wikipedia = builtinSite({
+  name: 'Wikipedia',
+  home: 'https://en.wikipedia.org/',
+  searchUrl: 'https://en.wikipedia.org/w/index.php?search=%s',
+  matches: ['//[\\w-]+\\.wikipedia\\.org'],
+  q: 'search',
+});
+const YouTube = builtinSite({
+  name: 'YouTube',
+  home: 'https://www.youtube.com/',
+  searchUrl: 'https://www.youtube.com/results?search_query=%s',
+  matches: ['//(www\\.)?youtube\\.com'],
+  allowedPaths: ['/', '/results'],
+  q: 'search_query',
+});
+const Reddit = builtinSite({
+  name: 'Reddit',
+  home: 'https://www.reddit.com/',
+  searchUrl: 'https://www.reddit.com/search/?q=%s',
+  matches: ['//(www\\.)?reddit\\.com'],
+  allowedPaths: ['/', '/search/'],
+});
+const Amazon = builtinSite({
+  name: 'Amazon',
+  home: 'https://www.amazon.com/',
+  searchUrl: 'https://www.amazon.com/s?k=%s',
+  allowedPaths: ['/', '/s'],
+  q: 'k',
+});
+const Ebay = builtinSite({
+  name: 'eBay',
+  home: 'https://www.ebay.com/',
+  searchUrl: 'https://www.ebay.com/sch/i.html?_nkw=%s',
+  allowedPaths: ['/', '/sch/i.html'],
+  q: '_nkw',
+});
+
+const sysSites = [Google, Bing, Baidu, Wikipedia, YouTube, Reddit, Amazon, Github];
+
+const legacySites = [
+  DuckDuckGo,
+  Ebay,
   Taobao,
   Jingdong,
   Zhihu,
@@ -152,9 +183,9 @@ const sysSites = [
   BaiduBaike,
   Bilibili,
   Douyin,
-  Github,
   Smzdm,
   Douban,
   Youku,
   Wikiwand,
+  BaiduVideo,
 ];

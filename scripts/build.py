@@ -21,6 +21,7 @@ FIREFOX_SCRIPTS = [
     "js/syncloc.js",
     "js/oop.js",
     "js/url.js",
+    "js/favicon.js",
     "js/kw.js",
     "js/bg.js",
     "js/builtin.js",

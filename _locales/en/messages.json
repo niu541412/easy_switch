@@ -6,7 +6,7 @@
       "message": "Easy Switch"
    },
    "description": {
-      "message": "Easily switching between websites, retaining search content for continued searching. You can switch using buttons or shortcuts."
+      "message": "Switch between websites and continue searching with the same keywords. Supports shortcuts and custom search sites."
    },
    "noSwitch": {
       "message": "No switch"
@@ -68,6 +68,9 @@
    "Douban": {
       "message": "Douban"
    },
+   "Smzdm": {
+      "message": "Smzdm"
+   },
    "iconNative": {
       "message": "Native"
    },
@@ -114,7 +117,7 @@
       "message": "Name: "
    },
    "toutiao": {
-      "message": "e.g., Toutiao Search"
+      "message": "e.g., Example Search"
    },
    "siteHomepage": {
       "message": "Site Homepage: "

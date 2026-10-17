@@ -6,7 +6,7 @@
       "message": "一键切换"
    },
    "description": {
-      "message": "网站间的快速切换，保留搜索内容继续搜索。可以通过按钮或者快捷键切换。支持自定义搜索网站。移植于已下架的Chrome同名扩展。"
+      "message": "在网站间快速切换，保留搜索词继续搜索。支持快捷键和自定义搜索网站。"
    },
    "noSwitch": {
       "message": "不切换"
@@ -117,7 +117,7 @@
       "message": "名称："
    },
    "toutiao": {
-      "message": "如：头条搜索"
+      "message": "如：示例搜索"
    },
    "siteHomepage": {
       "message": "网站主页："

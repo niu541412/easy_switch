@@ -6,7 +6,7 @@
       "message": "一鍵切換"
    },
    "description": {
-      "message": "網站間的快速切換，保留搜尋內容繼續搜尋。可以通過按鈕或者快捷鍵切換。支持自訂搜尋網站。移植於已下架的Chrome同名擴展。"
+      "message": "在網站間快速切換，保留搜尋詞繼續搜尋。支援快捷鍵和自訂搜尋網站。"
    },
    "noSwitch": {
       "message": "不切換"
@@ -117,7 +117,7 @@
       "message": "名稱："
    },
    "toutiao": {
-      "message": "如：頭條搜尋"
+      "message": "如：範例搜尋"
    },
    "siteHomepage": {
       "message": "網站主頁："

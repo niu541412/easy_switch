@@ -1,12 +1,12 @@
 {
    "extName": {
-      "message": "一键切り替え"
+      "message": "Easy Switch"
    },
    "defaultTitle": {
-      "message": "一键切り替え"
+      "message": "Easy Switch"
    },
    "description": {
-      "message": "ウェブサイト間の高速切り替えを行い、検索内容を保持して検索を続けます。ボタンまたはショートカットキーで切り替え可能です。カスタム検索サイトに対応。廃止されたChromeの同名拡張機能から移植されました。"
+      "message": "ウェブサイトを切り替えて、同じキーワードで検索を続けられます。ショートカットキーとカスタム検索サイトに対応しています。"
    },
    "noSwitch": {
       "message": "切り替えなし"
@@ -81,7 +81,7 @@
       "message": "マスク"
    },
    "optionTitle": {
-      "message": "一键切り替え－オプション"
+      "message": "Easy Switch - オプション"
    },
    "optionMessage": {
       "message": "オプション"
@@ -117,7 +117,7 @@
       "message": "名称："
    },
    "toutiao": {
-      "message": "例：头条検索"
+      "message": "例：サンプル検索"
    },
    "siteHomepage": {
       "message": "サイトのホームページ："
