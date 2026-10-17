@@ -72,27 +72,44 @@ test('GitHub still matches only its search page', () => {
   assert.equal(github.acceptUrl('https://github.com.evil.test/search'), false);
 });
 
+test('action tooltip uses localized site names', () => {
+  context.chrome = {
+    i18n: {
+      getMessage(key) {
+        return { Baidu: 'Baidu', Github: 'GitHub', Search: ' Search' }[key] || '';
+      },
+    },
+  };
+  assert.equal(site('Github').getTip(), 'GitHub Search');
+  assert.equal(site('Baidu').getTip(), 'Baidu Search');
+});
+
 test('built-in search destinations remain recognized', () => {
   const sites = vm.runInContext('sysSites', context);
   assert.deepEqual(
     Array.from(sites, (current) => current.getName()),
-    ['Google', 'Bing', 'Baidu', 'Wikipedia', 'YouTube', 'Reddit', 'Amazon', 'Github'],
+    ['Google', 'Bing', 'Github'],
   );
   for (const current of sites) {
     const url = current.ps.searchUrl.replace('%s', 'test');
     assert.equal(current.acceptUrl(url), true, current.ps.name + ': ' + url);
-    assert.equal(new URL(current.getIcon()).hostname, 't3.gstatic.cn');
+    assert.equal(new URL(current.getIcon()).hostname,
+      current.getName() === 'Bing' ? 'www.bing.com' : 't3.gstatic.cn');
   }
 });
 
 test('international sites match their search pages and reject unrelated hosts', () => {
-  for (const name of ['DuckDuckGo', 'Wikipedia', 'YouTube', 'Reddit', 'Amazon', 'eBay']) {
+  for (const name of ['DuckDuckGo', 'Wikipedia', 'YouTube', 'Reddit', 'Amazon', 'eBay',
+    'TikTok', 'Xiaohongshu', 'YahooJapan', 'AmazonJapan', 'Yandex', 'Naver']) {
     const current = site(name === 'eBay' ? 'Ebay' : name);
     assert.equal(current.acceptUrl(current.ps.searchUrl.replace('%s', 'test')), true, name);
     assert.equal(current.acceptUrl('https://example.com/search?q=test'), false, name);
   }
   assert.equal(site('YouTube').acceptUrl('https://www.youtube.com/watch?v=abc'), false);
   assert.equal(site('Reddit').acceptUrl('https://www.reddit.com/r/test/'), false);
+  assert.equal(site('Xiaohongshu').acceptUrl('https://www.xiaohongshu.com/search_result/?keyword=test'), true);
+  assert.equal(site('Xiaohongshu').acceptUrl('https://www.xiaohongshu.com/explore/abc'), false);
+  assert.equal(site('TikTok').acceptUrl('https://www.tiktok.com/@someone/video/123'), false);
 });
 
 test('search keywords are encoded for query and path templates', () => {
@@ -103,6 +120,27 @@ test('search keywords are encoded for query and path templates', () => {
   assert.equal(new URL(googleUrl).searchParams.get('q'), keyword);
   assert.equal(new URL(wikiUrl).pathname, '/zh-cn/' + encodeURIComponent(keyword));
   assert.equal(site('Google').getSearchUrl(undefined, ''), 'https://www.google.com/');
+});
+
+test('every current recommended search URL keeps its encoded keyword', () => {
+  const keywordContext = vm.createContext({
+    URL,
+    chrome: {
+      alarms: {
+        onAlarm: { addListener() {} },
+      },
+      runtime: { onMessage: { addListener() {} } },
+    },
+  });
+  vm.runInContext(fs.readFileSync(path.join(root, 'js/kw.js'), 'utf8'), keywordContext);
+  const extract = vm.runInContext('getKeywordFromUrl', keywordContext);
+  const sites = vm.runInContext('[...new Set([...sysSites, ...optionalSites])]', context);
+  const keyword = 'a b&c/中文+%';
+  for (const current of sites) {
+    const url = current.getSearchUrl(undefined, keyword);
+    assert.equal(extract(url, current.getQ()), keyword, current.getName());
+    assert.equal(current.acceptUrl(url), true, current.getName());
+  }
 });
 
 test('custom-site host patterns preserve hyphenated domains', () => {

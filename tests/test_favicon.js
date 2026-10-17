@@ -55,6 +55,7 @@ test('custom sites use the browser favicon URL on Chrome and a direct fallback e
 
 function loadBackground(notChrome) {
   const requests = [];
+  const modes = [];
   const icons = [];
   const drawings = [];
   const canvasContext = {
@@ -96,11 +97,12 @@ function loadBackground(notChrome) {
   for (const file of ['oop.js', 'favicon.js', 'bg.js']) {
     vm.runInContext(fs.readFileSync(path.join(root, 'js', file), 'utf8'), context);
   }
-  context.fetchImageBitmap = (url, _isCors, callback) => {
+  context.fetchImageBitmap = (url, isCors, callback) => {
     requests.push(url);
+    modes.push(isCors);
     callback(url === 'https://example.com/icon.ico' ? null : { url });
   };
-  return { context, requests, icons, drawings };
+  return { context, requests, modes, icons, drawings };
 }
 
 test('Firefox and Safari use the tab favicon, then fall back if it cannot be read', () => {
@@ -165,4 +167,15 @@ test('Chrome renders a built-in site favicon URL as action image data', () => {
   assert.equal(requests[0], siteIcon);
   assert.equal(icons[0].tabId, 10);
   assert.ok(icons[0].imageData[32]);
+});
+
+test('Chrome fetches the direct Bing favicon with CORS for overlay icons', () => {
+  const { context, modes, icons } = loadBackground(false);
+  const setIcon = vm.runInContext('OneClick.prototype.setIogo', context);
+
+  setIcon.call({}, { id: 11, url: 'https://www.bing.com/search?q=test' },
+    'https://www.bing.com/favicon.ico');
+
+  assert.equal(modes[0], true);
+  assert.equal(icons[0].tabId, 11);
 });

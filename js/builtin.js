@@ -1,10 +1,9 @@
 function builtinSite(config) {
-  return new SearchSite({ ...config, icon: siteFaviconURL(config.home) });
+  return new SearchSite({ ...config, icon: config.icon || siteFaviconURL(config.home) });
 }
 
 const Baidu = builtinSite({
   name: 'Baidu',
-  tip: '百度一下',
   home: 'https://www.baidu.com/',
   searchUrl: 'https://www.baidu.com/s?wd=%s&ie=utf-8',
   matches: ['//[\\w]*\\.baidu\\.com'],
@@ -20,6 +19,7 @@ const Baidu = builtinSite({
 const Bing = builtinSite({
   name: 'Bing',
   home: 'https://www.bing.com/',
+  icon: 'https://www.bing.com/favicon.ico',
   matches: ['//www\\.bing\\.com', '//cn\\.bing\\.com'],
   searchUrl: 'https://www.bing.com/search?q=%s',
   types: [
@@ -156,6 +156,48 @@ const Reddit = builtinSite({
   matches: ['//(www\\.)?reddit\\.com'],
   allowedPaths: ['/', '/search/'],
 });
+const TikTok = builtinSite({
+  name: 'TikTok',
+  home: 'https://www.tiktok.com/',
+  searchUrl: 'https://www.tiktok.com/search?q=%s',
+  allowedPaths: ['/', '/search'],
+});
+const Xiaohongshu = builtinSite({
+  name: 'Xiaohongshu',
+  home: 'https://www.xiaohongshu.com/',
+  searchUrl: 'https://www.xiaohongshu.com/search_result?keyword=%s',
+  allowedPaths: ['/', '/search_result', '/search_result/'],
+  q: 'keyword',
+});
+const YahooJapan = builtinSite({
+  name: 'YahooJapan',
+  home: 'https://search.yahoo.co.jp/',
+  searchUrl: 'https://search.yahoo.co.jp/search?p=%s',
+  allowedPaths: ['/', '/search'],
+  q: 'p',
+});
+const AmazonJapan = builtinSite({
+  name: 'AmazonJapan',
+  home: 'https://www.amazon.co.jp/',
+  searchUrl: 'https://www.amazon.co.jp/s?k=%s',
+  allowedPaths: ['/', '/s'],
+  q: 'k',
+});
+const Yandex = builtinSite({
+  name: 'Yandex',
+  home: 'https://yandex.com/',
+  searchUrl: 'https://yandex.com/search/?text=%s',
+  allowedPaths: ['/', '/search/'],
+  q: 'text',
+});
+const Naver = builtinSite({
+  name: 'Naver',
+  home: 'https://www.naver.com/',
+  searchUrl: 'https://search.naver.com/search.naver?query=%s',
+  matches: ['//www\\.naver\\.com', '//search\\.naver\\.com'],
+  allowedPaths: ['/', '/search.naver'],
+  q: 'query',
+});
 const Amazon = builtinSite({
   name: 'Amazon',
   home: 'https://www.amazon.com/',
@@ -171,9 +213,34 @@ const Ebay = builtinSite({
   q: '_nkw',
 });
 
-const sysSites = [Google, Bing, Baidu, Wikipedia, YouTube, Reddit, Amazon, Github];
+const sysSites = [Google, Bing, Github];
+const previousDefaultSites = [Baidu, Wikipedia, YouTube, Reddit, Amazon];
+const optionalSites = [
+  Baidu, Taobao, Douyin, Bilibili, Xiaohongshu,
+  DuckDuckGo, YouTube, TikTok, Amazon, Reddit,
+  YahooJapan, AmazonJapan, Yandex, Naver,
+  Wikipedia,
+];
+const initialSiteNames = {
+  zh_cn: ['Baidu', 'Taobao', 'Douyin', 'Bilibili', 'Xiaohongshu'],
+  en: ['DuckDuckGo', 'YouTube', 'TikTok', 'Amazon', 'Reddit'],
+  ja: ['YahooJapan', 'AmazonJapan'],
+  ru: ['Yandex'],
+  ko: ['Naver'],
+};
 
-const legacySites = [
+function initialSitesForLocale(locale) {
+  const normalized = (locale || 'en').replace(/-/g, '_').toLowerCase();
+  const key = normalized === 'zh' || ['zh_cn', 'zh_sg', 'zh_hans'].some(
+    (language) => normalized === language || normalized.startsWith(language + '_'),
+  )
+    ? 'zh_cn'
+    : normalized.split('_')[0];
+  const names = initialSiteNames[key] || initialSiteNames.en;
+  return sysSites.concat(names.map((name) => optionalSites.find((site) => site.getName() === name)));
+}
+
+const previousLegacySites = [
   DuckDuckGo,
   Ebay,
   Taobao,
@@ -189,3 +256,4 @@ const legacySites = [
   Wikiwand,
   BaiduVideo,
 ];
+const availableBuiltinSites = [...optionalSites, ...previousLegacySites];

@@ -11,7 +11,7 @@ var SearchSite = Class(ObjectClass, {
     return this.ps.icon;
   },
   getTip: function () {
-    return this.ps.tip || this.ps.name + getI18n('Search');
+    return this.ps.tip || (getI18n(this.ps.name) || this.ps.name) + getI18n('Search');
   },
   getQ: function () {
     return this.ps.q;
@@ -103,13 +103,78 @@ var Sites = Class(
     usersiteskey: 'usersites',
     init: function () {
       this.ready = this.getUserSites().then((userSites) => {
-        const userNames = new Set(userSites.map((site) => site.getName()));
-        this.sites = sysSites.filter((site) => !userNames.has(site.getName())).concat(userSites);
+        return new Promise((resolve) => {
+          browserStorage.get('builtinSites', (item) => {
+            const configuredNames = item.builtinSites;
+            this.hasBuiltinSites = Array.isArray(configuredNames);
+            const names = this.hasBuiltinSites
+              ? new Set(configuredNames)
+              : new Set(initialSitesForLocale(chrome.i18n.getUILanguage()).map((site) => site.getName()));
+            sysSites.forEach((site) => names.add(site.getName()));
+            this.activeBuiltinNames = names;
+            const userNames = new Set(userSites.map((site) => site.getName()));
+            this.userNames = userNames;
+            this.sites = [...new Set([...sysSites, ...availableBuiltinSites])]
+              .filter((site) => names.has(site.getName()) && !userNames.has(site.getName()))
+              .concat(userSites);
+            resolve();
+          });
+        });
       });
       return this.ready;
     },
     getAllSites: function () {
       return this.sites;
+    },
+    usePreviousDefaults: function () {
+      // Saved configurations from before builtinSites existed kept these sites visible.
+      this.activeBuiltinNames = new Set(
+        [...sysSites, ...previousDefaultSites].map((site) => site.getName()),
+      );
+      this.sites = [...sysSites, ...previousDefaultSites]
+        .filter((site) => !this.userNames.has(site.getName()))
+        .concat(this.sites.filter((site) => this.userNames.has(site.getName())));
+    },
+    getRemovableBuiltinNames: function () {
+      return [...new Set(availableBuiltinSites.map((site) => site.getName()))]
+        .filter((name) => this.activeBuiltinNames.has(name) && !this.userNames.has(name));
+    },
+    getInactiveBuiltinNames: function () {
+      return [...new Set(availableBuiltinSites.map((site) => site.getName()))]
+        .filter((name) => !this.activeBuiltinNames.has(name) && !this.userNames.has(name));
+    },
+    addBuiltinSite: function (name, ways) {
+      const site = availableBuiltinSites.find((candidate) => candidate.getName() === name);
+      if (!site || this.activeBuiltinNames.has(name) || this.userNames.has(name)) {
+        return Promise.resolve(false);
+      }
+      this.activeBuiltinNames.add(name);
+      this.sites.push(site);
+      return new Promise((resolve) => {
+        browserStorage.set({
+          builtinSites: [...this.activeBuiltinNames],
+          ways: JSON.stringify(ways.ways.map((way) => ({
+            from: way.getFrom().getName(),
+            to: way.getTo().getName(),
+          }))),
+        }, () => resolve(true));
+      });
+    },
+    removeBuiltinSite: function (name, ways) {
+      if (!this.getRemovableBuiltinNames().includes(name)) return Promise.resolve(false);
+      const site = this.getSiteByName(name);
+      this.activeBuiltinNames.delete(name);
+      this.sites = this.sites.filter((candidate) => candidate.getName() !== name);
+      ways.siteRemoved(site);
+      return new Promise((resolve) => {
+        browserStorage.set({
+          builtinSites: [...this.activeBuiltinNames],
+          ways: JSON.stringify(ways.ways.map((way) => ({
+            from: way.getFrom().getName(),
+            to: way.getTo().getName(),
+          }))),
+        }, () => resolve(true));
+      });
     },
     getSiteByName: function (name) {
       for (var i = this.sites.length - 1; i >= 0; i--) {
@@ -121,9 +186,10 @@ var Sites = Class(
     },
     restoreLegacySites: function (names) {
       const requested = new Set(names);
-      for (const site of legacySites) {
+      for (const site of availableBuiltinSites) {
         if (requested.has(site.getName()) && !this.getSiteByName(site.getName())) {
           this.sites.push(site);
+          this.activeBuiltinNames.add(site.getName());
         }
       }
     },
@@ -143,37 +209,45 @@ var Sites = Class(
       });
     },
     addUserSite: function (ps) {
-      var sites = this.sites;
-      for (var i = sites.length - 1; i >= 0; i--) {
-        if (sites[i].getName() == ps.name) {
-          return false;
-        }
-      }
-      browserStorage.get(this.usersiteskey, (item) => {
-        var arr = JSON.parse(item[this.usersiteskey] || '[]');
-        arr.push(ps);
-        browserStorage.set({ [this.usersiteskey]: JSON.stringify(arr) });
-        this.sites.push(new SearchSite(ps));
+      if (this.getSiteByName(ps.name)) return Promise.resolve(false);
+      return new Promise((resolve) => {
+        browserStorage.get(this.usersiteskey, (item) => {
+          const stored = JSON.parse(item[this.usersiteskey] || '[]');
+          if (stored.some((site) => site.name === ps.name)) {
+            resolve(false);
+            return;
+          }
+          stored.push(ps);
+          browserStorage.set({ [this.usersiteskey]: JSON.stringify(stored) }, () => {
+            this.sites.push(new SearchSite(ps));
+            this.userNames.add(ps.name);
+            resolve(true);
+          });
+        });
       });
-      return true;
     },
     removeUserSite: function (ps) {
-      var name = ps.name || ps;
-      var sites = this.sites,
-        i;
-      for (i = sites.length - 1; i >= 0; i--) {
-        if (sites[i].getName() == name) {
-          sites.splice(i, 1);
-        }
-      }
-      browserStorage.get(this.usersiteskey, (item) => {
-        var arr = JSON.parse(item[this.usersiteskey] || '[]');
-        for (i = arr.length - 1; i >= 0; i--) {
-          if (arr[i].name == name) {
-            arr.splice(i, 1);
+      const name = ps.name || ps;
+      if (!this.userNames.has(name)) return Promise.resolve(false);
+      return new Promise((resolve) => {
+        browserStorage.get(this.usersiteskey, (item) => {
+          const stored = JSON.parse(item[this.usersiteskey] || '[]');
+          const remaining = stored.filter((site) => site.name !== name);
+          if (remaining.length === stored.length) {
+            resolve(false);
+            return;
           }
-        }
-        browserStorage.set({ [this.usersiteskey]: JSON.stringify(arr) });
+          browserStorage.set({ [this.usersiteskey]: JSON.stringify(remaining) }, () => {
+            this.sites = this.sites.filter((site) => site.getName() !== name);
+            this.userNames.delete(name);
+            if (this.activeBuiltinNames.has(name)) {
+              const builtin = [...sysSites, ...availableBuiltinSites]
+                .find((site) => site.getName() === name);
+              if (builtin) this.sites.push(builtin);
+            }
+            resolve(true);
+          });
+        });
       });
     },
   },
@@ -220,13 +294,17 @@ var Ways = Class(
           new Promise((resolve) => {
             browserStorage.get(this.savekey, (item) => {
               if (item[this.savekey]) {
+                if (!sites.hasBuiltinSites) {
+                  sites.usePreviousDefaults();
+                }
                 this.loadWays().then(resolve);
                 return;
               }
               browserStorage.get('part2', (item) => {
                 const byName = (name) => sites.getSiteByName(name);
                 if (item.part2) {
-                  sites.restoreLegacySites(legacySites.map((site) => site.getName()));
+                  if (!sites.hasBuiltinSites) sites.usePreviousDefaults();
+                  sites.restoreLegacySites(previousLegacySites.map((site) => site.getName()));
                   switch (item.part2) {
                     case 'part_binggoogle':
                       this.addDualWay(byName('Bing'), byName('Google'));
@@ -250,14 +328,19 @@ var Ways = Class(
                   this.addWay(byName('Smzdm'), byName('Jingdong'));
                   this.addWay(byName('Wikiwand'), byName('BaiduBaike'));
                 } else {
-                  this.addWay(byName('Google'), byName('Bing'));
-                  this.addWay(byName('Bing'), byName('Baidu'));
-                  this.addWay(byName('Baidu'), byName('Google'));
-                  this.addWay(byName('Amazon'), byName('Google'));
-                  this.addWay(byName('Wikipedia'), byName('Google'));
-                  this.addWay(byName('YouTube'), byName('Google'));
-                  this.addWay(byName('Reddit'), byName('Google'));
-                  this.addWay(byName('Github'), byName('Google'));
+                  const searchAlternative = ['Baidu', 'DuckDuckGo', 'YahooJapan', 'Yandex', 'Naver']
+                    .find((name) => byName(name));
+                  for (const site of sites.getAllSites()) {
+                    const name = site.getName();
+                    const target = name === 'Google' ? 'Bing'
+                      : name === 'Bing' ? searchAlternative || 'Google'
+                      : name === 'Douyin' ? 'Bilibili'
+                      : name === 'Bilibili' ? 'Douyin'
+                      : name === 'YouTube' ? 'TikTok'
+                      : name === 'TikTok' ? 'YouTube'
+                      : 'Google';
+                    this.addWay(site, byName(target));
+                  }
                 }
                 resolve();
               });
@@ -267,8 +350,13 @@ var Ways = Class(
       return this.ready;
     },
     saveWays: function (waysArray) {
-      browserStorage.set({ [this.savekey]: JSON.stringify(waysArray) }, () => {
-        this.loadWays();
+      return new Promise((resolve) => {
+        browserStorage.set({
+          [this.savekey]: JSON.stringify(waysArray),
+          builtinSites: [...Sites.getInstance().activeBuiltinNames],
+        }, () => {
+          this.loadWays().then(resolve);
+        });
       });
     },
     loadWays: function () {
@@ -347,6 +435,11 @@ var Ways = Class(
 );
 
 // 扩展后台入口。
+function badgeLabel(name) {
+  const limit = /[\u2e80-\u9fff\uac00-\ud7af\u3040-\u30ff]/i.test(name) ? 2 : 4;
+  return Array.from(name).slice(0, limit).join('');
+}
+
 var OneClick = Class(ObjectClass, {
   constructor: function () {
     this.ways = Ways.getInstance();
@@ -366,6 +459,25 @@ var OneClick = Class(ObjectClass, {
   setShortcut: function (s) {
     browserStorage.set({ shortcut: s });
   },
+  setBadge: function (tab, site, enabled) {
+    if (!Number.isInteger(tab.id)) return;
+    const name = site && (getI18n(site.getName()) || site.getName());
+    const text = enabled && name ? badgeLabel(name) : '';
+    chrome.action.setBadgeText({ tabId: tab.id, text });
+    if (text && chrome.action.setBadgeBackgroundColor) {
+      chrome.action.setBadgeBackgroundColor({ tabId: tab.id, color: '#247477' });
+    }
+  },
+  refreshBadges: function (enabled) {
+    chrome.tabs.query({}, (tabs) => {
+      this.ready.then(() => {
+        for (const tab of tabs || []) {
+          const way = enabled && tab.url ? this.ways.findWay(tab.url) : null;
+          this.setBadge(tab, way && way.getTo(), enabled);
+        }
+      });
+    });
+  },
   setIogo: function (tab, path) {
     browserStorage.get('buttonicon', (item) => {
       if (parseInt(item.buttonicon)) {
@@ -373,7 +485,7 @@ var OneClick = Class(ObjectClass, {
         const cvs = new OffscreenCanvas(32, 32);
         const ctx = cvs.getContext('2d');
 
-        fetchImageBitmap(path, notChrome, (imgBitmap) => {
+        fetchImageBitmap(path, notChrome || /^https?:\/\//i.test(path), (imgBitmap) => {
           if (!imgBitmap) {
             console.error('Failed to load image');
             return;
@@ -451,6 +563,9 @@ var OneClick = Class(ObjectClass, {
   },
   swichSupport: function (tab, site) {
     this.setIogo(tab, site.getIcon());
+    browserStorage.get('showBadgeText', (item) => {
+      this.setBadge(tab, site, item.showBadgeText === '1');
+    });
     chrome.action.setTitle({
       tabId: tab.id,
       title: site.getTip(),
@@ -467,15 +582,13 @@ var OneClick = Class(ObjectClass, {
     } catch (e) {}
   },
   updateAction: function (tab) {
-    var site,
-      url = tab.url,
-      the = this,
-      way;
-    if (url.substr(0, 4) != 'http') {
+    if (!tab.url || !/^https?:/i.test(tab.url)) {
+      this.setBadge(tab, null, false);
       return;
     }
-    way = this.ways.findWay(tab.url);
-    way && this.swichSupport(tab, way.getTo());
+    const way = this.ways.findWay(tab.url);
+    if (way) this.swichSupport(tab, way.getTo());
+    else this.setBadge(tab, null, false);
   },
   getKeywordAndSwitch: function (selector, tourl, tohome) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -526,6 +639,15 @@ var OneClick = Class(ObjectClass, {
         });
       }
     });
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName !== (isSafari ? 'local' : 'sync') || !changes.showBadgeText) return;
+      the.refreshBadges(changes.showBadgeText.newValue === '1');
+    });
+    this.ready.then(() => {
+      browserStorage.get('showBadgeText', (item) => {
+        this.refreshBadges(item.showBadgeText === '1');
+      });
+    });
     chrome.action.onClicked.addListener(function (tab) {
       the.ready.then(() => the.switchAction(tab));
     });
@@ -551,6 +673,8 @@ var OneClick = Class(ObjectClass, {
           'findWayBySite',
           'removeUserSite',
           'addUserSite',
+          'addBuiltinSite',
+          'removeBuiltinSite',
           'saveWays',
         ].includes(message.action)
       )
@@ -562,21 +686,32 @@ var OneClick = Class(ObjectClass, {
           } else if (message.action === 'initWaysAndSites') {
             sendResponse({ success: true });
           } else if (message.action === 'getAllSites') {
-            sendResponse({ allSites: sites.getAllSites() });
+            sendResponse({
+              allSites: sites.getAllSites(),
+              removableBuiltinNames: sites.getRemovableBuiltinNames(),
+              inactiveBuiltinNames: sites.getInactiveBuiltinNames(),
+              userSiteNames: [...sites.userNames],
+            });
           } else if (message.action === 'getUserSites') {
             return sites.getUserSites().then(sendResponse);
           } else if (message.action === 'findWayBySite') {
             const way = ways.findWayBySite(sites.getAllSites()[message.siteIndex]);
             sendResponse({ way: way });
           } else if (message.action === 'removeUserSite') {
-            sites.removeUserSite(message.siteName);
-            sendResponse({ success: true });
+            return sites.removeUserSite(message.siteName).then((success) => sendResponse({ success }));
           } else if (message.action === 'addUserSite') {
-            sites.addUserSite(message.site);
-            sendResponse({ success: true });
+            return sites.addUserSite(message.site).then((success) => sendResponse({ success }));
+          } else if (message.action === 'addBuiltinSite') {
+            return sites.addBuiltinSite(message.siteName, ways).then((success) => sendResponse({ success }));
+          } else if (message.action === 'removeBuiltinSite') {
+            return sites.removeBuiltinSite(message.siteName, ways).then((success) => sendResponse({ success }));
           } else if (message.action === 'saveWays') {
-            ways.saveWays(message.ways);
-            sendResponse({ success: true });
+            return ways.saveWays(message.ways).then(() => {
+              browserStorage.get('showBadgeText', (item) => {
+                if (item.showBadgeText === '1') the.refreshBadges(true);
+              });
+              sendResponse({ success: true });
+            });
           }
         })
         .catch((error) => {
