@@ -6,6 +6,8 @@
 移植自Chrome同名扩展，原扩展已下架([备份地址](https://www.crx4chrome.com/extensions/fknieppmhfgnjilnkdeoegocjkijpbfh/))。
 由于原作者常年未维护，也无法联系。若有侵权，请联系我删除。
 
+![Easy Switch 在搜索网站之间切换](store-assets/chrome-small-promo-440x280-final.png)
+
 <img src="asset/screenshot1.jpg" width=50% alt="示意截图">
 
 ## 下载
