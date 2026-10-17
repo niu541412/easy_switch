@@ -10,6 +10,7 @@ if [[ -z "$extension_zip" ]]; then
 fi
 
 version="$(python3 -c 'import json; print(json.load(open("manifest.json"))["version"])')"
+deployment_target='12.3'
 work_dir="$(mktemp -d)"
 trap 'rm -rf "$work_dir"' EXIT
 
@@ -38,7 +39,9 @@ python3 scripts/add_safari_app_icon.py "$project"
 xcodebuild -project "$project" -scheme 'Easy Switch' \
   -configuration Release -derivedDataPath "$work_dir/derived" \
   ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO \
-  CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+  MACOSX_DEPLOYMENT_TARGET="$deployment_target" \
+  MARKETING_VERSION="$version" CURRENT_PROJECT_VERSION="$version" \
+  CODE_SIGNING_ALLOWED=NO build
 
 app="$work_dir/derived/Build/Products/Release/Easy Switch.app"
 appex="$app/Contents/PlugIns/Easy Switch Extension.appex"
@@ -46,16 +49,21 @@ if [[ ! -d "$appex" ]]; then
   echo 'Built app does not contain the Safari extension' >&2
   exit 1
 fi
+actual_target="$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$app/Contents/Info.plist")"
+if [[ "$actual_target" != "$deployment_target" ]]; then
+  echo "Unexpected macOS deployment target: $actual_target" >&2
+  exit 1
+fi
 
 for bundle in "$app" "$appex"; do
-  /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $version" "$bundle/Contents/Info.plist"
+  for key in CFBundleShortVersionString CFBundleVersion; do
+    actual_version="$(/usr/libexec/PlistBuddy -c "Print :$key" "$bundle/Contents/Info.plist")"
+    if [[ "$actual_version" != "$version" ]]; then
+      echo "Unexpected $key in $bundle: $actual_version" >&2
+      exit 1
+    fi
+  done
 done
-
-codesign --force --sign - --timestamp=none \
-  --entitlements scripts/safari_extension.entitlements "$appex"
-codesign --force --sign - --timestamp=none \
-  --entitlements scripts/safari_app.entitlements "$app"
-codesign --verify --deep --strict "$app"
 
 output="dist/easy_switch-safari-macos-$version.zip"
 ditto -c -k --sequesterRsrc --keepParent "$app" "$output"

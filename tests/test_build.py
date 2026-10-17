@@ -1,5 +1,4 @@
 import json
-import plistlib
 import unittest
 import zipfile
 from pathlib import Path
@@ -8,20 +7,34 @@ from scripts import build
 
 
 class BuildTest(unittest.TestCase):
+    def test_safari_app_has_an_explicit_macos_deployment_target(self):
+        script = (build.ROOT / "scripts/build_safari_app.sh").read_text(encoding="utf-8")
+        self.assertIn("deployment_target='12.3'", script)
+        self.assertIn('MACOSX_DEPLOYMENT_TARGET="$deployment_target"', script)
+        self.assertIn('Unexpected macOS deployment target', script)
+        self.assertIn('MARKETING_VERSION="$version" CURRENT_PROJECT_VERSION="$version"', script)
+        self.assertIn("CODE_SIGNING_ALLOWED=NO build", script)
+        self.assertNotIn("CODE_SIGN_IDENTITY", script)
+        self.assertNotIn("codesign", script)
+        self.assertIn('Unexpected $key in $bundle', script)
+
     def test_safari_app_icon_uses_white_background(self):
         icon = json.loads(
             (build.ROOT / "scripts/safari_app_icon.json").read_text(encoding="utf-8")
         )
         self.assertEqual(icon["fill"]["solid"], "srgb:1.00000,1.00000,1.00000,1.00000")
 
-    def test_safari_signing_entitlements(self):
-        app = plistlib.loads((build.ROOT / "scripts/safari_app.entitlements").read_bytes())
-        extension = plistlib.loads(
-            (build.ROOT / "scripts/safari_extension.entitlements").read_bytes()
-        )
-        self.assertTrue(app["com.apple.security.app-sandbox"])
-        self.assertTrue(extension["com.apple.security.app-sandbox"])
-        self.assertTrue(app["com.apple.security.network.client"])
+    def test_locales_have_the_same_messages(self):
+        locales = build.ROOT / "_locales"
+        messages = {
+            path.parent.name: json.loads(path.read_text(encoding="utf-8"))
+            for path in locales.glob("*/messages.json")
+        }
+        expected = set(messages["en"])
+        for locale, entries in messages.items():
+            with self.subTest(locale=locale):
+                self.assertEqual(set(entries), expected)
+                self.assertTrue(all(entry["message"] for entry in entries.values()))
 
     def test_browser_manifests_use_the_correct_background(self):
         source = json.loads((build.ROOT / "manifest.json").read_text(encoding="utf-8"))
@@ -60,7 +73,8 @@ class BuildTest(unittest.TestCase):
                         self.assertIn(script, names)
                     options = bundle.read("options.html").decode("utf-8")
                     self.assertLess(options.index('js/browser-target.js'), options.index('js/environment.js'))
-                    self.assertLess(options.index('js/environment.js'), options.index('js/options.js'))
+                    self.assertLess(options.index('js/environment.js'), options.index('js/favicon.js'))
+                    self.assertLess(options.index('js/favicon.js'), options.index('js/options.js'))
 
 
 if __name__ == "__main__":

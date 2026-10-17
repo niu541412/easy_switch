@@ -52,7 +52,7 @@ jobs:
         with:
           name: extension-packages
           path: dist
-      - name: Build unsigned macOS Safari app
+      - name: Build unsigned macOS Safari test app
         run: bash scripts/build_safari_app.sh
       - name: Upload Safari app
         uses: actions/upload-artifact@v4
