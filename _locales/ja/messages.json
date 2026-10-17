@@ -14,17 +14,20 @@
    "deleteUserSite": {
       "message": "カスタムサイトを削除："
    },
+   "addBuiltinSite": { "message": "プリセットサイトを追加" },
+   "removeBuiltinSite": { "message": "プリセットサイトを削除" },
    "warningUserSite": {
-      "message": "ウェブサイト情報を補完してください！"
+      "message": "サイト名、ホームページのURL、検索URLを入力してください。"
    },
    "warningURL": {
       "message": "検索URLを確認し、キーワード部分を%sに置き換えてください"
    },
    "warningShortcut": {
-      "message": "コントロールキーを選択してください"
+      "message": "Ctrl、Alt、Shift のいずれかを選択してください。"
    },
+   "discardUnsavedSettings": { "message": "保存していない設定は失われます。続行しますか？" },
    "successSav": {
-      "message": "保存に成功しました"
+      "message": "設定を保存しました"
    },
    "Search": {
       "message": "検索"
@@ -36,40 +39,52 @@
       "message": "グーグル"
    },
    "Bing": {
-      "message": "ビング"
+      "message": "Bing"
    },
+   "Wikipedia": {
+      "message": "ウィキペディア"
+   },
+   "Github": {
+      "message": "GitHub"
+   },
+   "TikTok": { "message": "TikTok" },
+   "Xiaohongshu": { "message": "小紅書" },
+   "YahooJapan": { "message": "Yahoo! JAPAN" },
+   "AmazonJapan": { "message": "Amazon.co.jp" },
+   "Yandex": { "message": "Yandex" },
+   "Naver": { "message": "NAVER" },
    "Youku": {
-      "message": "优酷"
+      "message": "Youku"
    },
    "Douyin": {
       "message": "抖音"
    },
    "BaiduVideo": {
-      "message": "百度视频"
+      "message": "百度動画"
    },
    "BaiduBaike": {
       "message": "百度百科"
    },
    "WikiCN": {
-      "message": "ウィキペディア中国語"
+      "message": "中国語版ウィキペディア"
    },
    "Bilibili": {
-      "message": "哔哩哔哩"
+      "message": "bilibili"
    },
    "Zhihu": {
-      "message": "知乎"
+      "message": "Zhihu"
    },
    "Taobao": {
-      "message": "淘宝"
+      "message": "Taobao"
    },
    "Jingdong": {
-      "message": "京东"
+      "message": "JD.com"
    },
    "Douban": {
-      "message": "豆瓣"
+      "message": "Douban"
    },
    "Smzdm": {
-      "message": "什么值得买"
+      "message": "SMZDM"
    },
    "iconNative": {
       "message": "ネイティブ"
@@ -89,6 +104,9 @@
    "iconStyle": {
       "message": "ボタンのスタイル："
    },
+   "showBadgeText": {
+      "message": "ボタンに切り替え先の名前を表示"
+   },
    "shortcut": {
       "message": "ショートカットキー："
    },
@@ -100,9 +118,6 @@
    },
    "yesMessage": {
       "message": "はい"
-   },
-   "customSite": {
-      "message": "カスタムサイト："
    },
    "sitesAdded": {
       "message": "追加されたサイト："
@@ -116,7 +131,7 @@
    "nameMessage": {
       "message": "名称："
    },
-   "toutiao": {
+   "siteNameExample": {
       "message": "例：サンプル検索"
    },
    "siteHomepage": {
@@ -135,7 +150,7 @@
       "message": "キーワードを%sに置き換えてください"
    },
    "successAdd": {
-      "message": "追加に成功しました"
+      "message": "サイトを追加"
    },
    "switchSetting": {
       "message": "切り替え設定："

@@ -14,17 +14,20 @@
    "deleteUserSite": {
       "message": "刪除自訂網站："
    },
+   "addBuiltinSite": { "message": "新增預設網站" },
+   "removeBuiltinSite": { "message": "移除預設網站" },
    "warningUserSite": {
-      "message": "請補充網站信息!"
+      "message": "請填寫網站名稱、首頁和搜尋網址。"
    },
    "warningURL": {
-      "message": "請檢查搜尋地址，關鍵字部分用%s替代"
+      "message": "請檢查搜尋網址，並以 %s 取代搜尋詞。"
    },
    "warningShortcut": {
-      "message": "請選擇控制鍵"
+      "message": "請選擇 Ctrl、Alt 或 Shift 鍵。"
    },
+   "discardUnsavedSettings": { "message": "未儲存的設定將會遺失，繼續嗎？" },
    "successSav": {
-      "message": "保存成功"
+      "message": "設定已儲存"
    },
    "Search": {
       "message": "搜尋"
@@ -38,6 +41,18 @@
    "Bing": {
       "message": "Bing"
    },
+   "Wikipedia": {
+      "message": "維基百科"
+   },
+   "Github": {
+      "message": "GitHub"
+   },
+   "TikTok": { "message": "TikTok" },
+   "Xiaohongshu": { "message": "小紅書" },
+   "YahooJapan": { "message": "Yahoo! JAPAN" },
+   "AmazonJapan": { "message": "日本亞馬遜" },
+   "Yandex": { "message": "Yandex" },
+   "Naver": { "message": "Naver" },
    "Youku": {
       "message": "優酷搜庫"
    },
@@ -51,7 +66,7 @@
       "message": "百度百科"
    },
    "WikiCN": {
-      "message": "維基百科中文"
+      "message": "中文版維基百科"
    },
    "Bilibili": {
       "message": "嗶哩嗶哩"
@@ -75,19 +90,22 @@
       "message": "原生"
    },
    "iconNested": {
-      "message": "嵌套"
+      "message": "巢狀"
    },
    "iconMasked": {
       "message": "遮罩"
    },
    "optionTitle": {
-      "message": "一鍵切換－選項"
+      "message": "一鍵切換 - 選項"
    },
    "optionMessage": {
       "message": "選項"
    },
    "iconStyle": {
       "message": "按鈕樣式："
+   },
+   "showBadgeText": {
+      "message": "在按鈕上顯示目標網站名稱"
    },
    "shortcut": {
       "message": "快捷鍵："
@@ -101,22 +119,19 @@
    "yesMessage": {
       "message": "是"
    },
-   "customSite": {
-      "message": "自訂網站："
-   },
    "sitesAdded": {
       "message": "已添加網站："
    },
    "addSite": {
-      "message": "添加網站："
+      "message": "新增網站："
    },
    "addFail": {
-      "message": "添加失敗！"
+      "message": "新增失敗！"
    },
    "nameMessage": {
       "message": "名稱："
    },
-   "toutiao": {
+   "siteNameExample": {
       "message": "如：範例搜尋"
    },
    "siteHomepage": {
@@ -135,12 +150,12 @@
       "message": "關鍵字用%s替代"
    },
    "successAdd": {
-      "message": "完成添加"
+      "message": "新增網站"
    },
    "switchSetting": {
-      "message": "切換設置："
+      "message": "切換設定："
    },
    "saveMessage": {
-      "message": "保存"
+      "message": "儲存"
    }
 }

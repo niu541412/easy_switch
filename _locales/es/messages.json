@@ -1,9 +1,9 @@
 {
    "extName": {
-      "message": "Cambio con un clic"
+      "message": "Easy Switch"
    },
    "defaultTitle": {
-      "message": "Cambio con un clic"
+      "message": "Easy Switch"
    },
    "description": {
       "message": "Cambia entre sitios web y continúa buscando con las mismas palabras clave. Admite atajos y buscadores personalizados."
@@ -14,20 +14,23 @@
    "deleteUserSite": {
       "message": "Eliminar sitio personalizado:"
    },
+   "addBuiltinSite": { "message": "Añadir sitio predefinido" },
+   "removeBuiltinSite": { "message": "Quitar sitio predefinido" },
    "warningUserSite": {
-      "message": "¡Por favor complete la información del sitio!"
+      "message": "Introduzca el nombre, la página principal y la URL de búsqueda."
    },
    "warningURL": {
-      "message": "Por favor verifique la dirección de búsqueda, reemplace la parte de palabra clave con %s"
+      "message": "Compruebe la URL de búsqueda y sustituya la palabra clave por %s."
    },
    "warningShortcut": {
-      "message": "Por favor seleccione una tecla de control"
+      "message": "Seleccione Ctrl, Alt o Mayús."
    },
+   "discardUnsavedSettings": { "message": "Se perderán los ajustes no guardados. ¿Continuar?" },
    "successSav": {
-      "message": "Guardado exitoso"
+      "message": "Configuración guardada"
    },
    "Search": {
-      "message": "Buscar"
+      "message": ": buscar"
    },
    "Baidu": {
       "message": "Baidu"
@@ -38,6 +41,18 @@
    "Bing": {
       "message": "Bing"
    },
+   "Wikipedia": {
+      "message": "Wikipedia"
+   },
+   "Github": {
+      "message": "GitHub"
+   },
+   "TikTok": { "message": "TikTok" },
+   "Xiaohongshu": { "message": "Xiaohongshu" },
+   "YahooJapan": { "message": "Yahoo! Japón" },
+   "AmazonJapan": { "message": "Amazon Japón" },
+   "Yandex": { "message": "Yandex" },
+   "Naver": { "message": "Naver" },
    "Youku": {
       "message": "Youku"
    },
@@ -51,7 +66,7 @@
       "message": "Baidu Baike"
    },
    "WikiCN": {
-      "message": "Wikipedia CN"
+      "message": "Wikipedia en chino"
    },
    "Bilibili": {
       "message": "Bilibili"
@@ -69,7 +84,7 @@
       "message": "Douban"
    },
    "Smzdm": {
-      "message": "Smzdm"
+      "message": "SMZDM"
    },
    "iconNative": {
       "message": "Nativo"
@@ -81,13 +96,16 @@
       "message": "Enmascarado"
    },
    "optionTitle": {
-      "message": "Cambio con un clic - Opciones"
+      "message": "Easy Switch - Opciones"
    },
    "optionMessage": {
       "message": "Opciones"
    },
    "iconStyle": {
       "message": "Estilo del botón:"
+   },
+   "showBadgeText": {
+      "message": "Mostrar el sitio de destino en el botón"
    },
    "shortcut": {
       "message": "Atajo de teclado:"
@@ -101,9 +119,6 @@
    "yesMessage": {
       "message": "Sí"
    },
-   "customSite": {
-      "message": "Sitio personalizado:"
-   },
    "sitesAdded": {
       "message": "Sitios agregados:"
    },
@@ -116,7 +131,7 @@
    "nameMessage": {
       "message": "Nombre:"
    },
-   "toutiao": {
+   "siteNameExample": {
       "message": "Ej.: Buscador de ejemplo"
    },
    "siteHomepage": {
@@ -135,7 +150,7 @@
       "message": "Reemplace la palabra clave con %s"
    },
    "successAdd": {
-      "message": "Agregado exitosamente"
+      "message": "Añadir sitio"
    },
    "switchSetting": {
       "message": "Configuración de cambio:"

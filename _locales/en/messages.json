@@ -14,20 +14,23 @@
    "deleteUserSite": {
       "message": "Delete custom site:"
    },
+   "addBuiltinSite": { "message": "Add built-in site" },
+   "removeBuiltinSite": { "message": "Remove built-in site" },
    "warningUserSite": {
-      "message": "Please provide website information!"
+      "message": "Enter a name, home URL, and search URL."
    },
    "warningURL": {
-      "message": "Please check the search URL, replacing the keyword part with %s"
+      "message": "Check the search URL and replace the keyword with %s."
    },
    "warningShortcut": {
-      "message": "Please select keys "
+      "message": "Select Ctrl, Alt, or Shift."
    },
+   "discardUnsavedSettings": { "message": "Unsaved settings will be lost. Continue?" },
    "successSav": {
-      "message": "Saved successfully"
+      "message": "Settings saved"
    },
    "Search": {
-      "message": "Search"
+      "message": " Search"
    },
    "Baidu": {
       "message": "Baidu"
@@ -38,6 +41,18 @@
    "Bing": {
       "message": "Bing"
    },
+   "Wikipedia": {
+      "message": "Wikipedia"
+   },
+   "Github": {
+      "message": "GitHub"
+   },
+   "TikTok": { "message": "TikTok" },
+   "Xiaohongshu": { "message": "Xiaohongshu" },
+   "YahooJapan": { "message": "Yahoo! Japan" },
+   "AmazonJapan": { "message": "Amazon Japan" },
+   "Yandex": { "message": "Yandex" },
+   "Naver": { "message": "Naver" },
    "Youku": {
       "message": "Youku"
    },
@@ -51,7 +66,7 @@
       "message": "Baidu Baike"
    },
    "WikiCN": {
-      "message": "Wikipedia CN"
+      "message": "Chinese Wikipedia"
    },
    "Bilibili": {
       "message": "Bilibili"
@@ -69,7 +84,7 @@
       "message": "Douban"
    },
    "Smzdm": {
-      "message": "Smzdm"
+      "message": "SMZDM"
    },
    "iconNative": {
       "message": "Native"
@@ -89,6 +104,9 @@
    "iconStyle": {
       "message": "Button Style:"
    },
+   "showBadgeText": {
+      "message": "Show destination name on button"
+   },
    "shortcut": {
       "message": "Shortcut:"
    },
@@ -100,9 +118,6 @@
    },
    "yesMessage": {
       "message": "Yes"
-   },
-   "customSite": {
-      "message": "Custom Site:"
    },
    "sitesAdded": {
       "message": "Sites Added:"
@@ -116,7 +131,7 @@
    "nameMessage": {
       "message": "Name: "
    },
-   "toutiao": {
+   "siteNameExample": {
       "message": "e.g., Example Search"
    },
    "siteHomepage": {
@@ -135,7 +150,7 @@
       "message": "Replace keyword with %s"
    },
    "successAdd": {
-      "message": "Add"
+      "message": "Add site"
    },
    "switchSetting": {
       "message": "Switch Setting:"

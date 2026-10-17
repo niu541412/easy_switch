@@ -1,13 +1,54 @@
 var ctrl, alt, shift, key;
+var savedSettings = null;
+
+function getSettingsState() {
+  const selectedButton = Array.from(document.getElementsByName('button')).find((radio) => radio.checked);
+  return JSON.stringify({
+    button: selectedButton && selectedButton.value,
+    showBadgeText: byId('showBadgeText').checked,
+    useshortcut: byId('useshortcut').checked,
+    ctrl: ctrl.checked,
+    alt: alt.checked,
+    shift: shift.checked,
+    key: key.value,
+    newtab: byId('newtab').checked,
+    ways: Array.from(byId('ways').querySelectorAll('select'), (select) => [select.id, select.value]),
+  });
+}
+
+function warnBeforeUnload(event) {
+  event.preventDefault();
+  event.returnValue = true;
+}
+
+function updateUnsavedWarning() {
+  if (savedSettings === null) return;
+  window.removeEventListener('beforeunload', warnBeforeUnload);
+  if (getSettingsState() !== savedSettings) {
+    window.addEventListener('beforeunload', warnBeforeUnload);
+  }
+}
+
+function startTrackingSettings() {
+  savedSettings = getSettingsState();
+  document.addEventListener('change', updateUnsavedWarning);
+  document.addEventListener('input', updateUnsavedWarning);
+}
 
 function handleSave() {
   var ret = saveShortcut();
   if (!ret) return;
 
+  const submittedSettings = getSettingsState();
   saveButtonIcon();
+  saveBadgeText();
   saveNewTab();
-  saveArrow();
-  alert(getI18n('successSav'));
+  saveArrow(JSON.parse(submittedSettings).ways, (success) => {
+    if (!success) return;
+    savedSettings = submittedSettings;
+    updateUnsavedWarning();
+    alert(getI18n('successSav'));
+  });
 }
 
 function byId(id) {
@@ -34,13 +75,13 @@ function localizeHtmlPage() {
       obj.textContent = localeStr;
     }
 
-    if ((localeMarker = obj.placeholder)) {
-      var localeStr = localeMarker.replace(/__MSG_(\w+)__/g, function (match, v1) {
-        return v1 ? getI18n(v1) : '';
+    for (const field of ['placeholder', 'title', 'aria-label']) {
+      localeMarker = obj.getAttribute(field);
+      if (!localeMarker) continue;
+      const translated = localeMarker.replace(/__MSG_(\w+)__/g, function (match, key) {
+        return getI18n(key);
       });
-      if (localeStr != localeMarker) {
-        obj.placeholder = localeStr;
-      }
+      if (translated != localeMarker) obj.setAttribute(field, translated);
     }
   }
 }
@@ -57,14 +98,6 @@ function revierwShortcut() {
 }
 // shortcut 格式为 ctrl+key alt+shift+key
 
-function revierwShortcut_new(shortcut) {
-  var ret = shortcut || 'alt+s';
-  if (!/[a-z]/.test(ret.charAt(ret.length - 1))) {
-    ret = ret.replace(/\+.*$/, '+s');
-  }
-  return ret;
-}
-
 function saveButtonIcon() {
   var radios = document.getElementsByName('button');
   for (var i = 0, length = radios.length; i < length; i++) {
@@ -76,12 +109,16 @@ function saveButtonIcon() {
   return;
 }
 
+function saveBadgeText() {
+  browserStorage.set({ showBadgeText: byId('showBadgeText').checked ? '1' : '0' });
+}
+
 function saveShortcut() {
-  browserStorage.set({ useshortcut: byId('useshortcut').checked ? '1' : '0' });
-  if (!ctrl.checked && !alt.checked && !shift.checked) {
-    alert(getI18n('warningShortcut') + '(ctrl/alt/shift)');
+  if (byId('useshortcut').checked && !ctrl.checked && !alt.checked && !shift.checked) {
+    alert(getI18n('warningShortcut'));
     return false;
   }
+  browserStorage.set({ useshortcut: byId('useshortcut').checked ? '1' : '0' });
   var s = '';
   if (ctrl.checked) s += 'ctrl+';
   if (alt.checked) s += 'alt+';
@@ -96,27 +133,31 @@ function saveNewTab() {
   return;
 }
 
-function saveArrow() {
+function saveArrow(ways, done) {
   chrome.runtime.sendMessage({ action: 'getAllSites' }, (response) => {
     if (response && response.allSites) {
       const allSites = response.allSites;
+      const targets = new Map(ways);
       const arr = [];
       allSites.forEach((site) => {
         const name = site.ps.name;
         arr.push({
           from: name,
-          to: byId(name + '_to').value,
+          to: targets.get(name + '_to') || '',
         });
       });
       chrome.runtime.sendMessage({ action: 'saveWays', ways: arr }, (response) => {
         if (response && response.success) {
           console.log('Ways saved successfully.');
+          done(true);
         } else {
           console.error('Failed to save ways.');
+          done(false);
         }
       });
     } else {
       console.error('Failed to get all sites.');
+      done(false);
     }
   });
 }
@@ -126,7 +167,7 @@ function initShortCut() {
   alt = byId('alt');
   shift = byId('shift');
   key = byId('key');
-  revierwShortcut().then((shortcut) => {
+  return revierwShortcut().then((shortcut) => {
     if (shortcut.indexOf('ctrl') !== -1) ctrl.checked = true;
     if (shortcut.indexOf('alt') !== -1) alt.checked = true;
     if (shortcut.indexOf('shift') !== -1) shift.checked = true;
@@ -167,10 +208,12 @@ function initButtonIcon() {
   };
   img2.src = siteFaviconURL('https://www.google.com/');
 
-  browserStorage.get('buttonicon', (item) => {
-    let idx = Math.min(item.buttonicon | 0, document.getElementsByName('button').length);
-    document.getElementsByName('button')[idx].checked = true;
-  });
+  return new Promise((resolve) => browserStorage.get('buttonicon', (item) => {
+    const radios = document.getElementsByName('button');
+    const idx = Math.min(item.buttonicon | 0, radios.length - 1);
+    radios[idx].checked = true;
+    resolve();
+  }));
 }
 
 function init() {
@@ -181,61 +224,112 @@ function init() {
 
   byId('save').onclick = handleSave;
 
-  initButtonIcon();
-  initShortCut();
+  const loaded = [initButtonIcon(), initShortCut(), initWays()];
+  for (const [storageKey, controlId, isChecked] of [
+    ['useshortcut', 'useshortcut', (value) => value !== '0'],
+    ['newtab', 'newtab', (value) => value === '1'],
+    ['showBadgeText', 'showBadgeText', (value) => value === '1'],
+  ]) {
+    loaded.push(new Promise((resolve) => browserStorage.get(storageKey, (item) => {
+      byId(controlId).checked = isChecked(item[storageKey]);
+      resolve();
+    })));
+  }
+  Promise.all(loaded).then(startTrackingSettings);
 
-  browserStorage.get('useshortcut', (item) => {
-    byId('useshortcut').checked = item.useshortcut !== '0';
-  });
-
-  browserStorage.get('newtab', (item) => {
-    byId('newtab').checked = item.newtab == '1';
-  });
-
-  initWays();
-
-  initUserSites();
+  initSites();
 }
 
-function initUserSites() {
-  byId('usersites').innerHTML = '';
-  var html = '';
+function getRemoveLabel(action) {
+  return action === 'removeUserSite' ? getI18n('deleteUserSite') : getI18n('removeBuiltinSite');
+}
 
-  chrome.runtime.sendMessage({ action: 'getUserSites' }, (response) => {
-    if (response) {
-      response.forEach((userSite) => {
-        const one = document.createElement('div');
-        one.className = 'usersite';
-        const img_one = document.createElement('img');
-        img_one.className = 'icon';
-        img_one.src = userSite.ps.icon;
-        img_one.width = 24;
-        img_one.height = 24;
-        one.value = userSite.ps.name;
-        one.appendChild(img_one);
-        one.appendChild(document.createTextNode(userSite.ps.name));
-        const del = document.createElement('img');
-        del.setAttribute('data-site', userSite.ps.name);
-        del.className = 'delete';
-        del.src = 'asset/delete.png';
-        one.append(del);
-        byId('usersites').append(one);
-      });
-    }
+function hasUnsavedSettings() {
+  return savedSettings !== null && getSettingsState() !== savedSettings;
+}
+
+function reloadAfterSiteChange() {
+  window.removeEventListener('beforeunload', warnBeforeUnload);
+  location.reload();
+}
+
+function initSites() {
+  chrome.runtime.sendMessage({ action: 'getAllSites' }, (response) => {
+    if (!response) return;
+    const userNames = new Set(response.userSiteNames || []);
+    const removableNames = new Set(response.removableBuiltinNames || []);
+    const list = byId('usersites');
+    list.replaceChildren();
+
+    response.allSites.forEach((site) => {
+      const siteName = site.ps.name;
+      if (!userNames.has(siteName) && !removableNames.has(siteName)) return;
+      const displayName = userNames.has(siteName) ? siteName : getI18n(siteName) || siteName;
+      const row = document.createElement('div');
+      row.className = 'usersite';
+      const icon = document.createElement('img');
+      icon.className = 'icon';
+      icon.src = site.ps.icon;
+      icon.width = 16;
+      icon.height = 16;
+      icon.alt = '';
+      const label = document.createElement('span');
+      label.className = 'name';
+      label.textContent = displayName;
+      label.title = displayName;
+      row.append(icon, label);
+
+      if (userNames.has(siteName) || removableNames.has(siteName)) {
+        const action = userNames.has(siteName) ? 'removeUserSite' : 'removeBuiltinSite';
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'delete';
+        remove.dataset.site = siteName;
+        remove.dataset.action = action;
+        remove.title = getRemoveLabel(action);
+        remove.setAttribute('aria-label', remove.title + ' ' + displayName);
+        const image = document.createElement('img');
+        image.src = 'asset/delete.png';
+        image.alt = '';
+        image.width = 16;
+        image.height = 16;
+        remove.appendChild(image);
+        row.appendChild(remove);
+      }
+      list.appendChild(row);
+    });
+
+    const inactive = response.inactiveBuiltinNames || [];
+    const picker = byId('builtin-site-picker');
+    const select = byId('inactive-builtin-sites');
+    select.replaceChildren();
+    picker.hidden = inactive.length === 0;
+    inactive.forEach((siteName) => {
+      const option = document.createElement('option');
+      option.value = siteName;
+      option.textContent = getI18n(siteName) || siteName;
+      select.appendChild(option);
+    });
   });
 
-  byId('usersites').addEventListener('click', function (event) {
-    if (event.target.classList.contains('delete')) {
-      const siteName = event.target.getAttribute('data-site');
-      const r = confirm(getI18n('deleteUserSite') + siteName);
-      if (r) {
-        chrome.runtime.sendMessage({ action: 'removeUserSite', siteName }, (response) => {
-          if (response.success) {
-            location.reload();
-          }
-        });
-      }
-    }
+  byId('usersites').addEventListener('click', (event) => {
+    const button = event.target.closest('.delete');
+    if (!button) return;
+    const siteName = button.dataset.site;
+    const action = button.dataset.action;
+    const warning = hasUnsavedSettings() ? '\n\n' + getI18n('discardUnsavedSettings') : '';
+    if (!confirm(getRemoveLabel(action) + ' ' + (getI18n(siteName) || siteName) + '?' + warning)) return;
+    chrome.runtime.sendMessage({ action, siteName }, (response) => {
+      if (response && response.success) reloadAfterSiteChange();
+    });
+  });
+  byId('add-builtin').addEventListener('click', () => {
+    const siteName = byId('inactive-builtin-sites').value;
+    if (!siteName) return;
+    if (hasUnsavedSettings() && !confirm(getI18n('discardUnsavedSettings'))) return;
+    chrome.runtime.sendMessage({ action: 'addBuiltinSite', siteName }, (response) => {
+      if (response && response.success) reloadAfterSiteChange();
+    });
   });
   byId('site_add').addEventListener('click', addUserSiteClick);
 }
@@ -265,9 +359,10 @@ function addUserSiteClick() {
   if (getHost(ps.home) != getHost(ps.searchUrl)) {
     ps.matches = [getMatch(ps.home), getMatch(ps.searchUrl)];
   }
+  if (hasUnsavedSettings() && !confirm(getI18n('discardUnsavedSettings'))) return;
   chrome.runtime.sendMessage({ action: 'addUserSite', site: ps }, (response) => {
     if (response.success) {
-      location.reload();
+      reloadAfterSiteChange();
     } else {
       alert(getI18n('addFail'));
     }
@@ -281,26 +376,6 @@ function getMatch(url) {
 
 function getHost(url) {
   return new URL(url).hostname.toLowerCase();
-}
-
-function getFixlengthName(name, namelen) {
-  // 按半角字符宽度截断并补齐名称。
-  name += '　'.repeat(namelen);
-  var strlen = namelen;
-  var pat =
-    /[\u3000\u2E80-\u2FDF\u3040-\u318F\u31A0-\u31BF\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FFF\uA960-\uA97F\uAC00-\uD7FF]/g;
-  // \u3000 是全角空格，其余范围覆盖常见中日韩字符。
-  do {
-    var name = name.substring(0, strlen);
-    var cjk_char = name.match(pat);
-    var cjk_count = cjk_char ? cjk_char.length : 0;
-    if (strlen + cjk_count > namelen) strlen--;
-    else if (strlen + cjk_count == namelen) return name;
-    else {
-      name += ' ';
-      return name;
-    }
-  } while (true);
 }
 
 function getToSiteHtml(allSites, from, to) {
@@ -337,37 +412,47 @@ function getPairSiteHtml(SiteIcon, FromName, ToSiteHtml) {
   const fromSpan = document.createElement('span');
   fromSpan.classList.add('from');
   fromSpan.textContent = FromName;
+  fromSpan.title = FromName;
   const toSiteHtml = document.createElement('span');
   toSiteHtml.appendChild(ToSiteHtml);
+  const direction = document.createElement('span');
+  direction.className = 'direction';
+  direction.textContent = '→';
   wayDiv.appendChild(iconImg);
   wayDiv.appendChild(fromSpan);
-  wayDiv.appendChild(document.createTextNode('---->'));
+  wayDiv.appendChild(direction);
   wayDiv.appendChild(toSiteHtml);
   return wayDiv;
 }
 
 function initWays() {
-  chrome.runtime.sendMessage({ action: 'getAllSites' }, (response) => {
-    if (response) {
+  return new Promise((resolve) => chrome.runtime.sendMessage({ action: 'getAllSites' }, (response) => {
+    if (response && response.allSites) {
       const allSites = response.allSites;
       const waysElement = byId('ways');
+      let remaining = allSites.length;
+      if (!remaining) return resolve();
 
       for (var i = 0; i < allSites.length; i++) {
         const site = allSites[i];
+        const row = document.createElement('div');
+        waysElement.appendChild(row);
         chrome.runtime.sendMessage({ action: 'findWayBySite', siteIndex: i }, (response) => {
           const fromName = getI18n(site.ps.name) || site.ps.name;
-          const way = response.way;
-          const name = fromName;
+          const way = response && response.way;
           const wayDiv = getPairSiteHtml(
             site.ps.icon,
-            name,
+            fromName,
             getToSiteHtml(allSites, site, way && way.to),
           );
-          waysElement.appendChild(wayDiv);
+          row.replaceWith(wayDiv);
+          if (--remaining === 0) resolve();
         });
       }
+    } else {
+      resolve();
     }
-  });
+  }));
 }
 
 document.addEventListener('DOMContentLoaded', init, false);

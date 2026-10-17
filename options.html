@@ -2,48 +2,58 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Easy Switch</title>
     <style type="text/css">
       body {
-        font-family: 'Smiley Sans Oblique', system-ui;
+        margin: 0;
+        color: #292d32;
+        background: #f4f5f6;
+        font-family: system-ui, sans-serif;
+        line-height: 1.45;
       }
 
       #save {
-        position: relative;
         display: block;
-        margin: 10px auto;
-        background: linear-gradient(to bottom, #e0e0e0, #bababa);
-        border: 2px solid #888888;
-        border-radius: 10px;
-        box-shadow:
-          inset 2px 2px 5px #ffffff,
-          inset -2px -2px 5px #aaaaaa,
-          2px 2px 5px rgba(0, 0, 0, 0.3);
-        color: #333333;
-        padding: 5px 25px;
-        font-weight: bold;
-        text-shadow: 1px 1px 2px #ffffff;
+        min-height: 38px;
+        margin: 16px auto 28px;
+        padding: 0 28px;
+        border: 1px solid #343a40;
+        border-radius: 6px;
+        background: #3b4148;
+        color: #ffffff;
+        font: 600 14px system-ui, sans-serif;
         cursor: pointer;
-        transition:
-          box-shadow 0.3s,
-          transform 0.3s;
-        font-family: 'Smiley Sans Oblique', system-ui;
+        transition: background-color 0.15s, box-shadow 0.15s;
+      }
+
+      #save:hover {
+        background: #292f35;
       }
 
       #save:active {
-        box-shadow:
-          inset 2px 2px 5px #aaaaaa,
-          inset -2px -2px 5px #ffffff,
-          1px 1px 2px rgba(0, 0, 0, 0.3);
-        transform: translateY(2px);
+        background: #20252a;
       }
 
       #container {
         margin: 40px auto 20px auto;
-        width: 800px;
+        width: min(940px, calc(100% - 24px));
+        box-sizing: border-box;
         padding: 20px 30px 30px 30px;
-        border: 1px solid #eeeeee;
+        border: 1px solid #dedfe1;
         border-radius: 8px;
+        background: #ffffff;
+      }
+
+      #container hr {
+        border: 0;
+        border-top: 1px solid #e9eaec;
+      }
+
+      #container h3 {
+        color: #292d32;
+        font-size: 15px;
+        font-weight: 650;
       }
 
       #left,
@@ -53,18 +63,20 @@
       }
 
       #left {
-        width: 60%;
+        width: 52%;
       }
 
       #right {
-        width: 38%;
+        width: 46%;
       }
 
       .way {
-        display: block;
-        width: 445px;
-        height: 32px;
-        line-height: 32px;
+        display: grid;
+        grid-template-columns: 16px minmax(0, 6.5em) minmax(20px, 1fr) minmax(0, 13em);
+        align-items: center;
+        gap: 0.35em;
+        width: min(100%, 25em);
+        height: 36px;
       }
 
       .way img {
@@ -72,25 +84,120 @@
       }
 
       .way select {
-        border-radius: 3px;
-        font-family: 'Smiley Sans Oblique', system-ui;
-        width: 7.2em;
-        margin-left: 1em;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .way .direction {
+        text-align: center;
+      }
+
+      #builtin-site-picker {
+        display: flex;
+        align-items: center;
+        gap: 0.35em;
+        width: min(22em, 98%);
+        margin: 8px 0 0 2%;
+      }
+
+      #builtin-site-picker[hidden] {
+        display: none;
+      }
+
+      #builtin-site-picker select {
+        min-width: 0;
+        flex: 1;
       }
 
       .from {
-        display: inline-block;
-        width: 6.2em;
-        margin-left: 0.5em;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       #key {
-        font-family: 'Smiley Sans Oblique', system-ui;
+        min-width: 3.5em;
+      }
+
+      #container select,
+      #addsite input,
+      #add-builtin,
+      #site_add,
+      .usersite .delete {
+        box-sizing: border-box;
+        height: 30px;
+        border: 1px solid #c2c7cb;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #292d32;
+        font: 14px system-ui, sans-serif;
+        transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+      }
+
+      #container select,
+      #addsite input {
+        height: 32px;
+        padding: 0 10px;
+      }
+
+      #container select:hover,
+      #addsite input:hover {
+        border-color: #899199;
+      }
+
+      #addsite input::placeholder {
+        color: #858b91;
+      }
+
+      #add-builtin,
+      #site_add,
+      .usersite .delete {
+        cursor: pointer;
+        background: #f0f1f2;
+        color: #383e44;
+        border-color: #c2c7cb;
+      }
+
+      #add-builtin:hover,
+      #site_add:hover {
+        background: #e3e5e7;
+        border-color: #9299a0;
+      }
+
+      .usersite .delete:hover {
+        background: #f8eeee;
+        border-color: #c9a8a8;
+      }
+
+      #container select:focus-visible,
+      #addsite input:focus-visible,
+      #add-builtin:focus-visible,
+      #site_add:focus-visible,
+      .usersite .delete:focus-visible,
+      #save:focus-visible {
+        outline: 2px solid #535b63;
+        outline-offset: 2px;
+      }
+
+      #container select:focus-visible,
+      #addsite input:focus-visible {
+        border-color: #535b63;
+        box-shadow: 0 0 0 3px #e9ebed;
+      }
+
+      #add-builtin {
+        flex: none;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        font-size: 19px;
+        line-height: 1;
       }
 
       #container h2 {
         margin: 0 auto;
-        width: 700px;
+        width: 100%;
         font-size: x-large;
         text-align: center;
         position: relative;
@@ -101,6 +208,7 @@
         position: absolute;
         bottom: 0;
         right: 0;
+        color: #535b63;
       }
 
       #usersites {
@@ -108,83 +216,139 @@
       }
 
       #addsite {
-        line-height: 32px;
+        max-width: 27em;
       }
 
       #addsite .tip {
-        width: 5.2em;
-        display: inline-block;
+        display: block;
+        line-height: 1.4;
+        margin: 8px 0 4px;
+        color: #646b72;
+        font-size: 13px;
       }
 
       #addsite input {
-        height: 20px;
-        width: 27em;
-        border-radius: 6px;
-        border: 1px solid;
-        font-family: 'Smiley Sans Oblique', system-ui;
+        display: block;
+        width: 100%;
       }
 
       #site_add {
-        padding: 5px, 3px;
-        position: relative;
-        border-radius: 6px;
-        background: linear-gradient(to bottom, #e0e0e0, #bababa);
-        border: 2px solid #888888;
-        box-shadow:
-          inset 2px 2px 5px #ffffff,
-          inset -2px -2px 5px #aaaaaa,
-          2px 2px 5px rgba(0, 0, 0, 0.3);
-        left: 40%;
-        font-family: 'Smiley Sans Oblique', system-ui;
+        padding: 0 12px;
+        margin-top: 12px;
+        height: 32px;
+        font-weight: 600;
       }
 
       .usersite {
-        height: 32px;
-        line-height: 32px;
-        width: 60%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 28px;
+        width: min(22em, 98%);
       }
 
       .usersite .icon {
-        vertical-align: middle;
+        flex: none;
+        margin-left: 6px;
       }
 
       .usersite:hover {
-        background-color: rgb(228, 236, 247);
+        background-color: #f2f3f4;
+        border-radius: 4px;
       }
 
-      .usersite .icon {
-        margin-left: 10px;
-        margin-right: 30px;
+      .usersite .name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .usersite .delete {
-        display: none;
-        float: right;
-        margin: 6px;
-        background: linear-gradient(to bottom, #e0e0e0, #bababa);
-        border: 2px outset #888888;
-        border-radius: 6px;
-        vertical-align: middle;
+        flex: none;
+        margin-left: auto;
+        opacity: 0;
+        width: 26px;
+        height: 26px;
+        padding: 4px;
+        background: #ffffff;
+        border-color: #d0d4d8;
       }
 
-      .usersite:hover .delete {
-        display: inline-block;
+      .usersite .delete img {
+        display: block;
+      }
+
+      .usersite:hover .delete,
+      .usersite:focus-within .delete {
+        opacity: 1;
       }
 
       .radio-container {
-        display: flex;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         align-items: center;
+        box-sizing: border-box;
+        width: min(100%, 19rem);
+        min-height: 32px;
+        padding-right: 44px;
+      }
+
+      .radio-container input[type='radio'] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
       }
 
       .radio-container label {
-        margin-right: 5px;
+        position: relative;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        margin-left: -1px;
+        padding: 5px 6px;
+        border: 1px solid #c2c7cb;
+        background: #ffffff;
+        color: #646b72;
+        font-size: 13px;
+        text-align: center;
+        overflow-wrap: anywhere;
+        cursor: pointer;
+      }
+
+      #nativeicon + label {
+        margin-left: 0;
+        border-radius: 6px 0 0 6px;
+      }
+
+      #maskicon + label {
+        border-radius: 0 6px 6px 0;
+      }
+
+      .radio-container input[type='radio']:checked + label {
+        z-index: 1;
+        border-color: #666e76;
+        background: #e6e8ea;
+        color: #292d32;
+      }
+
+      .radio-container input[type='radio']:focus-visible + label {
+        z-index: 2;
+        outline: 2px solid #535b63;
+        outline-offset: 2px;
       }
 
       .image-container {
-        margin-left: 10px;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
         width: 32px;
         height: 32px;
-        position: relative;
       }
 
       .image-container img,
@@ -192,6 +356,48 @@
         display: none;
         width: 100%;
         height: 100%;
+      }
+
+      #badge-setting {
+        display: block;
+        margin-top: 12px;
+      }
+
+      #container input[type='checkbox'],
+      #container input[type='radio'] {
+        accent-color: #535b63;
+        vertical-align: middle;
+      }
+
+      @media (max-width: 900px) {
+        #left,
+        #right {
+          display: block;
+          width: 100%;
+        }
+
+        #right {
+          max-width: 30em;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .way {
+          grid-template-columns: 16px minmax(0, 5em) minmax(18px, 1fr) minmax(0, 13em);
+          gap: 4px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        #container {
+          margin: 12px auto;
+          padding: 16px;
+        }
+
+        #ver {
+          position: static;
+          display: block;
+        }
       }
 
       #nativeicon:checked ~ .image-container #native-icon,
@@ -212,7 +418,6 @@
 
       <div id="left">
         <h3 class="i18n" style="margin-top: 30px">__MSG_iconStyle__</h3>
-
         <div class="radio-container">
           <input type="radio" name="button" id="nativeicon" value="0" />
           <label class="i18n" for="nativeicon">__MSG_iconNative__</label>
@@ -220,14 +425,50 @@
           <label class="i18n" for="overlapicon">__MSG_iconNested__</label>
           <input type="radio" name="button" id="maskicon" value="2" />
           <label class="i18n" for="maskicon">__MSG_iconMasked__</label>
-
           <div class="image-container">
             <img id="native-icon" alt="Native Icon" />
             <canvas id="overlap-icon" width="32" height="32" alt="Overlap Icon"></canvas>
             <canvas id="mask-icon" width="32" height="32" alt="Mask Icon"></canvas>
           </div>
         </div>
+        <label id="badge-setting">
+          <input id="showBadgeText" type="checkbox" />
+          <span class="i18n">__MSG_showBadgeText__</span>
+        </label>
 
+        <h3 class="i18n" style="margin-top: 24px">__MSG_sitesAdded__</h3>
+        <div id="usersites"></div>
+        <div id="builtin-site-picker" hidden>
+          <select id="inactive-builtin-sites" aria-label="__MSG_addBuiltinSite__" class="i18n"></select>
+          <button id="add-builtin" class="i18n" title="__MSG_addBuiltinSite__" aria-label="__MSG_addBuiltinSite__" type="button">+</button>
+        </div>
+
+        <h3 class="i18n" style="margin-top: 10px">__MSG_addSite__</h3>
+        <div id="addsite">
+          <span class="tip i18n">__MSG_nameMessage__</span>
+          <input class="i18n" id="site_name" type="text" placeholder="__MSG_siteNameExample__" />
+          <span class="tip i18n">__MSG_siteHomepage__</span>
+          <input
+            class="i18n"
+            id="site_home"
+            type="text"
+            placeholder="__MSG_example__https://example.com"
+            title="__MSG_tip1__"
+          />
+          <span class="tip i18n">__MSG_searchURL__</span>
+          <input
+            class="i18n"
+            id="site_searchurl"
+            type="text"
+            placeholder="__MSG_example__https://example.com/search?q=%s"
+            title="__MSG_tip2__"
+          />
+          <button id="site_add" class="i18n">__MSG_successAdd__</button>
+          <span class="add-tip"></span>
+        </div>
+      </div>
+
+      <div id="right">
         <h3 class="i18n" style="margin-top: 30px">__MSG_shortcut__</h3>
         <input id="useshortcut" type="checkbox" />
         <label class="i18n" for="useshortcut">__MSG_enableShortcut__</label>
@@ -264,42 +505,11 @@
           <option value="z">Z</option>
         </select>
 
-        <h3 class="i18n" style="margin-top: 30px">__MSG_newTab__</h3>
+        <h3 class="i18n" style="margin-top: 20px">__MSG_newTab__</h3>
         <input id="newtab" class="i18n" type="checkbox" />
         <label class="i18n" for="newtab">__MSG_yesMessage__</label>
 
-        <h3 class="i18n" style="margin-top: 30px">__MSG_customSite__</h3>
-        <label class="i18n">__MSG_sitesAdded__</label><br />
-        <div id="usersites"></div>
-
-        <h3 class="i18n" style="margin-top: 10px">__MSG_addSite__</h3>
-        <div id="addsite">
-          <span class="tip i18n">__MSG_nameMessage__</span>
-          <input class="i18n" id="site_name" type="text" placeholder="__MSG_toutiao__" /><br />
-          <span class="tip i18n">__MSG_siteHomepage__</span>
-          <input
-            class="i18n"
-            id="site_home"
-            type="text"
-            placeholder="__MSG_example__https://example.com"
-            title="__MSG_tip1__"
-          /><br />
-          <span class="tip i18n">__MSG_searchURL__</span>
-          <input
-            class="i18n"
-            id="site_searchurl"
-            type="text"
-            placeholder="__MSG_example__https://example.com/search?q=%s"
-            title="__MSG_tip2__"
-          />
-          <br />
-          <button id="site_add" class="i18n">__MSG_successAdd__</button>
-          <span class="add-tip"></span>
-        </div>
-      </div>
-
-      <div id="right">
-        <h3 class="i18n" style="margin-top: 30px">__MSG_switchSetting__</h3>
+        <h3 class="i18n" style="margin-top: 24px">__MSG_switchSetting__</h3>
         <div id="ways"></div>
       </div>
     </div>

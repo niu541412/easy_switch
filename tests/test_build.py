@@ -1,4 +1,5 @@
 import json
+import re
 import unittest
 import zipfile
 from pathlib import Path
@@ -26,8 +27,15 @@ class BuildTest(unittest.TestCase):
 
     def test_locales_have_the_same_messages(self):
         locales = build.ROOT / "_locales"
+
+        def unique_pairs(pairs):
+            self.assertEqual(len(pairs), len(dict(pairs)), "Duplicate localization key")
+            return dict(pairs)
+
         messages = {
-            path.parent.name: json.loads(path.read_text(encoding="utf-8"))
+            path.parent.name: json.loads(
+                path.read_text(encoding="utf-8"), object_pairs_hook=unique_pairs
+            )
             for path in locales.glob("*/messages.json")
         }
         expected = set(messages["en"])
@@ -35,6 +43,25 @@ class BuildTest(unittest.TestCase):
             with self.subTest(locale=locale):
                 self.assertEqual(set(entries), expected)
                 self.assertTrue(all(entry["message"] for entry in entries.values()))
+                self.assertEqual(entries["warningURL"]["message"].count("%s"), 1)
+                self.assertEqual(entries["tip2"]["message"].count("%s"), 1)
+
+        page = (build.ROOT / "options.html").read_text(encoding="utf-8")
+        manifest = (build.ROOT / "manifest.json").read_text(encoding="utf-8")
+        scripts = "\n".join(
+            (build.ROOT / path).read_text(encoding="utf-8")
+            for path in ("js/bg.js", "js/options.js")
+        )
+        referenced = set(re.findall(r"__MSG_(\w+)__", page + manifest))
+        referenced.update(re.findall(r"getI18n\('([^']+)'\)", scripts))
+        site_names = set(
+            re.findall(
+                r"\bname: '([^']+)'",
+                (build.ROOT / "js/builtin.js").read_text(encoding="utf-8"),
+            )
+        )
+        self.assertFalse(referenced - expected, "Missing localization keys")
+        self.assertFalse(expected - referenced - site_names, "Unused localization keys")
 
     def test_browser_manifests_use_the_correct_background(self):
         source = json.loads((build.ROOT / "manifest.json").read_text(encoding="utf-8"))
@@ -65,7 +92,9 @@ class BuildTest(unittest.TestCase):
                     )
                     self.assertIn("options.html", names)
                     self.assertIn("asset/logo/icon_32x32.png", names)
-                    self.assertIn("_locales/en/messages.json", names)
+                    for locale in (build.ROOT / "_locales").iterdir():
+                        if locale.is_dir():
+                            self.assertIn(f"_locales/{locale.name}/messages.json", names)
                     self.assertNotIn("README.md", names)
                     scripts = manifest["background"].get("scripts", [])
                     scripts += [manifest["background"].get("service_worker")]

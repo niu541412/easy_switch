@@ -14,15 +14,18 @@
    "deleteUserSite": {
       "message": "删除自定义网站："
    },
+   "addBuiltinSite": { "message": "添加预置网站" },
+   "removeBuiltinSite": { "message": "移除预置网站" },
    "warningUserSite": {
-      "message": "请补充网站信息!"
+      "message": "请填写网站名称、主页和搜索地址。"
    },
    "warningURL": {
-      "message": "请检查搜索地址，关键字部分用%s代替"
+      "message": "请检查搜索地址，并用 %s 代替搜索词。"
    },
    "warningShortcut":{
-      "message": "请选择控制键"
+      "message": "请选择 Ctrl、Alt 或 Shift 键。"
    },
+   "discardUnsavedSettings": { "message": "未保存的设置将会丢失，继续吗？" },
    "successSav":{
       "message": "保存成功"
    },
@@ -38,6 +41,18 @@
    "Bing": {
       "message": "必应"
    },
+   "Wikipedia": {
+      "message": "维基百科"
+   },
+   "Github": {
+      "message": "GitHub"
+   },
+   "TikTok": { "message": "TikTok" },
+   "Xiaohongshu": { "message": "小红书" },
+   "YahooJapan": { "message": "雅虎日本" },
+   "AmazonJapan": { "message": "亚马逊日本" },
+   "Yandex": { "message": "Yandex" },
+   "Naver": { "message": "Naver" },
    "Youku": {
       "message": "优酷搜库"
    },
@@ -51,7 +66,7 @@
       "message": "百度百科"
    },
    "WikiCN": {
-      "message": "维基百科中文"
+      "message": "中文维基百科"
    },
    "Bilibili": {
       "message": "哔哩哔哩"
@@ -89,6 +104,9 @@
    "iconStyle": {
       "message": "按钮样式："
    },
+   "showBadgeText": {
+      "message": "在按钮上显示目标网站名称"
+   },
    "shortcut": {
       "message": "快捷键："
    },
@@ -100,9 +118,6 @@
    },
    "yesMessage": {
       "message": "是"
-   },
-   "customSite": {
-      "message": "自定义网站："
    },
    "sitesAdded": {
       "message": "已添加网站："
@@ -116,7 +131,7 @@
    "nameMessage": {
       "message": "名称："
    },
-   "toutiao": {
+   "siteNameExample": {
       "message": "如：示例搜索"
    },
    "siteHomepage": {
@@ -135,7 +150,7 @@
       "message": "关键字用%s代替"
    },
    "successAdd": {
-      "message": "完成添加"
+      "message": "添加网站"
    },
    "switchSetting": {
       "message": "切换设置："
